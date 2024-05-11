@@ -20,5 +20,3 @@ metadata:
   name: l2-pool
 spec:
   allowFirstLastIPs: "Yes"
-  blocks:
-    - cidr: "${NODE_CIDR}"
