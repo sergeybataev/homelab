@@ -6,36 +6,38 @@ talosVersion: v1.7.1
 kubernetesVersion: v1.30.0
 
 clusterName: &cluster homelab
-endpoint: https://:6443
+endpoint: https://192.168.1.10:6443
 clusterPodNets:
   - "10.69.0.0/16"
 clusterSvcNets:
   - "10.96.0.0/16"
 additionalApiServerCertSans: &sans
-  - ""
+  - "192.168.1.10"
   - 127.0.0.1 # KubePrism
 additionalMachineCertSans: *sans
 cniConfig:
   name: none
 
 nodes:
-  - hostname: "truenas"
-    ipAddress: "192.168.1.111"
+  - hostname: "main.storage"
+    ipAddress: "192.168.1.12"
     installDisk: "/dev/sda"
     talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "bc:24:11:c2:d0:33"
+          hardwareAddr: "b4:2e:99:31:d2:09"
         dhcp: false
         addresses:
-          - "192.168.1.111/24"
+          - "192.168.1.12/24"
         mtu: 1500
         routes:
           - network: 0.0.0.0/0
             gateway: "192.168.1.1"
         vip:
-          ip: ""
+          ip: "192.168.1.10"
+    patches:
+      - "@./patches/node_main.storage.yaml"
 
 patches:
   # Configure containerd
@@ -83,6 +85,9 @@ patches:
     machine:
       network:
         nameservers:
+          - 1.1.1.1
+          - 192.168.1.1
+          - 8.8.8.8
 
   # Configure NTP
   - |-
@@ -112,6 +117,8 @@ patches:
             options: ["bind", "rshared", "rw"]
 
 
+  # User specified global patches
+  - "@./patches/global.yaml"
 
 controlPlane:
   patches:
@@ -151,4 +158,6 @@ controlPlane:
             allowedRoles: ["os:admin"]
             allowedKubernetesNamespaces: ["system-upgrade"]
 
+    # User specified controlPlane patches
+    - "@./patches/controlPlane.yaml"
 
