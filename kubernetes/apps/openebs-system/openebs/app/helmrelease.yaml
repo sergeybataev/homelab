@@ -26,7 +26,7 @@ spec:
         lvm:
           enabled: false
         zfs:
-          enabled: false
+          enabled: true
       replicated:
         mayastor:
           enabled: false
@@ -34,6 +34,7 @@ spec:
       csi:
         volumeSnapshots:
           enabled: false
+          keep: true
     localpv-provisioner:
       localpv:
         image:
@@ -43,3 +44,15 @@ spec:
         name: openebs-hostpath
         isDefaultClass: false
         basePath: /var/openebs/local
+      analytics:
+        enabled: false
+    zfs-localpv: # Refer to https://github.com/openebs/zfs-localpv/blob/HEAD/deploy/helm/charts/values.yaml for complete set of values.
+      enabled: true
+      crds:
+        zfsLocalPv:
+          enabled: true
+        csi:
+          volumeSnapshots:
+            enabled: false
+      analytics:
+        enabled: false

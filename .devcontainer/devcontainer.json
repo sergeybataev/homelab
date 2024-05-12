@@ -7,5 +7,12 @@
   },
   "postStartCommand": {
     "git": "git config --global --add safe.directory ${containerWorkspaceFolder}"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "weaveworks.vscode-gitops-tools"
+      ]
+    }
   }
 }
