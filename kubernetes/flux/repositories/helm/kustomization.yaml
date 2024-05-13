@@ -10,3 +10,6 @@ resources:
   - ./postfinance.yaml
   - ./spegel.yaml
   - ./stakater.yaml
+# flux-system
+# monitoring
+  - ./kubernetes-dashboard.yaml
