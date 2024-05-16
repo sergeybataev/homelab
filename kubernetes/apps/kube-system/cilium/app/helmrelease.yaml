@@ -35,8 +35,11 @@ spec:
       name: homelab
     cni:
       exclusive: false
+      binPath: /var/lib/rancher/k3s/data/current/bin
+      confPath: /var/lib/rancher/k3s/agent/etc/cni/net.d
     containerRuntime:
       integration: containerd
+      socketPath: /var/run/k3s/containerd/containerd.sock
     # NOTE: devices might need to be set if you have more than one active NIC on your hosts
     # devices: eno+ eth+
     endpointRoutes:
@@ -47,7 +50,7 @@ spec:
       mode: kubernetes
     ipv4NativeRoutingCIDR: "${CLUSTER_CIDR}"
     k8sServiceHost: 127.0.0.1
-    k8sServicePort: 7445
+    k8sServicePort: 6444
     kubeProxyReplacement: true
     kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
     l2announcements:
