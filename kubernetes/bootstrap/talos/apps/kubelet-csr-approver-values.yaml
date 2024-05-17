@@ -1,3 +1,0 @@
----
-providerRegex: ^(main.storage)$
-bypassDnsResolution: true
