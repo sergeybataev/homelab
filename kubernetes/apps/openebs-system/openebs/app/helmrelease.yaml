@@ -34,7 +34,7 @@ spec:
       csi:
         volumeSnapshots:
           enabled: false
-          keep: true
+          keep: false
     localpv-provisioner:
       localpv:
         image:
@@ -56,3 +56,5 @@ spec:
             enabled: false
       analytics:
         enabled: false
+      zfsNode:
+        kubeletDir: "/var/lib/kubelet/"
