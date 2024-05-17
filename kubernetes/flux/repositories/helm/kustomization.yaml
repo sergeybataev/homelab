@@ -11,6 +11,8 @@ resources:
   - ./metrics-server.yaml
   - ./openebs.yaml
   - ./stakater.yaml
+# test
+  - ./podinfo-source.yaml
 # flux-system
 # monitoring
   - ./kubernetes-dashboard.yaml
