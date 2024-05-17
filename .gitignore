@@ -14,6 +14,8 @@ talosconfig
 .bin
 # Ansible
 .venv*
+ansible
+ansible*
 # Taskfile
 .task
 # Brew
@@ -24,3 +26,5 @@ Brewfile.lock.json
 wiki
 # Bootstrap
 /config.yaml*
+#VSCode
+.vscode

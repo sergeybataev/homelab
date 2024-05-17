@@ -1,26 +1,27 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: podinfo
+  name: &app podinfo
   namespace: test
 spec:
   chart:
     spec:
-      chart: podinfo
+      chart: *app
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
-        name: podinfo
+        name: *app
         namespace: flux-system
       version: '>5.0.0'
   interval: 1m0s
-  releaseName: podinfo
+  releaseName: *app
   values:
     replicaCount: 2
     resources:
       limits:
-        memory: 256Mi
+        memory: 32Mi
       requests:
         cpu: 100m
-        memory: 64Mi
+        memory: 32Mi
