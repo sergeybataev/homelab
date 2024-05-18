@@ -5,3 +5,4 @@ resources:
   - ./namespace.yaml
   - ./openebs/ks.yaml
   - ./truenas/ks.yaml
+  - ./storage/ks.yaml
