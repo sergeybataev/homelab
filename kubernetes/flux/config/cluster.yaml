@@ -1,5 +1,5 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
@@ -18,6 +18,7 @@ spec:
     # include kubernetes directory
     !/kubernetes
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -140,81 +141,81 @@ spec:
         version: v1
         kind: Kustomization
         labelSelector: prune.flux.home.arpa/disabled=true
-    - patch: |-
-        apiVersion: kustomize.toolkit.fluxcd.io/v1
-        kind: Kustomization
-        metadata:
-          name: not-used
-        spec:
-          wait: true
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        version: v1
-        kind: Kustomization
-        labelSelector: wait.flux.home.arpa/disabled notin (true)
-    - patch: |-
-        apiVersion: kustomize.toolkit.fluxcd.io/v1
-        kind: Kustomization
-        metadata:
-          name: not-used
-        spec:
-          wait: false
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        version: v1
-        kind: Kustomization
-        labelSelector: wait.flux.home.arpa/disabled=true
-    - patch: |-
-        apiVersion: kustomize.toolkit.fluxcd.io/v1
-        kind: Kustomization
-        metadata:
-          name: not-used
-        spec:
-          patches:
-            - patch: |-
-                apiVersion: helm.toolkit.fluxcd.io/v2beta1
-                kind: HelmRelease
-                metadata:
-                  name: not-used
-                spec:
-                  interval: 5m
-                  maxHistory: 5
-                  install:
-                    createNamespace: true
-                    remediation:
-                      retries: 5
-                  upgrade:
-                    cleanupOnFail: true
-                    remediation:
-                      retries: 5
-                  uninstall:
-                    keepHistory: false
-              target:
-                group: helm.toolkit.fluxcd.io
-                version: v2beta1
-                kind: HelmRelease
-                labelSelector: helm.flux.home.arpa/default notin (false)
-            - patch: |-
-                apiVersion: helm.toolkit.fluxcd.io/v2beta1
-                kind: HelmRelease
-                metadata:
-                  name: not-used
-                spec:
-                  chart:
-                    spec:
-                      chart: app-template
-                      version: 3.1.0
-                      sourceRef:
-                        kind: HelmRepository
-                        name: bjw-s
-                        namespace: flux-system
-              target:
-                group: helm.toolkit.fluxcd.io
-                version: v2beta1
-                kind: HelmRelease
-                labelSelector: helm.flux.home.arpa/app-template=true
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        version: v1
-        kind: Kustomization
-        labelSelector: kustomization.flux.home.arpa/helmpatches notin (false)
+    # - patch: |-
+    #     apiVersion: kustomize.toolkit.fluxcd.io/v1
+    #     kind: Kustomization
+    #     metadata:
+    #       name: not-used
+    #     spec:
+    #       wait: true
+    #   target:
+    #     group: kustomize.toolkit.fluxcd.io
+    #     version: v1
+    #     kind: Kustomization
+    #     labelSelector: wait.flux.home.arpa/disabled notin (true)
+    # - patch: |-
+    #     apiVersion: kustomize.toolkit.fluxcd.io/v1
+    #     kind: Kustomization
+    #     metadata:
+    #       name: not-used
+    #     spec:
+    #       wait: false
+    #   target:
+    #     group: kustomize.toolkit.fluxcd.io
+    #     version: v1
+    #     kind: Kustomization
+    #     labelSelector: wait.flux.home.arpa/disabled=true
+    # - patch: |-
+    #     apiVersion: kustomize.toolkit.fluxcd.io/v1
+    #     kind: Kustomization
+    #     metadata:
+    #       name: not-used
+    #     spec:
+    #       patches:
+    #         - patch: |-
+    #             apiVersion: helm.toolkit.fluxcd.io/v2beta1
+    #             kind: HelmRelease
+    #             metadata:
+    #               name: not-used
+    #             spec:
+    #               interval: 5m
+    #               maxHistory: 5
+    #               install:
+    #                 createNamespace: true
+    #                 remediation:
+    #                   retries: 5
+    #               upgrade:
+    #                 cleanupOnFail: true
+    #                 remediation:
+    #                   retries: 5
+    #               uninstall:
+    #                 keepHistory: false
+    #           target:
+    #             group: helm.toolkit.fluxcd.io
+    #             version: v2beta1
+    #             kind: HelmRelease
+    #             labelSelector: helm.flux.home.arpa/default notin (false)
+    #         - patch: |-
+    #             apiVersion: helm.toolkit.fluxcd.io/v2beta1
+    #             kind: HelmRelease
+    #             metadata:
+    #               name: not-used
+    #             spec:
+    #               chart:
+    #                 spec:
+    #                   chart: app-template
+    #                   version: 3.1.0
+    #                   sourceRef:
+    #                     kind: HelmRepository
+    #                     name: bjw-s
+    #                     namespace: flux-system
+    #           target:
+    #             group: helm.toolkit.fluxcd.io
+    #             version: v2beta1
+    #             kind: HelmRelease
+    #             labelSelector: helm.flux.home.arpa/app-template=true
+    #   target:
+    #     group: kustomize.toolkit.fluxcd.io
+    #     version: v1
+    #     kind: Kustomization
+    #     labelSelector: kustomization.flux.home.arpa/helmpatches notin (false)
