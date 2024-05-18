@@ -8,8 +8,6 @@ metadata:
     app.kubernetes.io/name: *app
     prune.flux.home.arpa/disabled: "true"
 spec:
-  dependsOn:
-    - name: cluster
   commonMetadata:
     labels: *ll
   targetNamespace: flux-system
