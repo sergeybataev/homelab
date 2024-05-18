@@ -6,7 +6,7 @@ metadata:
   name: home-kubernetes
   namespace: flux-system
 spec:
-  interval: 30m
+  interval: 10m
   url: "ssh://git@github.com/sergeybataev/homelab"
   secretRef:
     name: github-deploy-key
@@ -30,9 +30,9 @@ metadata:
     wait.flux.home.arpa/disabled: "true"
     kustomization.flux.home.arpa/helmpatches: "false"
 spec:
-  interval: 30m
+  interval: 10m
   path: ./kubernetes/flux
-  prune: true
+  prune: false
   wait: false
   sourceRef:
     kind: GitRepository

@@ -5,7 +5,7 @@ metadata:
   name: flux-manifests
   namespace: flux-system
 spec:
-  interval: 30m
+  interval: 10m
   url: oci://ghcr.io/fluxcd/flux-manifests
   ref:
     tag: v2.2.3
@@ -20,7 +20,7 @@ metadata:
     kustomization.flux.home.arpa/default: "false"
     kustomization.flux.home.arpa/helmpatches: "false"
 spec:
-  interval: 30m
+  interval: 10m
   path: ./
   prune: true
   wait: true
