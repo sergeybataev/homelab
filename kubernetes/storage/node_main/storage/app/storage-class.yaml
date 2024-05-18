@@ -5,9 +5,8 @@ metadata:
   name: hl-zfs-pv-fast
   namespace: storage
   labels:
-    app: openebs
     storage: zfs
-    type: fast
+    type: nvme
     node: "${NODE_MAIN}"
 
 parameters:
@@ -22,7 +21,7 @@ allowedTopologies:
   - matchLabelExpressions:
       - key: kubernetes.io/hostname
         values:
-          - ${mainStorage}
+          - "${mainStorage}"
 # ---
 # apiVersion: storage.k8s.io/v1
 # kind: StorageClass
