@@ -5,6 +5,7 @@ metadata:
   name: storage
   namespace: openebs
 data:
+  mainStorage: homelab
   NODE_CIDR: "${NODE_CIDR}"
   hl-zfs-pv-fast: apps/.k8s/pv
   hl-zfs-pv-slow: mainV1P2/.k8s/pv

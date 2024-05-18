@@ -3,6 +3,12 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: hl-zfs-pv-fast
+  labels:
+    app: openebs
+    storage: zfs
+    type: fast
+    node: "${NODE_MAIN}"
+
 parameters:
   fstype: "zfs"
   poolname: apps/.k8s/pv
@@ -15,7 +21,7 @@ allowedTopologies:
   - matchLabelExpressions:
       - key: kubernetes.io/hostname
         values:
-          - homelab
+          - ${mainStorage}
 # ---
 # apiVersion: storage.k8s.io/v1
 # kind: StorageClass

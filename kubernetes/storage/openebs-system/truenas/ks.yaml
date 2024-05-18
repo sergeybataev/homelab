@@ -5,6 +5,8 @@ metadata:
   name: &app truenas
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: openebs
   targetNamespace: openebs-system
   commonMetadata:
     labels:
