@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - ./flux.yaml
   - ./cluster.yaml
-  - ../../config/ks.yaml
+  - ../../config/
