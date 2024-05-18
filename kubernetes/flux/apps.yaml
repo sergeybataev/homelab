@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-stogage
+    - name: cluster-storage
   interval: 30m
   path: ./kubernetes/apps
   prune: true
