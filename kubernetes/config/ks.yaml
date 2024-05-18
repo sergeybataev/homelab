@@ -6,6 +6,7 @@ metadata:
   namespace: flux-system
   labels: &ll
     app.kubernetes.io/name: *app
+    kustomization.flux.home.arpa/helmpatches: "false"
 spec:
   commonMetadata:
     labels: *ll
