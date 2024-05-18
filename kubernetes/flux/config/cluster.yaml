@@ -23,6 +23,11 @@ kind: Kustomization
 metadata:
   name: cluster
   namespace: flux-system
+  labels:
+    kustomization.flux.home.arpa/name: "flux"
+    kustomization.flux.home.arpa/default: "false"
+    wait.flux.home.arpa/disabled: "true"
+    kustomization.flux.home.arpa/helmpatches: "false"
 spec:
   interval: 30m
   path: ./kubernetes/flux
