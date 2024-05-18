@@ -1,0 +1,114 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: argo-zfs-pv-fast
+parameters:
+  fstype: "zfs"
+  poolname: apps/.k8s/pv
+  shared: "yes"
+provisioner: zfs.csi.openebs.io
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: kubernetes.io/hostname
+        values:
+          - homelab
+# ---
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: openebs-zfspv-rust
+# parameters:
+#   fstype: "zfs"
+#   poolname: deadpool/containous
+#   shared: "yes"
+# provisioner: zfs.csi.openebs.io
+# reclaimPolicy: Delete
+# allowVolumeExpansion: true
+# volumeBindingMode: Immediate
+# ---
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   annotations:
+#     storageclass.kubernetes.io/is-default-class: "true"
+#   name: openebs-zfspv-ssd
+# parameters:
+#   fstype: "zfs"
+#   poolname: k8s/containous
+#   shared: "yes"
+# provisioner: zfs.csi.openebs.io
+# reclaimPolicy: Delete
+# allowVolumeExpansion: true
+# volumeBindingMode: Immediate
+# ---
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: openebs-zfspv-zvol
+# parameters:
+#   fstype: "ext4"
+#   poolname: deadpool/containous
+# provisioner: zfs.csi.openebs.io
+# reclaimPolicy: Delete
+# allowVolumeExpansion: true
+# volumeBindingMode: Immediate
+# ---
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: openebs-zfspv-block
+# parameters:
+#   poolname: deadpool/containous
+# provisioner: zfs.csi.openebs.io
+# reclaimPolicy: Delete
+# allowVolumeExpansion: true
+# volumeBindingMode: Immediate
+
+
+
+# {{- range $key, $val := $.Values.global.storage.pools }}
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: {{ $key }}
+# parameters:
+#   fstype: "zfs"
+#   poolname: {{ $val | quote }}
+#   shared: "yes"
+# provisioner: zfs.csi.openebs.io
+# reclaimPolicy: Retain
+# allowVolumeExpansion: true
+# volumeBindingMode: WaitForFirstConsumer
+# allowedTopologies:
+#   - matchLabelExpressions:
+#       - key: kubernetes.io/hostname
+#         values:
+#           - ix-truenas
+# ---
+# {{- end }}
+# {{- range $key, $val := $.Values.global.storage.paths }}
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: {{ $key }}
+#   annotations:
+#     openebs.io/cas-type: local
+#     cas.openebs.io/config: |
+#       - name: StorageType
+#         value: "hostpath"
+#       - name: BasePath
+#         value: "{{ $val | quote }}"
+# provisioner: openebs.io/local
+# volumeBindingMode: WaitForFirstConsumer
+# reclaimPolicy: Retain
+# allowedTopologies:
+#   - matchLabelExpressions:
+#       - key: kubernetes.io/hostname
+#         values:
+#           - ix-truenas
+# ---
+# {{- end }}
