@@ -2,16 +2,16 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app storage
+  name: &app truenas
   namespace: flux-system
 spec:
-  targetNamespace: openebs-system
+  dependsOn:
+    - name: openebs
+  targetNamespace: storage
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: openebs
-  path: ./kubernetes/apps/openebs-system/storage/app
+  path: ./kubernetes/storage/node_main/truenas/app
   prune: true
   sourceRef:
     kind: GitRepository

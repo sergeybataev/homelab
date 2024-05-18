@@ -3,6 +3,7 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: hl-zfs-pv-fast
+  namespace: storage
   labels:
     app: openebs
     storage: zfs
