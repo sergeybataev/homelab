@@ -1,10 +1,12 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-test
+  name: &name cluster-test
   namespace: flux-system
 spec:
+  namePrefix: "cluster-test-"
   interval: 30m
   path: ./kubernetes/test
   prune: true

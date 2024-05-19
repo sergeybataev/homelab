@@ -8,12 +8,7 @@ metadata:
     kustomization.flux.home.arpa/default: "true"
 spec:
   path: ./kubernetes/test/podinfo/app
-  dependsOn:  {}
+  dependsOn:
   targetNamespace: test
   commonMetadata:
     labels: *ll
-
-  wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m

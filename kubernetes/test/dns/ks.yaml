@@ -10,14 +10,8 @@ metadata:
     prune.flux.home.arpa/disabled: "true"
 spec:
   path: ./kubernetes/test/dns/app
-  dependsOn:  {}
+  dependsOn:
   targetNamespace: test
   commonMetadata:
     labels:
       app.kubernetes.io/name: *ll
-
-
-  wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
