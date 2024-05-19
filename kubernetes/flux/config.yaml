@@ -6,7 +6,7 @@ metadata:
   name: cluster-config
   namespace: flux-system
 spec:
-  namePrefix: "config-"
+  namePrefix: "cluster-config-"
   dependsOn:
     - name: cluster
   interval: 30m
