@@ -5,7 +5,7 @@ metadata:
   name: &app cert-manager
   namespace: flux-system
 spec:
-  targetNamespace: *app
+  targetNamespace: cert-manager
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -28,7 +28,7 @@ metadata:
     kustomization.flux.home.arpa/name: "flux"
     prune.flux.home.arpa/disabled: "true"
 spec:
-  targetNamespace: *app
+  targetNamespace: cert-manager
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

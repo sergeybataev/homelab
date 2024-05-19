@@ -12,7 +12,7 @@ spec:
       - dns01:
           cloudflare:
             apiTokenSecretRef:
-              name: network-cert-manager-secret
+              name: cert-manager-secret
               key: api-token
         selector:
           dnsZones:
@@ -32,7 +32,7 @@ spec:
       - dns01:
           cloudflare:
             apiTokenSecretRef:
-              name: network-cert-manager-secret
+              name: cert-manager-secret
               key: api-token
         selector:
           dnsZones:

@@ -1,9 +1,0 @@
----
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-metadata:
-  name: storage-openebs_system-openebs-app
-  namespace: flux-system
-resources:
-  - ./namespace.yaml
-  - ./openebs/ks.yaml

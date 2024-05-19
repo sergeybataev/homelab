@@ -6,6 +6,7 @@ metadata:
   name: cluster-storage
   namespace: flux-system
 spec:
+  namePrefix: "storage-"
   dependsOn:
     - name: cluster-config
   interval: 30m
