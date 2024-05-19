@@ -31,32 +31,44 @@ spec:
         name: cluster-secrets-user
         optional: true
   patches:
-    # kustomization.flux.home.arpa/default: "true"
-    - patch: |-
-        apiVersion: kustomize.toolkit.fluxcd.io/v1
-        kind: Kustomization
-        metadata:
-          name: not-used
-        spec:
-          sourceRef:
-            kind: GitRepository
-            name: home-kubernetes
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        version: v1
-        kind: Kustomization
-        labelSelector: kustomization.flux.home.arpa/default notin (false)
-    - patch: |-
-        - op: add
-          path: /spec
-          value:
-            dependsOn:
-              - name: cluster
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        version: v1
-        kind: Kustomization
-        labelSelector: kustomization.flux.home.arpa/default notin (false)
+      - patch: |-
+          apiVersion: kustomize.toolkit.fluxcd.io/v1
+          kind: Kustomization
+          metadata:
+            name: not-used
+          annotations:
+            flux.home.arpa/testtag: newTag
+        target:
+          group: kustomize.toolkit.fluxcd.io
+          version: v1
+          kind: Kustomization
+          labelSelector: kustomization.flux.home.arpa/default notin (false)
+    # # kustomization.flux.home.arpa/default: "true"
+    # - patch: |-
+    #     apiVersion: kustomize.toolkit.fluxcd.io/v1
+    #     kind: Kustomization
+    #     metadata:
+    #       name: not-used
+    #     spec:
+    #       sourceRef:
+    #         kind: GitRepository
+    #         name: home-kubernetes
+    #   target:
+    #     group: kustomize.toolkit.fluxcd.io
+    #     version: v1
+    #     kind: Kustomization
+    #     labelSelector: kustomization.flux.home.arpa/default notin (false)
+    # - patch: |-
+    #     - op: add
+    #       path: /spec
+    #       value:
+    #         dependsOn:
+    #           - name: cluster
+    #   target:
+    #     group: kustomize.toolkit.fluxcd.io
+    #     version: v1
+    #     kind: Kustomization
+    #     labelSelector: kustomization.flux.home.arpa/default notin (false)
     # - patch: |-
     #     apiVersion: kustomize.toolkit.fluxcd.io/v1
     #     kind: Kustomization
