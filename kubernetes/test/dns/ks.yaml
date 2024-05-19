@@ -12,5 +12,4 @@ spec:
   path: ./kubernetes/test/dns/app
   targetNamespace: test
   commonMetadata:
-    labels:
-      app.kubernetes.io/name: *ll
+    labels: *ll
