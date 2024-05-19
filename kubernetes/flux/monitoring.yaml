@@ -3,15 +3,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &name cluster-test
+  name: &name monitoring
   namespace: flux-system
 spec:
-  namePrefix: "cluster-test-"
+  namePrefix: "monitoring-"
   dependsOn:
     - name: cluster-config
   wait: true
   interval: 30m
-  path: ./kubernetes/test
+  path: ./kubernetes/monitoring
   prune: true
   sourceRef:
     kind: GitRepository
@@ -32,6 +32,7 @@ spec:
       - kind: Secret
         name: cluster-secrets-user
         optional: true
+
 patches:
   # add decryption into fluxcd Kustomization
   - patch: |-
