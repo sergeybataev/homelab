@@ -31,120 +31,120 @@ spec:
         name: cluster-secrets-user
         optional: true
   # substitution.flux.home.arpa/disabled: "false"
-  patches:
-    - patch: |-
-        apiVersion: kustomize.toolkit.fluxcd.io/v1
-        kind: Kustomization
-        metadata:
-          name: not-used
-        spec:
-          interval: 30m
-          retryInterval: 1m
-          timeout: 5m
-          decryption:
-            provider: sops
-            secretRef:
-              name: sops-age
-          postBuild:
-            substituteFrom:
-              - kind: ConfigMap
-                name: cluster-settings
-              - kind: Secret
-                name: cluster-secrets
-              - kind: ConfigMap
-                name: cluster-config-versions
-                optional: false
-              - kind: ConfigMap
-                name: cluster-settings-user
-                optional: true
-              - kind: Secret
-                name: cluster-secrets-user
-                optional: true
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        kind: Kustomization
-        labelSelector: substitution.flux.home.arpa/disabled notin (true)
+  # patches:
+  #   - patch: |-
+  #       apiVersion: kustomize.toolkit.fluxcd.io/v1
+  #       kind: Kustomization
+  #       metadata:
+  #         name: not-used
+  #       spec:
+  #         interval: 30m
+  #         retryInterval: 1m
+  #         timeout: 5m
+  #         decryption:
+  #           provider: sops
+  #           secretRef:
+  #             name: sops-age
+  #         postBuild:
+  #           substituteFrom:
+  #             - kind: ConfigMap
+  #               name: cluster-settings
+  #             - kind: Secret
+  #               name: cluster-secrets
+  #             - kind: ConfigMap
+  #               name: cluster-config-versions
+  #               optional: false
+  #             - kind: ConfigMap
+  #               name: cluster-settings-user
+  #               optional: true
+  #             - kind: Secret
+  #               name: cluster-secrets-user
+  #               optional: true
+  #     target:
+  #       group: kustomize.toolkit.fluxcd.io
+  #       kind: Kustomization
+  #       labelSelector: substitution.flux.home.arpa/disabled notin (true)
 
-    # kustomization.flux.home.arpa/default: "true"
-    - patch: |-
-        apiVersion: kustomize.toolkit.fluxcd.io/v1
-        kind: Kustomization
-        metadata:
-          name: not-used
-        spec:
-          sourceRef:
-            kind: GitRepository
-            name: home-kubernetes
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        version: v1
-        kind: Kustomization
-        labelSelector: kustomization.flux.home.arpa/default notin (false)
-    - patch: |
-        - op: add
-          path: /spec
-          value:
-            dependsOn:
-              - name: cluster
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        version: v1
-        kind: Kustomization
-        labelSelector: kustomization.flux.home.arpa/default notin (false)
+    # # kustomization.flux.home.arpa/default: "true"
+    # - patch: |-
+    #     apiVersion: kustomize.toolkit.fluxcd.io/v1
+    #     kind: Kustomization
+    #     metadata:
+    #       name: not-used
+    #     spec:
+    #       sourceRef:
+    #         kind: GitRepository
+    #         name: home-kubernetes
+    #   target:
+    #     group: kustomize.toolkit.fluxcd.io
+    #     version: v1
+    #     kind: Kustomization
+    #     labelSelector: kustomization.flux.home.arpa/default notin (false)
+    # - patch: |
+    #     - op: add
+    #       path: /spec
+    #       value:
+    #         dependsOn:
+    #           - name: cluster
+    #   target:
+    #     group: kustomize.toolkit.fluxcd.io
+    #     version: v1
+    #     kind: Kustomization
+    #     labelSelector: kustomization.flux.home.arpa/default notin (false)
 
-    # prune.flux.home.arpa/disabled != "true"
-    - patch: |-
-        apiVersion: kustomize.toolkit.fluxcd.io/v1
-        kind: Kustomization
-        metadata:
-          name: not-used
-        spec:
-          prune: true
-          # prune: false
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        version: v1
-        kind: Kustomization
-        labelSelector: prune.flux.home.arpa/disabled notin (true)
-    # prune.flux.home.arpa/disabled: "true"
-    - patch: |-
-        apiVersion: kustomize.toolkit.fluxcd.io/v1
-        kind: Kustomization
-        metadata:
-          name: not-used
-        spec:
-          prune: false
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        version: v1
-        kind: Kustomization
-        labelSelector: prune.flux.home.arpa/disabled=true
-    # wait.flux.home.arpa/disabled != "true"  => wait: true
-    - patch: |-
-        apiVersion: kustomize.toolkit.fluxcd.io/v1
-        kind: Kustomization
-        metadata:
-          name: not-used
-        spec:
-          wait: true
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        version: v1
-        kind: Kustomization
-        labelSelector: wait.flux.home.arpa/disabled notin (true)
-    # wait.flux.home.arpa/disabled: "true" => wait: false
-    - patch: |-
-        apiVersion: kustomize.toolkit.fluxcd.io/v1
-        kind: Kustomization
-        metadata:
-          name: not-used
-        spec:
-          wait: false
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        version: v1
-        kind: Kustomization
-        labelSelector: wait.flux.home.arpa/disabled=true
+    # # prune.flux.home.arpa/disabled != "true"
+    # - patch: |-
+    #     apiVersion: kustomize.toolkit.fluxcd.io/v1
+    #     kind: Kustomization
+    #     metadata:
+    #       name: not-used
+    #     spec:
+    #       prune: true
+    #       # prune: false
+    #   target:
+    #     group: kustomize.toolkit.fluxcd.io
+    #     version: v1
+    #     kind: Kustomization
+    #     labelSelector: prune.flux.home.arpa/disabled notin (true)
+    # # prune.flux.home.arpa/disabled: "true"
+    # - patch: |-
+    #     apiVersion: kustomize.toolkit.fluxcd.io/v1
+    #     kind: Kustomization
+    #     metadata:
+    #       name: not-used
+    #     spec:
+    #       prune: false
+    #   target:
+    #     group: kustomize.toolkit.fluxcd.io
+    #     version: v1
+    #     kind: Kustomization
+    #     labelSelector: prune.flux.home.arpa/disabled=true
+    # # wait.flux.home.arpa/disabled != "true"  => wait: true
+    # - patch: |-
+    #     apiVersion: kustomize.toolkit.fluxcd.io/v1
+    #     kind: Kustomization
+    #     metadata:
+    #       name: not-used
+    #     spec:
+    #       wait: true
+    #   target:
+    #     group: kustomize.toolkit.fluxcd.io
+    #     version: v1
+    #     kind: Kustomization
+    #     labelSelector: wait.flux.home.arpa/disabled notin (true)
+    # # wait.flux.home.arpa/disabled: "true" => wait: false
+    # - patch: |-
+    #     apiVersion: kustomize.toolkit.fluxcd.io/v1
+    #     kind: Kustomization
+    #     metadata:
+    #       name: not-used
+    #     spec:
+    #       wait: false
+    #   target:
+    #     group: kustomize.toolkit.fluxcd.io
+    #     version: v1
+    #     kind: Kustomization
+    #     labelSelector: wait.flux.home.arpa/disabled=true
     # kustomization.flux.home.arpa/helmpatches != "false"
     # - patch: |-
     #     apiVersion: kustomize.toolkit.fluxcd.io/v1
