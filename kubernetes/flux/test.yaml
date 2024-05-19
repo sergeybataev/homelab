@@ -81,9 +81,10 @@ spec:
         labelSelector: kustomization.flux.home.arpa/default notin (false)
     - patch: |
         - op: add
-          path: /spec/dependsOn/-
+          path: /spec
           value:
-            name: cluster
+            dependsOn:
+              - name: cluster
       target:
         group: kustomize.toolkit.fluxcd.io
         version: v1

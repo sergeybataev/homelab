@@ -10,7 +10,6 @@ metadata:
     prune.flux.home.arpa/disabled: "true"
 spec:
   path: ./kubernetes/test/dns/app
-  dependsOn:
   targetNamespace: test
   commonMetadata:
     labels:
