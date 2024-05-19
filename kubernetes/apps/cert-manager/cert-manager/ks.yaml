@@ -38,7 +38,7 @@ spec:
   dependsOn:
     - name: cert-manager
   path: ./kubernetes/apps/cert-manager/cert-manager/issuers
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
