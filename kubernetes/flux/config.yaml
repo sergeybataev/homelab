@@ -3,14 +3,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps
+  name: cluster-config
   namespace: flux-system
 spec:
+  namePrefix: "cluster-config-"
   dependsOn:
-    - name: closmer-config
-    - name: cluster-storage
+    - name: cluster
   interval: 30m
-  path: ./kubernetes/apps
+  path: ./kubernetes/config
   prune: true
   sourceRef:
     kind: GitRepository

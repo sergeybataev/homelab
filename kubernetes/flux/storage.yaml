@@ -6,6 +6,8 @@ metadata:
   name: cluster-storage
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: cluster-config
   interval: 30m
   path: ./kubernetes/storage
   prune: true

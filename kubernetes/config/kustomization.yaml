@@ -2,7 +2,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 configMapGenerator:
-  - name: cluster-config-versions
+  - name: versions
     namespace: flux-system
     envs:
       - ./versions.env
