@@ -7,5 +7,5 @@ metadata:
 resources:
   - ./namespace.yaml
   - ./openebs-system/ks.yaml
-  - ./truenas/ks.yaml
-  - ./storage/ks.yaml
+  - ./node_main/truenas/ks.yaml
+  - ./node_main/storage/ks.yaml
