@@ -7,12 +7,13 @@ metadata:
   namespace: flux-system
   labels: &ll
     # kustomization.flux.home.arpa/default: "true"
-    kustomization.flux.home.arpa/helmpatches: "false"
+    kustomization.flux.home.arpa/helmpatches: "true"
     kustomization.flux.home.arpa/default: "true"
-    substitution.flux.home.arpa/disabled: "true"
+    substitution.flux.home.arpa/disabled: "false"
   annotations:
     flux.home.arpa/testname: name
     flux.home.arpa/testtag: tag
+    flux.home.arpa/testvar: "${NODE_MAIN}"
 spec:
   # reguired
   dependsOn: []

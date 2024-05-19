@@ -5,6 +5,9 @@ kind: HelmRelease
 metadata:
   name: &app podinfo
   namespace: test
+  annotations:
+    flux.home.arpa/testvar: "${NODE_MAIN}"
+    flux.home.arpa/testversion: "${VERSION_CILIUM}"
 spec:
   chart:
     spec:

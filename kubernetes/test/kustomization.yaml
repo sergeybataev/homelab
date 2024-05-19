@@ -69,10 +69,6 @@ patches:
       labelSelector: kustomization.flux.home.arpa/helmpatches notin (false)
 
 
-
-
-
-
 # ---------------------------------------
 # apiVersion: kustomize.config.k8s.io/v1beta1
 # kind: Kustomization
