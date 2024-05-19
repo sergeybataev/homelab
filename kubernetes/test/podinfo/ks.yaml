@@ -19,5 +19,3 @@ spec:
   path: ./kubernetes/test/podinfo/app
   commonMetadata:
     labels: *ll
-  myValue: 1
-  myConfigValue: ${}
