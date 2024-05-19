@@ -8,11 +8,13 @@ metadata:
     # kustomization.flux.home.arpa/default: "true"
     kustomization.flux.home.arpa/helmpatches: "false"
     kustomization.flux.home.arpa/defaul: "false"
+    substitution.flux.home.arpa/disabled: "true"
+    
 spec:
   path: ./kubernetes/test/podinfo/app
   targetNamespace: test
-  commonMetadata:
-    labels: *ll
+  # commonMetadata:
+  #   labels: *ll
   prune: true
   sourceRef:
     kind: GitRepository
