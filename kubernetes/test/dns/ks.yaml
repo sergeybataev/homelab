@@ -4,16 +4,19 @@ kind: Kustomization
 metadata:
   name: &app dns
   namespace: flux-system
+  labels: &ll
+    substitution.flux.home.arpa/disabled: "true"
+    kustomization.flux.home.arpa/default: "true"
+    prune.flux.home.arpa/disabled: "true"
 spec:
+  path: ./kubernetes/test/dns/app
+  dependsOn:  {}
   targetNamespace: test
   commonMetadata:
     labels:
-      app.kubernetes.io/name: *app
-  path: ./kubernetes/test/dns/app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
+      app.kubernetes.io/name: *ll
+
+
   wait: false
   interval: 30m
   retryInterval: 1m

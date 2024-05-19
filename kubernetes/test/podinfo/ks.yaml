@@ -4,16 +4,15 @@ kind: Kustomization
 metadata:
   name: &app podinfo
   namespace: flux-system
+  labels: &ll
+    kustomization.flux.home.arpa/default: "true"
 spec:
+  path: ./kubernetes/test/podinfo/app
+  dependsOn:  {}
   targetNamespace: test
   commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  path: ./kubernetes/test/podinfo/app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
+    labels: *ll
+
   wait: false
   interval: 30m
   retryInterval: 1m
