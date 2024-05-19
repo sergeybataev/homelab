@@ -36,8 +36,8 @@ spec:
           kind: Kustomization
           metadata:
             name: not-used
-          annotations:
-            flux.home.arpa/testtag: newTag
+            annotations:
+              flux.home.arpa/testtag: newTag
         target:
           group: kustomize.toolkit.fluxcd.io
           version: v1

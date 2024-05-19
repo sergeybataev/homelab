@@ -9,6 +9,9 @@ metadata:
     kustomization.flux.home.arpa/helmpatches: "false"
     kustomization.flux.home.arpa/defaul: "true"
     substitution.flux.home.arpa/disabled: "true"
+  annotations:
+    flux.home.arpa/testname: name
+    flux.home.arpa/testtag: tag
 spec:
   path: ./kubernetes/test/podinfo/app
   targetNamespace: test
