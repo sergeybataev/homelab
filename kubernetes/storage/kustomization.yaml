@@ -6,6 +6,6 @@ metadata:
   namespace: flux-system
 resources:
   - ./namespace.yaml
-  - ./openebs/ks.yaml
+  - ./openebs-system/ks.yaml
   - ./truenas/ks.yaml
   - ./storage/ks.yaml
