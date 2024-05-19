@@ -11,5 +11,13 @@ metadata:
 spec:
   path: ./kubernetes/test/dns/app
   targetNamespace: test
-  # commonMetadata:
-  #   labels: *ll
+  commonMetadata:
+    labels: *ll
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: false
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
