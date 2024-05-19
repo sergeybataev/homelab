@@ -9,6 +9,8 @@ spec:
   namePrefix: "test-"
   dependsOn:
     - name: cluster-config
+    - name: cluster-network
+    - name: cluster-storage
   wait: true
   interval: 30m
   path: ./kubernetes/test

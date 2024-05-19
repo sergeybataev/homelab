@@ -9,6 +9,7 @@ spec:
   namePrefix: "apps-"
   dependsOn:
     - name: cluster-config
+    - name: cluster-network
     - name: cluster-storage
   interval: 30m
   path: ./kubernetes/apps
