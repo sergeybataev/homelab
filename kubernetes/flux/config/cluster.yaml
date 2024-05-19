@@ -274,6 +274,11 @@ spec:
                       - kind: ConfigMap
                         name: cluster-config-versions
                         optional: false
+              target:
+                group: kustomize.toolkit.fluxcd.io
+                version: v1
+                kind: Kustomization
+                labelSelector: substitution.flux.home.arpa/disabled notin (true)
             - patch: |-
                 apiVersion: helm.toolkit.fluxcd.io/v2beta1
                 kind: HelmRelease
