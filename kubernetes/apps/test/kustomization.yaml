@@ -1,9 +1,6 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-metadata:
-  name: cluster-apps-test
-  namespace: flux-system
 resources:
   - ./podinfo/ks.yaml
   - ./dns/ks.yaml
