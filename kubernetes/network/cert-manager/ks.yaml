@@ -5,11 +5,11 @@ metadata:
   name: &app cert-manager
   namespace: flux-system
 spec:
-  targetNamespace: cert-manager
+  targetNamespace: *app
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/network/cert-manager/cert-manager/app
+  path: ./kubernetes/network/cert-manager/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -22,19 +22,19 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cert-manager-issuers
+  name: &appIss cert-manager-issuers
   namespace: flux-system
   labels: # for my repo's Fluxtomization patching, can be ignored for those passing by
     kustomization.flux.home.arpa/name: "flux"
     prune.flux.home.arpa/disabled: "true"
 spec:
-  targetNamespace: cert-manager
+  targetNamespace: *appIss
   commonMetadata:
     labels:
-      app.kubernetes.io/name: *app
+      app.kubernetes.io/name: *appIss
   dependsOn:
-    - name: cert-manager
-  path: ./kubernetes/network/cert-manager/cert-manager/issuers
+    - name: *app
+  path: ./kubernetes/network/cert-manager/issuers
   prune: false
   sourceRef:
     kind: GitRepository

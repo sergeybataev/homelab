@@ -10,7 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: cert-manager
+    - name: network-cert-manager
     - name: metrics-server
   path: ./kubernetes/monitoring/kubernetes-dashboard/app
   prune: true
