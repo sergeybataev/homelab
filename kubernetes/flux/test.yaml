@@ -6,7 +6,7 @@ metadata:
   name: &name cluster-test
   namespace: flux-system
 spec:
-  namePrefix: "cluster-test-"
+  namePrefix: "test-"
   dependsOn:
     - name: cluster-config
   wait: true
