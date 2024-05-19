@@ -21,7 +21,7 @@ allowedTopologies:
   - matchLabelExpressions:
       - key: kubernetes.io/hostname
         values:
-          - "${NODE_MAIN}"
+          - homelab
 # ---
 # apiVersion: storage.k8s.io/v1
 # kind: StorageClass
