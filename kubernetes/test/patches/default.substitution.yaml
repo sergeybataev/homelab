@@ -18,6 +18,9 @@ spec:
       - kind: Secret
         name: cluster-secrets-user
         optional: true
+      - kind: Secret
+        name: cluster-secrets-test
+        optional: true
 
   # was inlined
   #
