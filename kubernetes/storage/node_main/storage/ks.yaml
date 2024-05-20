@@ -10,7 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: openebs
+    - name: storage-openebs
   path: ./kubernetes/storage/node_main/storage/app
   prune: true
   sourceRef:
