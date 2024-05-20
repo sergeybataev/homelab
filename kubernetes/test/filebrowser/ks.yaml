@@ -10,7 +10,7 @@ metadata:
     kustomization.flux.home.arpa/helmpatches: "true"
     substitution.flux.home.arpa/disabled: "false"
     prune.flux.home.arpa/disabled: "false"
-    wait.flux.home.arpa/disabl: "false"
+    wait.flux.home.arpa/disabled: "false"
 spec:
   dependsOn:
     - name: cluster-storage

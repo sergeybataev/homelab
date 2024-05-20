@@ -6,11 +6,15 @@ metadata:
   name: &app prometheus-stack
   namespace: flux-system
   labels: &ll
-    substitution.flux.home.arpa/disabled: "true"
     kustomization.flux.home.arpa/default: "true"
     kustomization.flux.home.arpa/helmpatches: "true"
+    substitution.flux.home.arpa/disabled: "false"
+    prune.flux.home.arpa/disabled: "false"
+    wait.flux.home.arpa/disabled: "false"
+    storage.flux.home.arpa/required: "true"
 spec:
-  dependsOn: []
+  dependsOn:
+    - name: cluster-storage
   targetNamespace: monitoring
   commonMetadata:
     labels:
