@@ -11,7 +11,7 @@ metadata:
     kustomization.flux.home.arpa/default: "true"
     substitution.flux.home.arpa/disabled: "false"
   annotations:
-    flux.home.arpa/testname: name
+    flux.home.arpa/testname: "${VERSION_CILIUM}"
     flux.home.arpa/testtag: "${VERSION_PROMETHEUS_OPERATOR}"
     flux.home.arpa/testvar: "${NODE_MAIN}"
 spec:
