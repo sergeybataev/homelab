@@ -5,7 +5,7 @@ metadata:
   name: &app system-upgrade-k3s
   namespace: flux-system
 spec:
-  targetNamespace: system
+  targetNamespace: kube-system
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
