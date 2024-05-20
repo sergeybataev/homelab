@@ -2,19 +2,20 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./bjw-s.yaml
-# network
-  - ./jetstack.yaml
-  - ./ingress-nginx.yaml
-  - ./external-dns.yaml
-  - ./k8s-gateway.yaml
-  - ./stakater.yaml
 # system
-  - ./cilium.yaml
-  - ./metrics-server.yaml
+  - ./system/bjw-s.yaml
+  - ./system/cilium.yaml
+  - ./system/metrics-server.yaml
+# network
+  - ./network/jetstack.yaml
+  - ./network/ingress-nginx.yaml
+  - ./network/external-dns.yaml
+  - ./network/k8s-gateway.yaml
+  - ./network/stakater.yaml
 # monitoring
-  - ./kubernetes-dashboard.yaml
+  - ./monitoring/prometheus-community.yaml
+  - ./monitoring/kubernetes-dashboard.yaml
 # storage
-  - ./openebs.yaml
+  - ./storage/openebs.yaml
 # test
-  - ./podinfo-source.yaml
+  - ./test/podinfo-source.yaml
