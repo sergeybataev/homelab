@@ -80,12 +80,12 @@ spec:
             port: *port
     persistence:
       config:
-        # existingClaim: filebrowser
-        type: hostPath
-        hostPath: /mnt/apps/.k8s/pv/fbconfig
-        hostPathType: Directory
-        globalMounts:
-          - path: /config
+        existingClaim: filebrowser
+        # type: hostPath
+        # hostPath: /mnt/apps/.k8s/pv/fbconfig
+        # hostPathType: Directory
+        # globalMounts:
+        #   - path: /config
       eros:
         type: hostPath
         hostPath: /mnt/apps/.k8s/pv/filebrowser
