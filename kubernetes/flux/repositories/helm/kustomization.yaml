@@ -16,3 +16,5 @@ resources:
   - ./kubernetes-dashboard.yaml
 # storage
   - ./openebs.yaml
+# test
+  - ./podinfo-source.yaml
