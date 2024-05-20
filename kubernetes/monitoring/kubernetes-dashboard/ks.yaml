@@ -10,6 +10,7 @@ metadata:
     kustomization.flux.home.arpa/default: "true"
     kustomization.flux.home.arpa/helmpatches: "true"
 spec:
+  dependsOn: []
   targetNamespace: monitoring
   commonMetadata:
     labels:
