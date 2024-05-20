@@ -1,0 +1,223 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  labels:
+    kustomization.flux.home.arpa/default: 'true'
+    kustomization.flux.home.arpa/helmpatches: 'true'
+    kustomize.toolkit.fluxcd.io/name: cluster-network
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+    substitution.flux.home.arpa/disabled: 'false'
+  name: network-ingress-nginx-external
+  namespace: flux-system
+  resourceVersion: '2428025'
+  uid: fe143441-8dc6-4e3b-b2cc-39d6799d4efe
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: ingress-nginx-external
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  dependsOn:
+    - name: cluster
+    - name: network-ingress-nginx-certificates
+  force: false
+  interval: 5m0s
+  patches:
+    - patch: |-
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: not-used
+        spec:
+          interval: 5m0s
+          retryInterval: 1m0s
+          timeout: 10m0s
+          decryption:
+            provider: sops
+            secretRef:
+              name: sops-age
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        kind: Kustomization
+        version: v1
+    - patch: |-
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: not-used
+        spec:
+          interval: 5m0s
+          retryInterval: 1m0s
+          timeout: 10m0s
+          prune: true
+          wait: true
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        kind: Kustomization
+        labelSelector: kustomization.flux.home.arpa/default in (true)
+        version: v1
+    - patch: |-
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: not-used
+        spec:
+          sourceRef:
+            kind: GitRepository
+            name: home-kubernetes
+          interval: 5m0s
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        kind: Kustomization
+        labelSelector: kustomization.flux.home.arpa/default in (true)
+        version: v1
+    - patch: |-
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: not-used
+        spec:
+          postBuild:
+            substituteFrom:
+              - kind: ConfigMap
+                name: cluster-settings
+              - kind: Secret
+                name: cluster-secrets
+              - kind: ConfigMap
+                name: cluster-config-versions
+                optional: false
+              - kind: ConfigMap
+                name: cluster-settings-user
+                optional: true
+              - kind: Secret
+                name: cluster-secrets-user
+                optional: true
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        kind: Kustomization
+        labelSelector: substitution.flux.home.arpa/disabled notin (true)
+    - patch: |
+        - op: add
+          path: /spec/dependsOn/0
+          value:
+            name: cluster
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        kind: Kustomization
+        labelSelector: kustomization.flux.home.arpa/default in (true)
+        version: v1
+    - patch: |-
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: not-used
+        spec:
+          prune: false
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        kind: Kustomization
+        labelSelector: prune.flux.home.arpa/disabled in (true)
+        version: v1
+    - patch: |-
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: not-used
+        spec:
+          wait: false
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        kind: Kustomization
+        labelSelector: wait.flux.home.arpa/disabled in (true)
+        version: v1
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2beta1
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          interval: 30m
+          maxHistory: 5
+          install:
+            createNamespace: true
+            remediation:
+              retries: 5
+          upgrade:
+            cleanupOnFail: true
+            remediation:
+              retries: 5
+          uninstall:
+            keepHistory: false
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        labelSelector: helm.flux.home.arpa/default notin (false)
+        version: v2beta1
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2beta1
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          chart:
+            spec:
+              chart: app-template
+              version: 3.1.0
+              sourceRef:
+                kind: HelmRepository
+                name: bjw-s
+                namespace: flux-system
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        labelSelector: helm.flux.home.arpa/app-template=true
+        version: v2beta1
+  path: ./kubernetes/network/ingress-nginx/external
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false
+      - kind: ConfigMap
+        name: cluster-config-versions
+        optional: false
+      - kind: ConfigMap
+        name: cluster-settings-user
+        optional: true
+      - kind: Secret
+        name: cluster-secrets-user
+        optional: true
+  prune: true
+  retryInterval: 1m0s
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  targetNamespace: network
+  timeout: 10m0s
+  wait: true
+status:
+  conditions:
+    - lastTransitionTime: '2024-05-20T17:00:18Z'
+      message: dependency 'flux-system/network-ingress-nginx-certificates' is not ready
+      observedGeneration: 4
+      reason: DependencyNotReady
+      status: 'False'
+      type: Ready
+    - lastTransitionTime: '2024-05-20T17:00:04Z'
+      message: Health check passed in 25.022842054s
+      observedGeneration: 3
+      reason: Succeeded
+      status: 'True'
+      type: Healthy
+  inventory:
+    entries:
+      - id: network_ingress-nginx-external_helm.toolkit.fluxcd.io_HelmRelease
+        v: v2beta2
+  lastAppliedRevision: prometheus-monitoring@sha1:9d78ca749e264c8c12b83c1d63cac64bb93c5912
+  lastAttemptedRevision: prometheus-monitoring@sha1:9d78ca749e264c8c12b83c1d63cac64bb93c5912
+  observedGeneration: 3

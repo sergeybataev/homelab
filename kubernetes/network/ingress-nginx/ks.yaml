@@ -4,10 +4,6 @@ kind: Kustomization
 metadata:
   name: &app ingress-nginx-certificates
   namespace: flux-system
-  labels: &ll
-    substitution.flux.home.arpa/disabled: "false"
-    kustomization.flux.home.arpa/default: "true"
-    kustomization.flux.home.arpa/helmpatches: "true"
 spec:
   targetNamespace: network
   commonMetadata:
@@ -15,6 +11,15 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: network-cert-manager-issuers
+  path: ./kubernetes/network/ingress-nginx/certificates
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
