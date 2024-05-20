@@ -32,7 +32,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: ingress-nginx-certificates
+    - name: network-ingress-nginx-certificates
   path: ./kubernetes/network/ingress-nginx/internal
   prune: true
   sourceRef:
@@ -54,7 +54,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: ingress-nginx-certificates
+    - name: network-ingress-nginx-certificates
   path: ./kubernetes/network/ingress-nginx/external
   prune: true
   sourceRef:
