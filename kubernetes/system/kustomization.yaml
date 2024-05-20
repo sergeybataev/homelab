@@ -7,3 +7,5 @@ resources:
   - ./metrics-server/ks.yaml
   - ./reloader/ks.yaml
   - ./kube-vip/ks.yaml
+  - ./upgrade/upgrade-controller/ks.yaml
+  - ./upgrade/k3s/ks.yaml
