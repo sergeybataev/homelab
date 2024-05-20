@@ -7,7 +7,7 @@ metadata:
   labels:
     storage: zfs
     type: nvme
-    node: homelab
+    node: main.storage
 
 parameters:
   fstype: "zfs"
@@ -21,7 +21,7 @@ allowedTopologies:
   - matchLabelExpressions:
       - key: kubernetes.io/hostname
         values:
-          - homelab
+          - main.storage
 # ---
 # apiVersion: storage.k8s.io/v1
 # kind: StorageClass
