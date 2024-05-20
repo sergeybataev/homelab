@@ -3,16 +3,16 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./bjw-s.yaml
-  - ./cilium.yaml
-  - ./external-dns.yaml
-  - ./ingress-nginx.yaml
-  - ./k8s-gateway.yaml
+# network
   - ./jetstack.yaml
-  - ./metrics-server.yaml
-  - ./openebs.yaml
+  - ./ingress-nginx.yaml
+  - ./external-dns.yaml
+  - ./k8s-gateway.yaml
   - ./stakater.yaml
-# test
-  - ./podinfo-source.yaml
-# flux-system
+# system
+  - ./cilium.yaml
+  - ./metrics-server.yaml
 # monitoring
   - ./kubernetes-dashboard.yaml
+# storage
+  - ./openebs.yaml
