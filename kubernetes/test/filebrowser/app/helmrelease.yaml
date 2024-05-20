@@ -80,17 +80,16 @@ spec:
             port: *port
     persistence:
       config:
-        existingClaim: filebrowser
+        # existingClaim: filebrowser
+        type: hostPath
+        hostPath: /mnt/apps/.k8s/pv/fbconfig
+        hostPathType: Directory
+        globalMounts:
+          - path: /config
       eros:
         type: hostPath
-        hostPath: /mnt/apps/.k8s/pv
+        hostPath: /mnt/apps/.k8s/pv/filebrowser
         hostPathType: Directory
         globalMounts:
           - path: /test
-      test:
-        enabled: true
-        storageClass: hl-path-test
-        accessMode: ReadWriteOnce
-        globalMounts:
-          - path: /test-local
-        size: 10Gi
+
