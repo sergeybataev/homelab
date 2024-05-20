@@ -4,6 +4,10 @@ kind: Kustomization
 metadata:
   name: &app ingress-nginx-certificates
   namespace: flux-system
+  labels: &ll
+    substitution.flux.home.arpa/disabled: "true"
+    kustomization.flux.home.arpa/default: "true"
+    kustomization.flux.home.arpa/helmpatches: "true"
 spec:
   targetNamespace: network
   commonMetadata:
@@ -12,20 +16,16 @@ spec:
   dependsOn:
     - name: network-cert-manager-issuers
   path: ./kubernetes/network/ingress-nginx/certificates
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-  wait: true
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app ingress-nginx-internal
   namespace: flux-system
+  labels: &ll
+    substitution.flux.home.arpa/disabled: "true"
+    kustomization.flux.home.arpa/default: "true"
+    kustomization.flux.home.arpa/helmpatches: "true"
 spec:
   targetNamespace: network
   commonMetadata:
@@ -34,20 +34,16 @@ spec:
   dependsOn:
     - name: network-ingress-nginx-certificates
   path: ./kubernetes/network/ingress-nginx/internal
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-  wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app ingress-nginx-external
   namespace: flux-system
+  labels: &ll
+    substitution.flux.home.arpa/disabled: "true"
+    kustomization.flux.home.arpa/default: "true"
+    kustomization.flux.home.arpa/helmpatches: "true"
 spec:
   targetNamespace: network
   commonMetadata:
@@ -56,20 +52,16 @@ spec:
   dependsOn:
     - name: network-ingress-nginx-certificates
   path: ./kubernetes/network/ingress-nginx/external
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-  wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app ingress-nginx-dashboard
   namespace: flux-system
+  labels: &ll
+    substitution.flux.home.arpa/disabled: "true"
+    kustomization.flux.home.arpa/default: "true"
+    kustomization.flux.home.arpa/helmpatches: "true"
 spec:
   targetNamespace: network
   commonMetadata:

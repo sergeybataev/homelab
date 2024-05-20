@@ -5,6 +5,9 @@ kind: Kustomization
 metadata:
   name: &app filebrowser
   namespace: flux-system
+  labels: &ll
+    substitution.flux.home.arpa/disabled: "true"
+    kustomization.flux.home.arpa/default: "true"
 spec:
   dependsOn:
     - name: cluster-storage
