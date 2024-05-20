@@ -17,7 +17,7 @@ apiVersion: v1
 kind: Secret
 type: kubernetes.io/service-account-token
 metadata:
-  name: *app
+  name: &app kubernetes-dashboard
   labels:
     app.kubernetes.io/managed-by: Helm
   annotations:
@@ -35,4 +35,4 @@ roleRef:
   name: cluster-admin
 subjects:
   - kind: ServiceAccount
-    name: *app
+    name: kubernetes-dashboard
