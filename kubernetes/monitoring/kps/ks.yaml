@@ -15,11 +15,10 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-storage
+    - name: network-cert-manager
+    - name: system-metrics-server
   targetNamespace: monitoring
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: network-cert-manager
-    - name: system-metrics-server
   path: ./kubernetes/monitoring/kps/app
