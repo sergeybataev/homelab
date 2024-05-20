@@ -9,6 +9,7 @@ spec:
   namePrefix: "network-"
   dependsOn:
     - name: cluster-config
+    - name: cluster-system
   wait: true
   interval: 30m
   path: ./kubernetes/network
