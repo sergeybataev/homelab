@@ -5,7 +5,7 @@ metadata:
   name: storage-node_main-storage-app
   namespace: flux-system
 resources:
-  - ./helmrelease.yaml
   - ./config.yaml
   - ./hostpath-volumes.yaml
   - ./storage-class.yaml
+  - ./volume-snapshot-class.yaml
