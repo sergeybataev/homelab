@@ -7,6 +7,6 @@ kind: Kustomization
 #     objref:
 #       name:
 resources:
-- ./crds/ks.yaml
+- ./crds/ksc.yaml
 # - https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/${VERSION_PROMETHEUS_OPERATOR}/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml
 # - https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/${VERSION_PROMETHEUS_OPERATOR}/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml
