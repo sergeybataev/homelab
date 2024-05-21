@@ -6,7 +6,7 @@ metadata:
   name: loki
 spec:
   interval: 15m
-  timeout: 1m
+  timeout: 5m
   chart:
     spec:
       chart: loki
@@ -23,7 +23,7 @@ spec:
     cleanupOnFail: true
     crds: Skip
     remediation:
-      strategy: rollback
+      # strategy: rollback
       retries: 3
   values:
     deploymentMode: SingleBinary
@@ -62,7 +62,14 @@ spec:
       extraEnv:
         - name: TZ
           value: ${TIMEZONE}
-
+      persistence:
+        type: pvc
+        enabled: true
+        storageClassName: hl-zfs-pv-fast
+        accessModes:
+          - ReadWriteOnce
+        size: 100Gi
+        
     #gateway:
     #  ingress:
     #    enabled: true
