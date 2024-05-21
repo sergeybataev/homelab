@@ -79,7 +79,7 @@ spec:
         provider:
           disableDelete: true
           foldersFromFilesStructure: true
-          
+
     grafana.ini:
       auth.basic:
         disable_login_form: true
@@ -118,4 +118,16 @@ spec:
             options:
               path: /var/lib/grafana/dashboards/default-folder
 
-
+    ## Expose the grafana service to be accessed from outside the cluster (LoadBalancer service).
+    ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
+    ## ref: http://kubernetes.io/docs/user-guide/services/
+    ##
+    service:
+      enabled: true
+      type: ClusterIP
+      port: 80
+      targetPort: 3000
+        # targetPort: 4181 To be used with a proxy extraContainer
+      ## Service annotations. Can be templated.
+      annotations:
+        io.cilium/lb-ipam-ips: 192.168.42.125
