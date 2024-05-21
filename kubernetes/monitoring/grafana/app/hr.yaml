@@ -130,4 +130,4 @@ spec:
         # targetPort: 4181 To be used with a proxy extraContainer
       ## Service annotations. Can be templated.
       annotations:
-        io.cilium/lb-ipam-ips: 192.168.42.125
+        io.cilium/lb-ipam-ips: 192.168.1.113
