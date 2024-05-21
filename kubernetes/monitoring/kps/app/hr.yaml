@@ -165,10 +165,7 @@ spec:
         pathType: Prefix
         hosts:
           - "prometheus.${SECRET_DOMAIN}"
-      thanosService:
-        enabled: true
-      thanosServiceMonitor:
-        enabled: true
+
       prometheusSpec:
         replicas: 1
         replicaExternalLabelName: __replica__
@@ -205,6 +202,12 @@ spec:
         # TODO check
         # podAntiAffinity: hard
 
+      # Thanos
+      # https://thanos.io/ - Open source, highly available Prometheus setup with long term storage capabilities.
+      thanosService:
+        enabled: false
+      thanosServiceMonitor:
+        enabled: false
         # if need to use thanos for prometheus HA
         # podMetadata:
         #   annotations:
