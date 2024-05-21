@@ -104,7 +104,7 @@ spec:
         accessModes:
           - ReadWriteOnce
         size: 100Gi
-        
+
     # TODO: CEPH support
     # backend:
     #   replicas: 1
@@ -119,7 +119,9 @@ spec:
     #   persistence:
     #     type: pvc
     #     enabled: true
-
+    serviceMonitor:
+      # disabled due to requirement of grafana operator: https://github.com/grafana/loki/issues/7546
+      enabled: false
     sidecar:
       image:
         repository: ghcr.io/kiwigrid/k8s-sidecar
