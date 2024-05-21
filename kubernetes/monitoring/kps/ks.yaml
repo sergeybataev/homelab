@@ -17,7 +17,6 @@ spec:
     - name: cluster-storage
     - name: network-cert-manager
     - name: system-metrics-server
-  targetNamespace: monitoring
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
