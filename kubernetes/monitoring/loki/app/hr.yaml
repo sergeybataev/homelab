@@ -28,7 +28,16 @@ spec:
   values:
     deploymentMode: SingleBinary
     loki:
-      useTestSchema: true
+      schemaConfig:
+        configs:
+          - from: 2024-04-01
+            store: tsdb
+            object_store: filesystem
+            schema: v13
+            index:
+              prefix: index_
+              period: 24h
+
       auth_enabled: false
       commonConfig:
         replication_factor: 1
