@@ -26,103 +26,154 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    loki:
-      schemaConfig:
-        configs:
-          - from: 2020-05-15
-            store: tsdb
-            object_store: filesystem
-            schema: v13
-            index:
-              prefix: loki_index_
-              period: 24h
-      structuredConfig:
-        auth_enabled: false
-        server:
-          log_level: info
-          http_listen_port: 3100
-          grpc_listen_port: 9095
-          grpc_server_max_recv_msg_size: 8388608
-          grpc_server_max_send_msg_size: 8388608
-        limits_config:
-          ingestion_burst_size_mb: 128
-          ingestion_rate_mb: 64
-          max_query_parallelism: 100
-          per_stream_rate_limit: 64M
-          per_stream_rate_limit_burst: 128M
-          reject_old_samples: true
-          reject_old_samples_max_age: 168h
-          retention_period: 30d
-          shard_streams:
-            enabled: true
-          split_queries_by_interval: 1h
-        query_scheduler:
-          max_outstanding_requests_per_tenant: 4096
-        frontend:
-          max_outstanding_per_tenant: 4096
-        ruler:
-          enable_api: true
-          storage:
-            type: local
-            local:
-              directory: /rules
-          rule_path: /rules/fake
-        analytics:
-          reporting_enabled: false
-      commonConfig:
-        replication_factor: 1 # monolithic mode
-    gateway:
-      replicas: 1
-
-    # monolithic mode
-    deploymentMode: SingleBinary
-    write:
-      replicas: 0
-    read:
-      replicas: 0
-    backend:
-      replicas: 0
     singleBinary:
-      # workaround to fix helm error due to weird default value of zero replicas: https://github.com/grafana/loki/issues/8443#issuecomment-1421636858
       replicas: 1
-      extraArgs:
-        - -config.expand-env=true
-        - -log.level=warn
-      extraEnv:
-        - name: TZ
-          value: ${TIMEZONE}
+    loki:
+      storage:
+        type: filesystem
+      auth_enabled: false
+      commonConfig:
+        replication_factor: 1
+      limits_config:
+        retention_period: 14d
+        enforce_metric_name: false
+        reject_old_samples: true
+        reject_old_samples_max_age: 168h
+        max_cache_freshness_per_query: 10m
+        split_queries_by_interval: 15m
+        ingestion_rate_mb: 8
+        ingestion_burst_size_mb: 16
+        shard_streams:
+          enabled: true
+      ingester:
+        max_chunk_age: 1h
+      analytics:
+        reporting_enabled: false
+    test:
+      enabled: false
+    read:
+      replicas: 1
       persistence:
-        type: pvc
-        enabled: true
-        storageClassName: hl-zfs-pv-fast
-        accessModes:
-          - ReadWriteOnce
-        size: 100Gi
-
-    # TODO: CEPH support
-    # backend:
-    #   replicas: 1
-    #   persistence:
-    #     type: pvc
-    #     enabled: true
-
-    # read:
-    #   replicas: 1
-    # write:
-    #   replicas: 1
-    #   persistence:
-    #     type: pvc
-    #     enabled: true
+        storageClass: hl-zfs-pv-fast
+    write:
+      replicas: 1
+      persistence:
+        storageClass: hl-zfs-pv-fast
+    backend:
+      replicas: 1
+      persistence:
+        storageClass: hl-zfs-pv-fast
+    monitoring:
+      dashboards:
+        annotations:
+          grafana_folder: Loki
+      selfMonitoring:
+        enabled: false
+        grafanaAgent:
+          installOperator: false
+      lokiCanary:
+        enabled: false
     serviceMonitor:
       # disabled due to requirement of grafana operator: https://github.com/grafana/loki/issues/7546
       enabled: false
-    sidecar:
-      image:
-        repository: ghcr.io/kiwigrid/k8s-sidecar
-      rules:
-        searchNamespace: ALL
-        folder: /rules/fake
-    lokiCanary:
-      enabled: false
-    test:
-      enabled: false
+
+    # loki:
+    #   schemaConfig:
+    #     configs:
+    #       - from: 2020-05-15
+    #         store: tsdb
+    #         object_store: filesystem
+    #         schema: v13
+    #         index:
+    #           prefix: loki_index_
+    #           period: 24h
+    #   structuredConfig:
+    #     auth_enabled: false
+    #     server:
+    #       log_level: info
+    #       http_listen_port: 3100
+    #       grpc_listen_port: 9095
+    #       grpc_server_max_recv_msg_size: 8388608
+    #       grpc_server_max_send_msg_size: 8388608
+    #     limits_config:
+    #       ingestion_burst_size_mb: 128
+    #       ingestion_rate_mb: 64
+    #       max_query_parallelism: 100
+    #       per_stream_rate_limit: 64M
+    #       per_stream_rate_limit_burst: 128M
+    #       reject_old_samples: true
+    #       reject_old_samples_max_age: 168h
+    #       retention_period: 30d
+    #       shard_streams:
+    #         enabled: true
+    #       split_queries_by_interval: 1h
+    #     query_scheduler:
+    #       max_outstanding_requests_per_tenant: 4096
+    #     frontend:
+    #       max_outstanding_per_tenant: 4096
+    #     ruler:
+    #       enable_api: true
+    #       storage:
+    #         type: local
+    #         local:
+    #           directory: /rules
+    #       rule_path: /rules/fake
+    #     analytics:
+    #       reporting_enabled: false
+    #   commonConfig:
+    #     replication_factor: 1 # monolithic mode
+    # gateway:
+    #   replicas: 1
+
+    # # monolithic mode
+    # deploymentMode: SingleBinary
+    # write:
+    #   replicas: 0
+    # read:
+    #   replicas: 0
+    # backend:
+    #   replicas: 0
+    # singleBinary:
+    #   # workaround to fix helm error due to weird default value of zero replicas: https://github.com/grafana/loki/issues/8443#issuecomment-1421636858
+    #   replicas: 1
+    #   extraArgs:
+    #     - -config.expand-env=true
+    #     - -log.level=warn
+    #   extraEnv:
+    #     - name: TZ
+    #       value: ${TIMEZONE}
+    #   persistence:
+    #     type: pvc
+    #     enabled: true
+    #     storageClassName: hl-zfs-pv-fast
+    #     accessModes:
+    #       - ReadWriteOnce
+    #     size: 100Gi
+
+    # # TODO: CEPH support
+    # # backend:
+    # #   replicas: 1
+    # #   persistence:
+    # #     type: pvc
+    # #     enabled: true
+
+    # # read:
+    # #   replicas: 1
+    # # write:
+    # #   replicas: 1
+    # #   persistence:
+    # #     type: pvc
+    # #     enabled: true
+    # serviceMonitor:
+    #   # disabled due to requirement of grafana operator: https://github.com/grafana/loki/issues/7546
+    #   enabled: false
+    # sidecar:
+    #   image:
+    #     repository: ghcr.io/kiwigrid/k8s-sidecar
+    #   rules:
+    #     searchNamespace: ALL
+    #     folder: /rules/fake
+    # lokiCanary:
+    #   enabled: false
+    # test:
+    #   enabled: false
