@@ -65,11 +65,11 @@ spec:
       persistence:
         type: pvc
         enabled: true
-        storageClassName: hl-zfs-pv-fast
+        storageClass: hl-zfs-pv-fast
         accessModes:
           - ReadWriteOnce
         size: 100Gi
-        
+
     #gateway:
     #  ingress:
     #    enabled: true
