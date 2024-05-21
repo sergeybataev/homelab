@@ -26,7 +26,7 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    deploymentMode: SimpleScalable
+    deploymentMode: SingleBinary
     loki:
       ingester:
         chunk_encoding: snappy
