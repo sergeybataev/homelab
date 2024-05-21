@@ -1,0 +1,87 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: hl-path-test
+  namespace: storage
+  annotations:
+    openebs.io/cas-type: local
+    cas.openebs.io/config: |
+      - name: StorageType
+        value: "hostpath"
+      - name: BasePath
+        value: "/mnt/apps/.k8s/pv"
+provisioner: openebs.io/local
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: kubernetes.io/hostname
+        values:
+          - main.storage
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: hl-path-configs
+  namespace: storage
+  annotations:
+    openebs.io/cas-type: local
+    cas.openebs.io/config: |
+      - name: StorageType
+        value: "hostpath"
+      - name: BasePath
+        value: "/mnt/apps/.k8s/configs"
+provisioner: openebs.io/local
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: kubernetes.io/hostname
+        values:
+          - main.storage
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: media
+# spec:
+#   capacity:
+#     storage: 100Gi
+#   volumeMode: Filesystem
+#   accessModes:
+#     - ReadWriteOnce
+#   persistentVolumeReclaimPolicy: Retain
+#   hostPath:
+#     path: /deadpool/media
+#   storageClassName: openebs-zfspv-rust
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: minio
+# spec:
+#   capacity:
+#     storage: 100Gi
+#   volumeMode: Filesystem
+#   accessModes:
+#     - ReadWriteOnce
+#   persistentVolumeReclaimPolicy: Retain
+#   hostPath:
+#     path: /deadpool/containous/minio
+#   storageClassName: openebs-zfspv-rust
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: snapshots
+# spec:
+#   capacity:
+#     storage: 250Gi
+#   volumeMode: Filesystem
+#   accessModes:
+#     - ReadWriteOnce
+#   persistentVolumeReclaimPolicy: Retain
+#   hostPath:
+#     path: /deadpool/containous/kopia-snapshots
+#   storageClassName: openebs-zfspv-rust

@@ -1,0 +1,133 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  interval: 30m
+  chart:
+    spec:
+      # renovate: registryUrl=https://grafana.github.io/helm-charts
+      chart: grafana
+      version: ${VERSION_GRAFANA}
+      sourceRef:
+        kind: HelmRepository
+        name: grafana-charts
+        namespace: flux-system
+  values:
+    persistence:
+      type: pvc
+      enabled: true
+      storageClassName: hl-path-configs
+      accessModes:
+        - ReadWriteOnce
+      size: 10Gi
+
+    plugins:
+      - grafana-clock-panel
+      - grafana-piechart-panel
+      - grafana-worldmap-panel
+      - natel-discrete-panel
+      - pr0ps-trackmap-panel
+      - vonage-status-panel
+
+    env:
+      GF_EXPLORE_ENABLED: true
+      GF_DISABLE_SANITIZE_HTML: true
+      GF_PANELS_DISABLE_SANITIZE_HTML: true
+      GF_LOG_FILTERS: rendering:debug
+      GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
+      TZ: ${TIMEZONE}
+      GF_FEATURE_TOGGLES_ENABLE: publicDashboards
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
+
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        deleteDatasources:
+          - { name: Alertmanager, orgId: 1 }
+          - { name: Loki, orgId: 1 }
+          - { name: Prometheus, orgId: 1 }
+        datasources:
+          - name: Prometheus
+            type: prometheus
+            access: proxy
+            url: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+            isDefault: true
+          - name: Loki
+            type: loki
+            uid: loki
+            access: proxy
+            url: http://loki-gateway.monitoring.svc.cluster.local
+            jsonData:
+              maxLines: 250
+
+    serviceMonitor:
+      enabled: true
+
+    sidecar:
+      datasources:
+        enabled: true
+        searchNamespace: ALL
+      dashboards:
+        enabled: true
+        searchNamespace: ALL
+        label: grafana_dashboard
+        folderAnnotation: grafana_folder
+        provider:
+          disableDelete: true
+          foldersFromFilesStructure: true
+
+    grafana.ini:
+      auth.basic:
+        disable_login_form: true
+      auth.anonymous:
+        enabled: true
+      analytics:
+        check_for_updates: false
+        check_for_plugin_updates: true
+        reporting_enabled: false
+      log:
+        mode: console
+      grafana_net:
+        url: https://grafana.net
+      news:
+        news_feed_enabled: false
+
+
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: 'default'
+            orgId: 1
+            folder: ''
+            type: file
+            disableDeletion: false
+            allowUiUpdates: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+          - name: default-folder
+            orgId: 1
+            folder: ""
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default-folder
+
+    ## Expose the grafana service to be accessed from outside the cluster (LoadBalancer service).
+    ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
+    ## ref: http://kubernetes.io/docs/user-guide/services/
+    ##
+    service:
+      enabled: true
+      type: ClusterIP
+      port: 80
+      targetPort: 3000
+        # targetPort: 4181 To be used with a proxy extraContainer
+      ## Service annotations. Can be templated.
+      annotations:
+        io.cilium/lb-ipam-ips: 192.168.1.113

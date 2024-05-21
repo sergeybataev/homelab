@@ -3,16 +3,13 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps
+  name: cluster-system
   namespace: flux-system
 spec:
-  namePrefix: "apps-"
   dependsOn:
     - name: cluster-config
-    - name: cluster-network
-    - name: cluster-storage
   interval: 30m
-  path: ./kubernetes/apps
+  path: ./kubernetes/system
   prune: true
   sourceRef:
     kind: GitRepository

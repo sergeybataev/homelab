@@ -1,0 +1,8 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./namespace.yaml
+  - ./openebs-system/ks.yaml
+  - ./node_main/truenas/ks.yaml
+  - ./node_main/storage/ks.yaml
