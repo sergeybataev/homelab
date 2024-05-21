@@ -11,7 +11,7 @@ spec:
   secretRef:
     name: github-deploy-key
   ref:
-    branch: "prometheus-monitoring"
+    branch: "main"
   ignore: |
     # exclude all
     /*
