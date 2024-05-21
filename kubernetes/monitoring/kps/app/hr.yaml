@@ -1,0 +1,252 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  interval: 15m
+  chart:
+    spec:
+      # renovate: registryUrl=https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      version: ${VERSION_KUBE_PROMETHEUS_STACK}
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community-charts
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    defaultRules:
+      disabled:
+        HostHighCpuLoad: true
+    crds:
+      enabled: true
+    cleanPrometheusOperatorObjectNames: true
+    alertmanager:
+      enabled: false
+
+    # FIXME: alertmanager ingress
+    # https://github.com/wrmilling/k3s-gitops/blob/main/monitoring/kube-prometheus-stack/kube-prometheus-stack.yaml
+    # alertmanager:
+    #   ingress:
+    #     enabled: true
+    #     pathType: Prefix
+    #     ingressClassName: internal
+    #     hosts: ["alertmanager.devbu.io"]
+    #   alertmanagerSpec:
+    #     replicas: 3
+    #     useExistingSecret: true
+    #     configSecret: alertmanager-secret
+    #     storage:
+    #       volumeClaimTemplate:
+    #         spec:
+    #           storageClassName: openebs-hostpath
+    #           resources:
+    #             requests:
+    #               storage: 1Gi
+
+    grafana:
+      enabled: false
+      forceDeployDashboards: true
+
+    kubelet:
+      enabled: true
+      serviceMonitor:
+        metricRelabelings:
+          # Drop high cardinality labels
+          - action: labeldrop
+            regex: (uid)
+          - action: labeldrop
+            regex: (id|name)
+          - action: drop
+            sourceLabels:
+              - "__name__"
+            regex: (rest_client_request_duration_seconds_bucket|rest_client_request_duration_seconds_sum|rest_client_request_duration_seconds_count)
+
+    kubeStateMetrics:
+      enabled: true
+    kube-state-metrics:
+      fullnameOverride: kube-state-metrics
+      metricLabelsAllowlist:
+        - pods=[*]
+        - deployments=[*]
+        - persistentvolumeclaims=[*]
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels:
+                - "__meta_kubernetes_pod_node_name"
+              targetLabel: kubernetes_node
+
+    kubeApiServer:
+      enabled: true
+      serviceMonitor:
+        metricRelabelings:
+          # Drop high cardinality labels
+          - action: drop
+            sourceLabels:
+              - "__name__"
+            regex: (apiserver|etcd|rest_client)_request(|_sli|_slo)_duration_seconds_bucket
+          - action: drop
+            sourceLabels:
+              - "__name__"
+            regex: (apiserver_response_sizes_bucket|apiserver_watch_events_sizes_bucket)
+
+    kubeControllerManager:
+      enabled: true
+      endpoints:  &eps
+        - ${CLUSTER_CONTROLLER_IP}
+        - ${NODE_IP}
+      service:
+        enabled: true
+        port: 10257
+        targetPort: 10257
+      serviceMonitor:
+        enabled: true
+        https: true
+        insecureSkipVerify: true
+
+    kubeScheduler:
+      enabled: true
+      endpoints: *eps
+      service:
+        enabled: true
+        port: 10259
+        targetPort: 10259
+      serviceMonitor:
+        enabled: true
+        https: true
+        insecureSkipVerify: true
+
+    kubeProxy:
+      enabled: false
+      endpoints: *eps
+
+    kubeEtcd:
+      enabled: true
+      endpoints: *eps
+
+    prometheusOperator:
+      createCustomResource: true
+      # prometheusConfigReloaderImage:
+      #   repository: quay.io/coreos/prometheus-config-reloader
+      #   tag: v0.39.0
+      # configmapReloadImage:
+      #   repository: jimmidyson/configmap-reload
+      #   tag: v0.4.0
+      prometheusConfigReloader:
+        resources:
+          limits:
+            cpu: 200m
+      admissionWebhooks:
+        enabled: false
+        certManager:
+          enabled: true
+
+    prometheus:
+      ingress:
+        enabled: true
+        ingressClassName: internal
+        pathType: Prefix
+        hosts:
+          - "prometheus.${SECRET_DOMAIN}"
+      thanosService:
+        enabled: true
+      thanosServiceMonitor:
+        enabled: true
+      prometheusSpec:
+        replicas: 2
+        replicaExternalLabelName: __replica__
+        scrapeInterval: 1m # Must match interval in Grafana Helm chart
+        ruleSelectorNilUsesHelmValues: false
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        probeSelectorNilUsesHelmValues: false
+        scrapeConfigSelectorNilUsesHelmValues: false
+        enableAdminAPI: true
+        walCompression: true
+        enableFeatures:
+          - auto-gomemlimit
+          - memory-snapshot-on-shutdown
+          - new-service-discovery-manager
+        retention: 14d
+        retentionSize: 150GB
+        externalLabels:
+          cluster: storage
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            memory: 1Gi
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: hl-zfs-pv-fast
+              # storageClassName: rook-ceph-block
+              resources:
+                requests:
+                  storage: 200Gi
+
+        # TODO check
+        podAntiAffinity: hard
+
+        # if need to use thanos for prometheus HA
+        # podMetadata:
+        #   annotations:
+        #     secret.reloader.stakater.com/reload: &secret thanos-objstore-config
+        # thanos:
+        #   image: quay.io/thanos/thanos:${THANOS_VERSION}
+        #   version: "${THANOS_VERSION#v}"
+        #   objectStorageConfig:
+        #     existingSecret:
+        #       name: *secret
+        #       key: config
+        # # if thanos as external service
+        # thanosService:
+        #   enabled: true
+        # thanosServiceExternal:
+        #   enabled: true
+        #   type: LoadBalancer
+        #   annotations:
+        #     external-dns.alpha.kubernetes.io/hostname: thanos.turbo.ac
+        #     io.cilium/lb-ipam-ips: 192.168.1.6
+        #   externalTrafficPolicy: Cluster
+        # thanosServiceMonitor:
+        #   enabled: true
+    nodeExporter:
+      enabled: true
+
+    prometheus-node-exporter:
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels:
+                - __meta_kubernetes_pod_node_name
+              targetLabel: kubernetes_node
+      # TODO: node labels
+      # tolerations:
+      # - key: "arm"
+      #   operator: "Exists"
+      # - key: "armhf"
+      #   operator: "Exists"
+      # - key: "node-role.kubernetes.io/master"
+      #   operator: "Exists"

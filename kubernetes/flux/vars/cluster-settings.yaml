@@ -7,5 +7,5 @@ metadata:
 data:
   TIMEZONE: "Europe/Helsinki"
   CLUSTER_CIDR: "172.16.0.0/16"
-  NODE_CIDR: "192.168.1.0/24"
-  NODE_MAIN: homelab
+  CLUSTER_CONTROLLER_IP: "192.168.1.10"
+

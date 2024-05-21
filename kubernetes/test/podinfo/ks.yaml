@@ -13,7 +13,7 @@ metadata:
   annotations:
     flux.home.arpa/testname: name
     flux.home.arpa/testtag: tag
-    flux.home.arpa/testvar: "${NODE_MAIN}"
+    flux.home.arpa/testvar: "${NODE_NAME}"
 spec:
   # reguired
   dependsOn: []
