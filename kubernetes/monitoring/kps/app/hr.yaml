@@ -203,7 +203,7 @@ spec:
                   storage: 200Gi
 
         # TODO check
-        podAntiAffinity: hard
+        # podAntiAffinity: hard
 
         # if need to use thanos for prometheus HA
         # podMetadata:
