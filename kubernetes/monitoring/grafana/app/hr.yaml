@@ -74,7 +74,12 @@ spec:
       dashboards:
         enabled: true
         searchNamespace: ALL
-
+        label: grafana_dashboard
+        folderAnnotation: grafana_folder
+        provider:
+          disableDelete: true
+          foldersFromFilesStructure: true
+          
     grafana.ini:
       auth.basic:
         disable_login_form: true
