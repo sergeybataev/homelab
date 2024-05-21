@@ -15,6 +15,7 @@ resources:
 # monitoring
   - ./monitoring/prometheus-community.yaml
   - ./monitoring/kubernetes-dashboard.yaml
+  - ./monitoring/grafana.yaml
 # storage
   - ./storage/openebs.yaml
 # test

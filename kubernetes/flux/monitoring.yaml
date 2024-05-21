@@ -129,6 +129,20 @@ spec:
         labelSelector: kustomization.flux.home.arpa/default in (true)
         # labelSelector: kustomization.flux.home.arpa/default notin (false)
 
+    # storage.flux.home.arpa/required: "true"
+    # dependsOn: cluster-storage
+    - patch: |
+        - op: add
+          path: /spec/dependsOn/-
+          value:
+            name: cluster-storage
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        version: v1
+        kind: Kustomization
+        labelSelector: storage.flux.home.arpa/required in (true)
+        # labelSelector: kustomization.flux.home.arpa/default notin (false)
+
     # prune.flux.home.arpa/disabled: "true"
     - patch: |-
         apiVersion: kustomize.toolkit.fluxcd.io/v1
