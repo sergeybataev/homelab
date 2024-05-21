@@ -27,6 +27,8 @@ spec:
       retries: 3
   values:
     deploymentMode: SingleBinary
+    SingleBinary:
+      enabled: true
     loki:
       ingester:
         chunk_encoding: snappy
