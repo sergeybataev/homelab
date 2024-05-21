@@ -35,11 +35,11 @@ spec:
       schemaConfig:
         configs:
           - from: 2024-04-01
-            object_store: filesystem
+            object_store: filesystem # we're storing on filesystem so there's no real persistence here.
             store: tsdb
             schema: v13
             index:
-              prefix: index_
+              prefix: loki_index_
               period: 24h
     write:
       replicas: 0
@@ -50,20 +50,8 @@ spec:
     singleBinary:
       # workaround to fix helm error due to weird default value of zero replicas: https://github.com/grafana/loki/issues/8443#issuecomment-1421636858
       replicas: 1
-      extraArgs:
-        - -config.expand-env=true
-        - -log.level=warn
-      extraEnv:
-        - name: TZ
-          value: ${TIMEZONE}
-      persistence:
-        type: pvc
-        enabled: true
-        storageClassName: hl-zfs-pv-fast
-        accessModes:
-          - ReadWriteOnce
-        size: 100Gi
-        
+
+
     # loki:
     #   schemaConfig:
     #     configs:
