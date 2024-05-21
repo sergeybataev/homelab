@@ -26,7 +26,7 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    deploymentMode: SingleBinary
+    mode: SingleBinary
     loki:
       commonConfig:
         replication_factor: 1
