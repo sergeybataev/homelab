@@ -95,7 +95,7 @@ spec:
                 name: cluster-config-versions
                 optional: false
               - kind: ConfigMap
-                name: cluster-settings-user
+                name: cluster-config-node
                 optional: true
               - kind: Secret
                 name: cluster-secrets-user
@@ -229,7 +229,7 @@ spec:
                       name: cluster-config-versions
                       optional: false
                     - kind: ConfigMap
-                      name: cluster-settings-user
+                      name: cluster-config-node
                       optional: true
                     - kind: Secret
                       name: cluster-secrets-user

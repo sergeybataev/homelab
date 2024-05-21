@@ -6,5 +6,9 @@ configMapGenerator:
     namespace: flux-system
     envs:
       - ./versions.env
+  - name: node
+    namespace: flux-system
+    envs:
+      - ./node_main.env
 generatorOptions:
   disableNameSuffixHash: true

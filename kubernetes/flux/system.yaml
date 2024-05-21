@@ -25,7 +25,7 @@ spec:
       - kind: Secret
         name: cluster-secrets
       - kind: ConfigMap
-        name: cluster-settings-user
+        name: cluster-config-node
         optional: true
       - kind: Secret
         name: cluster-secrets-user
@@ -48,7 +48,7 @@ spec:
               - kind: Secret
                 name: cluster-secrets
               - kind: ConfigMap
-                name: cluster-settings-user
+                name: cluster-config-node
                 optional: true
               - kind: Secret
                 name: cluster-secrets-user
