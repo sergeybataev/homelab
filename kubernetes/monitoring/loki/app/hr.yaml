@@ -29,7 +29,26 @@ spec:
     loki:
       ingester:
         chunk_encoding: snappy
-
+        persistence:
+          # -- Use emptyDir with ramdisk for storage. **Please note that all data in ingester will be lost on pod restart**
+          inMemory: true
+          # # -- List of the ingester PVCs
+          # # @notationType -- list
+          # claims:
+          #   - name: data
+          #     size: 10Gi
+          #     #   -- Storage class to be used.
+          #     #   If defined, storageClassName: <storageClass>.
+          #     #   If set to "-", storageClassName: "", which disables dynamic provisioning.
+          #     #   If empty or set to null, no storageClassName spec is
+          #     #   set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
+          #     storageClass: null
+          #     # - name: wal
+          #     #   size: 150Gi
+          # # -- Enable StatefulSetAutoDeletePVC feature
+          # enableStatefulSetAutoDeletePVC: false
+          # whenDeleted: Retain
+          # whenScaled: Retain
       schemaConfig:
         configs:
           - from: 2020-05-15
