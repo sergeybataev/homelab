@@ -26,13 +26,11 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    deploymentMode: SingleBinary
     loki:
       auth_enabled: false
       commonConfig:
         replication_factor: 1
-      image:
-        repository: grafana/loki
-        tag: 3.0.0
       rulerConfig:
         storage:
           type: local
