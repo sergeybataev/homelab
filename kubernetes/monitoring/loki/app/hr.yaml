@@ -26,25 +26,6 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    deploymentMode: SingleBinary
-    
-    singleBinary:
-      # workaround to fix helm error due to weird default value of zero replicas: https://github.com/grafana/loki/issues/8443#issuecomment-1421636858
-      replicas: 1
-      extraArgs:
-        - -config.expand-env=true
-        - -log.level=warn
-      extraEnv:
-        - name: TZ
-          value: ${TIMEZONE}
-      persistence:
-        type: pvc
-        enabled: true
-        storageClassName: hl-zfs-pv-fast
-        accessModes:
-          - ReadWriteOnce
-        size: 100Gi
-
     loki:
       ingester:
         chunk_encoding: snappy
@@ -94,10 +75,36 @@ spec:
           rule_path: /rules/fake
         analytics:
           reporting_enabled: false
-
+      commonConfig:
+        replication_factor: 1 # monolithic mode
     gateway:
       replicas: 1
 
+    # monolithic mode
+    deploymentMode: SingleBinary
+    write:
+      replicas: 0
+    read:
+      replicas: 0
+    backend:
+      replicas: 0
+    singleBinary:
+      # workaround to fix helm error due to weird default value of zero replicas: https://github.com/grafana/loki/issues/8443#issuecomment-1421636858
+      replicas: 1
+      extraArgs:
+        - -config.expand-env=true
+        - -log.level=warn
+      extraEnv:
+        - name: TZ
+          value: ${TIMEZONE}
+      persistence:
+        type: pvc
+        enabled: true
+        storageClassName: hl-zfs-pv-fast
+        accessModes:
+          - ReadWriteOnce
+        size: 100Gi
+        
     # TODO: CEPH support
     # backend:
     #   replicas: 1
