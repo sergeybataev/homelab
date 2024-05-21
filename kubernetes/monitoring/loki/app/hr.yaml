@@ -81,28 +81,25 @@ spec:
           rule_path: /rules/fake
         analytics:
           reporting_enabled: false
-    backend:
-      replicas: 1
-      persistence:
-        type: pvc
-        enabled: true
-        storageClassName: hl-zfs-pv-fast
-        accessModes:
-          - ReadWriteOnce
-        size: 20Gi
+
     gateway:
       replicas: 1
-    read:
-      replicas: 1
-    write:
-      replicas: 1
-      persistence:
-        type: pvc
-        enabled: true
-        storageClassName: hl-zfs-pv-fast
-        accessModes:
-          - ReadWriteOnce
-        size: 20Gi
+
+    # TODO: CEPH support
+    # backend:
+    #   replicas: 1
+    #   persistence:
+    #     type: pvc
+    #     enabled: true
+
+    # read:
+    #   replicas: 1
+    # write:
+    #   replicas: 1
+    #   persistence:
+    #     type: pvc
+    #     enabled: true
+
     sidecar:
       image:
         repository: ghcr.io/kiwigrid/k8s-sidecar
