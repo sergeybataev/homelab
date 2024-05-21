@@ -26,57 +26,44 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    singleBinary:
-      replicas: 1
+    deploymentMode: SingleBinary
     loki:
-      storage:
-        type: filesystem
-      auth_enabled: false
       commonConfig:
         replication_factor: 1
-      limits_config:
-        retention_period: 14d
-        enforce_metric_name: false
-        reject_old_samples: true
-        reject_old_samples_max_age: 168h
-        max_cache_freshness_per_query: 10m
-        split_queries_by_interval: 15m
-        ingestion_rate_mb: 8
-        ingestion_burst_size_mb: 16
-        shard_streams:
-          enabled: true
-      ingester:
-        max_chunk_age: 1h
-      analytics:
-        reporting_enabled: false
-    test:
-      enabled: false
-    read:
-      replicas: 1
-      persistence:
-        storageClass: hl-zfs-pv-fast
+      storage:
+        type: 'filesystem'
+      schemaConfig:
+        configs:
+          - from: 2024-04-01
+            object_store: filesystem
+            store: tsdb
+            schema: v13
+            index:
+              prefix: index_
+              period: 24h
     write:
-      replicas: 1
-      persistence:
-        storageClass: hl-zfs-pv-fast
+      replicas: 0
+    read:
+      replicas: 0
     backend:
+      replicas: 0
+    singleBinary:
+      # workaround to fix helm error due to weird default value of zero replicas: https://github.com/grafana/loki/issues/8443#issuecomment-1421636858
       replicas: 1
+      extraArgs:
+        - -config.expand-env=true
+        - -log.level=warn
+      extraEnv:
+        - name: TZ
+          value: ${TIMEZONE}
       persistence:
-        storageClass: hl-zfs-pv-fast
-    monitoring:
-      dashboards:
-        annotations:
-          grafana_folder: Loki
-      selfMonitoring:
-        enabled: false
-        grafanaAgent:
-          installOperator: false
-      lokiCanary:
-        enabled: false
-    serviceMonitor:
-      # disabled due to requirement of grafana operator: https://github.com/grafana/loki/issues/7546
-      enabled: false
-
+        type: pvc
+        enabled: true
+        storageClassName: hl-zfs-pv-fast
+        accessModes:
+          - ReadWriteOnce
+        size: 100Gi
+        
     # loki:
     #   schemaConfig:
     #     configs:
