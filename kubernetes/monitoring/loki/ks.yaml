@@ -18,5 +18,5 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: external-secrets-stores
+    - name: cluster-storage
   path: ./kubernetes/monitoring/loki/app
