@@ -48,8 +48,6 @@ spec:
                     key: TUNNEL_ID
             args:
               - tunnel
-              - '--loglevel'
-              - debug
               - run
               - "$(TUNNEL_ID)"
             probes:
