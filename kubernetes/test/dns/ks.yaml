@@ -9,6 +9,7 @@ metadata:
     kustomization.flux.home.arpa/default: "true"
     prune.flux.home.arpa/disabled: "true"
 spec:
+  dependsOn: []
   path: ./kubernetes/test/dns/app
   targetNamespace: test
   commonMetadata:
