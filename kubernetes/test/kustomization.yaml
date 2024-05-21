@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
   - ./filebrowser/ks.yaml
   - ./podinfo/ks.yaml
-  # - ./dns/ks.yaml
+  - ./dns/ks.yaml
   - ./namespace.yaml
