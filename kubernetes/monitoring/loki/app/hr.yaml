@@ -5,7 +5,7 @@ kind: HelmRelease
 metadata:
   name: loki
 spec:
-  interval: 10m
+  interval: 15m
   timeout: 1m
   chart:
     spec:
@@ -29,6 +29,7 @@ spec:
     loki:
       storage:
         type: 'filesystem'
+        storageClassName: hl-zfs-pv-fast-private
       commonConfig:
         replication_factor: 1
       schemaConfig:
@@ -71,6 +72,13 @@ spec:
         # Keep a little bit lower than memory limits
         - name: GOMEMLIMIT
           value: 3750MiB
+      persistence:
+        type: pvc
+        enabled: true
+        storageClassName: hl-zfs-pv-fast
+        accessModes:
+          - ReadWriteOnce
+        size: 100Gi
 
     chunksCache:
       # default is 500MB, with limited memory keep this smaller
