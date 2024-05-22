@@ -6,7 +6,7 @@ metadata:
   name: cluster-apps-flux-monitoring
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/flux-system/add-ons/monitoring
+  path: ./kubernetes/apps/flux-system/monitoring
   prune: true
   sourceRef:
     kind: GitRepository
