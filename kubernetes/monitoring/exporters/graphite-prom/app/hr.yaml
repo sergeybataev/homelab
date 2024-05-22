@@ -60,7 +60,7 @@ spec:
             runAsUser: 568
             runAsGroup: 568
             runAsNonRoot: true
-        replicas: 2
+        replicas: 1
         strategy: RollingUpdate
     persistence:
       graphite-mapping:
