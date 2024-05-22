@@ -278,6 +278,11 @@ spec:
           gnetId: 11312
           revision: 9
           datasource: Prometheus
+      logs:
+        logs:
+          gnetId: 12611
+          revision: 2
+          datasource: Loki
 
     ## Expose the grafana service to be accessed from outside the cluster (LoadBalancer service).
     ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
