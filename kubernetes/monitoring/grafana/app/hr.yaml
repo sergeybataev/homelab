@@ -73,8 +73,8 @@ spec:
       dashboards:
         enabled: true
         searchNamespace: ALL
-        # label: grafana_dashboard
-        # folderAnnotation: grafana_folder
+        label: grafana_dashboard
+        folderAnnotation: grafana_folder
         # folder: /var/lib/grafana/dashboards
         provider:
           disableDelete: true
