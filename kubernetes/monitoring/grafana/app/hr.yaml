@@ -60,7 +60,7 @@ spec:
             type: loki
             uid: loki
             access: proxy
-            url: http://loki-gateway.monitoring.svc.cluster.local
+            url: http://loki-gateway.monitoring.svc.cluster.local:3100
             jsonData:
               maxLines: 250
 
@@ -180,7 +180,7 @@ spec:
             disableDeletion: false
             editable: true
             options:
-              path: /var/lib/grafana/dashboards/logs
+              path: /var/lib/grafana/dashboards/logs-folder
 
     dashboards:
       default:
