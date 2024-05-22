@@ -76,8 +76,9 @@ spec:
         searchNamespace: ALL
         label: grafana_dashboard
         folderAnnotation: grafana_folder
+        folder: /var/lib/grafana/dashboards
         provider:
-          disableDelete: true
+          # disableDelete: true
           foldersFromFilesStructure: true
 
     grafana.ini:
