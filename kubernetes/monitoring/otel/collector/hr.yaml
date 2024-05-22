@@ -128,12 +128,12 @@ spec:
           traces:
             receivers: [ otlp ]
             processors: [ memory_limiter, batch ]
-            exporters: [ otlphttp/trace, debug ]
+            exporters: [ debug ]
 
           metrics:
-            receivers: [ otlp ]
+            receivers: [ prometheus, otlp ]
             processors: [ memory_limiter, batch ]
-            exporters: [ prometheus, debug ]
+            exporters: [ debug ]
 
           logs:
             receivers: [ otlp ]
@@ -264,12 +264,12 @@ spec:
           traces:
             receivers: [ otlp ]
             processors: [ memory_limiter, batch ]
-            exporters: [ otlphttp/trace, debug ]
+            exporters: [ debug ]
 
           metrics:
-            receivers: [ otlp ]
+            receivers: [ prometheus, otlp ]
             processors: [ memory_limiter, batch ]
-            exporters: [ prometheus, debug ]
+            exporters: [ debug ]
 
           logs:
             receivers: [ otlp ]
