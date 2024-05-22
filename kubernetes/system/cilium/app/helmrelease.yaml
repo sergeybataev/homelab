@@ -32,7 +32,7 @@ spec:
       hostRoot: /sys/fs/cgroup
     cluster:
       id: 1
-      name: ${CLUSTER_NAME}
+      name: homelab
     cni:
       exclusive: false
       binPath: /var/lib/rancher/k3s/data/current/bin
@@ -77,7 +77,7 @@ spec:
     ipam:
       mode: kubernetes
     ipv4NativeRoutingCIDR: "${CLUSTER_CIDR}"
-    k8sServiceHost: "${CLUSTER_CONTROLLER_IP}"
+    k8sServiceHost: 127.0.0.1
     k8sServicePort: 6444
     kubeProxyReplacement: true
     kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
