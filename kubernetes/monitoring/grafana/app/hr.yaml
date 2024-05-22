@@ -208,10 +208,25 @@ spec:
           gnetId: 7845
           revision: 4
           datasource: Prometheus
-        truenas:
+        truenas_old:
           # renovate: depName="TrueNAS"
           gnetId: 19661
           revision: 1
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+        truenas_old2:
+          # renovate: depName="TrueNAS[Graphite][Flux]"
+          url: https://raw.githubusercontent.com/Supporterino/truenas-graphite-to-prometheus/main/dashboards/truenas_scale.json
+          gnetId: 20199
+          revision: 1
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+        truenas:
+          url: https://raw.githubusercontent.com/Supporterino/truenas-graphite-to-prometheus/main/dashboards/truenas_scale.json
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+        truenas_scale_disk_inisghts:
+          url: https://raw.githubusercontent.com/Supporterino/truenas-graphite-to-prometheus/main/dashboards/truenas_scale_disk_inisghts.json
           datasource:
             - { name: DS_PROMETHEUS, value: Prometheus }
       flux:
