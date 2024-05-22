@@ -161,6 +161,14 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/thanos-folder
+          - name: truenas
+            orgId: 1
+            folder: Truenas
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/truenas
           - name: unifi
             orgId: 1
             folder: Unifi
