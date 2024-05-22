@@ -6,7 +6,6 @@ metadata:
   name: filebrowser
   labels:
     helm.flux.home.arpa/app-template: true
-    kubernetes.io/hostname: homelab
 spec:
   interval: 30m
   chart:

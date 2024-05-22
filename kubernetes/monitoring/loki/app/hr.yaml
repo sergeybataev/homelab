@@ -55,6 +55,9 @@ spec:
           installOperator: false
       serviceMonitor:
         enabled: false
+      dashboards:
+        annotations:
+          grafana_folder: Loki
     singleBinary:
       extraArgs:
         - '-config.expand-env=true'
@@ -69,7 +72,9 @@ spec:
         accessModes:
           - ReadWriteOnce
         size: 100Gi
-
+    sidecar:
+      image:
+        repository: ghcr.io/kiwigrid/k8s-sidecar
     #gateway:
     #  ingress:
     #    enabled: true

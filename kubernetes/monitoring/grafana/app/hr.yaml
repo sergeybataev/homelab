@@ -85,6 +85,7 @@ spec:
         disable_login_form: true
       auth.anonymous:
         enabled: true
+      # TODO google auth
       analytics:
         check_for_updates: false
         check_for_plugin_updates: true
@@ -95,6 +96,9 @@ spec:
         url: https://grafana.net
       news:
         news_feed_enabled: false
+      users:
+        auto_assign_org_role: Admin
+        viewers_can_edit: true
 
 
     dashboardProviders:
@@ -168,6 +172,9 @@ spec:
 
     dashboards:
       default:
+        cert-manager:
+          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
+          datasource: Prometheus
         cloudflared:
           # renovate: depName="Cloudflare Tunnels (cloudflared)"
           gnetId: 17457
@@ -179,20 +186,34 @@ spec:
           gnetId: 15038
           revision: 3
           datasource: Prometheus
-        # smart:
-        #   # renovate: depName="Dashboard for smartctl_exporter"
-        #   gnetId: 20204
-        #   revision: 1
-        #   datasource:
-        #     - { name: DS_PROMETHEUS, value: Prometheus }
+        node-exporter-full:
+          # renovate: depName="Node Exporter Full"
+          gnetId: 1860
+          revision: 36
+          datasource: Prometheus
+        smartctl-exporter:
+          # renovate: depName="Dashboard for smartctl_exporter"
+          gnetId: 20204
+          revision: 1
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+        speedtest-exporter:
+          # renovate: depName="Speedtest-Exporter Dashboard"
+          gnetId: 13665
+          revision: 4
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
         zfs:
           # renovate: depName="ZFS"
           gnetId: 7845
           revision: 4
           datasource: Prometheus
-        cert-manager:
-          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
-          datasource: Prometheus
+        truenas:
+          # renovate: depName="TrueNAS"
+          gnetId: 19661
+          revision: 1
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
       flux:
         flux-cluster:
           url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/cluster.json
@@ -281,9 +302,13 @@ spec:
     ##
     service:
       enabled: true
-      type: ClusterIP
-      port: 80
-      targetPort: 3000
+      type: LoadBalancer
+      ports:
+        web:
+          protocol: TCP
+          port: 80
+          primary: true
+          targetPort: 3000
         # targetPort: 4181 To be used with a proxy extraContainer
       ## Service annotations. Can be templated.
       annotations:

@@ -198,7 +198,8 @@ spec:
               resources:
                 requests:
                   storage: 200Gi
-
+        # without thanos
+        enableRemoteWriteReceiver: false
         # TODO check
         # podAntiAffinity: hard
 
