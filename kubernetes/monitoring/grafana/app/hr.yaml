@@ -100,7 +100,6 @@ spec:
         auto_assign_org_role: Admin
         viewers_can_edit: true
 
-
     dashboardProviders:
       dashboardproviders.yaml:
         apiVersion: 1
@@ -177,7 +176,6 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/unifi-folder
-
     dashboards:
       default:
         cert-manager:
@@ -230,7 +228,7 @@ spec:
           datasource:
             - { name: DS_PROMETHEUS, value: Prometheus }
       truenas:
-        truenas:
+        truenas_dashboard:
           url: https://raw.githubusercontent.com/Supporterino/truenas-graphite-to-prometheus/main/dashboards/truenas_scale.json
           datasource:
             - { name: DS_PROMETHEUS, value: Prometheus }
