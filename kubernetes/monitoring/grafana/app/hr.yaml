@@ -61,7 +61,6 @@ spec:
             access: proxy
             url: http://loki-gateway.monitoring.svc.cluster.local
             version: 1
-            isDefault: true
             jsonData:
               maxLines: 250
     serviceMonitor:
