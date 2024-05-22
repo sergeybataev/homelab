@@ -18,6 +18,7 @@ resources:
   - ./monitoring/grafana.yaml
   - ./monitoring/intel.yaml
   - ./monitoring/node-feature-discovery.yaml
+  - ./monitoring/opentelemetry-charts.yaml
 # storage
   - ./storage/openebs.yaml
 # test
