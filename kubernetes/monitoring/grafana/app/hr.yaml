@@ -336,6 +336,12 @@ spec:
       annotations:
         io.cilium/lb-ipam-ips: 192.168.1.113
 
+    ingress:
+      enabled: true
+      ingressClassName: internal
+      hosts:
+        - "grafana.${SECRET_DOMAIN}"
+        - "grafana.${LOCAL_DOMAIN}"
     securityContext:
       runAsNonRoot: true
       runAsUser: ${SC_UID}
