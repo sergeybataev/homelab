@@ -165,6 +165,7 @@ spec:
         pathType: Prefix
         hosts:
           - "prometheus.${SECRET_DOMAIN}"
+          - "prometheus.${LOCAL_DOMAIN}"
 
       prometheusSpec:
         replicas: 1

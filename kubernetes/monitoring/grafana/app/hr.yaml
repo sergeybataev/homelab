@@ -342,6 +342,7 @@ spec:
       hosts:
         - "grafana.${SECRET_DOMAIN}"
         - "grafana.${LOCAL_DOMAIN}"
+        
     securityContext:
       runAsNonRoot: true
       runAsUser: ${SC_UID}
