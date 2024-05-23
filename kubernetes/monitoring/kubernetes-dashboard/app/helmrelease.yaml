@@ -35,7 +35,7 @@ spec:
         pullPolicy: IfNotPresent
 
       ingress:
-        enabled: false
+        enabled: true
       #   useDefaultIngressClass: true
       #   annotations:
       #     # hajimari.io/enable: "true"
@@ -47,15 +47,10 @@ spec:
       #       auth_request_set $required_groups 'kubernetes_dashboard';
       #     nginx.ingress.kubernetes.io/whitelist-source-range: |
       #       10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
-      #   hosts:
-      #     - &host dashboard.${CLUSTER_DOMAIN}
-      #     - dashboard.home.${CLUSTER_DOMAIN}
-      #   tls:
-      #     secretName: null
-      #     hosts:
-      #     - *host
-      #     - dashboard.home.${CLUSTER_DOMAIN}
-      # protocolHttp: true
+        hosts:
+          - &host dashboard.${CLUSTER_DOMAIN}
+          - dashboard.k8s.${LOCAL_DOMAIN}
+      protocolHttp: true
 
     metricsScraper:
       enabled: true

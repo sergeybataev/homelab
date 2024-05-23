@@ -324,7 +324,7 @@ spec:
     ##
     service:
       enabled: true
-      type: LoadBalancer
+      type: ClusterIP
       ports:
         web:
           protocol: TCP
@@ -333,8 +333,6 @@ spec:
           targetPort: 3000
         # targetPort: 4181 To be used with a proxy extraContainer
       ## Service annotations. Can be templated.
-      annotations:
-        io.cilium/lb-ipam-ips: 192.168.1.113
 
     ingress:
       enabled: true
@@ -342,7 +340,7 @@ spec:
       hosts:
         - "grafana.${SECRET_DOMAIN}"
         - "grafana.${LOCAL_DOMAIN}"
-        
+
     securityContext:
       runAsNonRoot: true
       runAsUser: ${SC_UID}
