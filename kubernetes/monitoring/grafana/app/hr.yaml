@@ -11,7 +11,7 @@ spec:
     spec:
       # renovate: registryUrl=https://grafana.github.io/helm-charts
       chart: grafana
-      version: ${VERSION_GRAFANA}
+      version: 7.3.11
       sourceRef:
         kind: HelmRepository
         name: grafana-charts
@@ -58,12 +58,11 @@ spec:
             isDefault: true
           - name: Loki
             type: loki
-            uid: loki
             access: proxy
             url: http://loki-gateway.monitoring.svc.cluster.local
+            version: 1
             jsonData:
               maxLines: 250
-
     serviceMonitor:
       enabled: true
 
@@ -76,6 +75,7 @@ spec:
         searchNamespace: ALL
         label: grafana_dashboard
         folderAnnotation: grafana_folder
+        # folder: /var/lib/grafana/dashboards
         provider:
           disableDelete: true
           foldersFromFilesStructure: true
@@ -85,6 +85,7 @@ spec:
         disable_login_form: true
       auth.anonymous:
         enabled: true
+      # TODO google auth
       analytics:
         check_for_updates: false
         check_for_plugin_updates: true
@@ -95,28 +96,227 @@ spec:
         url: https://grafana.net
       news:
         news_feed_enabled: false
-
+      users:
+        auto_assign_org_role: Admin
+        viewers_can_edit: true
 
     dashboardProviders:
       dashboardproviders.yaml:
         apiVersion: 1
         providers:
-          - name: 'default'
+          - name: "default"
             orgId: 1
-            folder: ''
+            folder: ""
             type: file
             disableDeletion: false
             allowUiUpdates: true
             options:
               path: /var/lib/grafana/dashboards/default
-          - name: default-folder
+          - name: ceph
             orgId: 1
-            folder: ""
+            folder: Ceph
             type: file
             disableDeletion: false
             editable: true
             options:
-              path: /var/lib/grafana/dashboards/default-folder
+              path: /var/lib/grafana/dashboards/ceph-folder
+          - name: flux
+            orgId: 1
+            folder: Flux
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/flux-folder
+          - name: kubernetes
+            orgId: 1
+            folder: Kubernetes
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/kubernetes-folder
+          - name: nginx
+            orgId: 1
+            folder: Nginx
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/nginx-folder
+          - name: prometheus
+            orgId: 1
+            folder: Prometheus
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/prometheus-folder
+          - name: thanos
+            orgId: 1
+            folder: Thanos
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/thanos-folder
+          - name: truenas
+            orgId: 1
+            folder: Truenas
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/truenas
+          - name: unifi
+            orgId: 1
+            folder: Unifi
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/unifi-folder
+    dashboards:
+      default:
+        cert-manager:
+          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
+          datasource: Prometheus
+        cloudflared:
+          # renovate: depName="Cloudflare Tunnels (cloudflared)"
+          gnetId: 17457
+          revision: 6
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+        external-dns:
+          # renovate: depName="External-dns"
+          gnetId: 15038
+          revision: 3
+          datasource: Prometheus
+        node-exporter-full:
+          # renovate: depName="Node Exporter Full"
+          gnetId: 1860
+          revision: 36
+          datasource: Prometheus
+        smartctl-exporter:
+          # renovate: depName="Dashboard for smartctl_exporter"
+          gnetId: 20204
+          revision: 1
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+        speedtest-exporter:
+          # renovate: depName="Speedtest-Exporter Dashboard"
+          gnetId: 13665
+          revision: 4
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+        zfs:
+          # renovate: depName="ZFS"
+          gnetId: 7845
+          revision: 4
+          datasource: Prometheus
+        truenas_old:
+          # renovate: depName="TrueNAS"
+          gnetId: 19661
+          revision: 1
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+        truenas_old2:
+          # renovate: depName="TrueNAS[Graphite][Flux]"
+          url: https://raw.githubusercontent.com/Supporterino/truenas-graphite-to-prometheus/main/dashboards/truenas_scale.json
+          gnetId: 20199
+          revision: 1
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+      truenas:
+        truenas_dashboard:
+          url: https://raw.githubusercontent.com/Supporterino/truenas-graphite-to-prometheus/main/dashboards/truenas_scale.json
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+        truenas_scale_disk_inisghts:
+          url: https://raw.githubusercontent.com/Supporterino/truenas-graphite-to-prometheus/main/dashboards/truenas_scale_disk_inisghts.json
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+      flux:
+        flux-cluster:
+          url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/cluster.json
+          datasource: Prometheus
+        flux-control-plane:
+          url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
+          datasource: Prometheus
+        flux-logs:
+          url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/logs.json
+          datasource: Prometheus
+      kubernetes:
+        kubernetes-api-server:
+          # renovate: depName="Kubernetes / System / API Server"
+          gnetId: 15761
+          revision: 16
+          datasource: Prometheus
+        kubernetes-coredns:
+          # renovate: depName="Kubernetes / System / CoreDNS"
+          gnetId: 15762
+          revision: 18
+          datasource: Prometheus
+        kubernetes-global:
+          # renovate: depName="Kubernetes / Views / Global"
+          gnetId: 15757
+          revision: 37
+          datasource: Prometheus
+        kubernetes-namespaces:
+          # renovate: depName="Kubernetes / Views / Namespaces"
+          gnetId: 15758
+          revision: 34
+          datasource: Prometheus
+        kubernetes-nodes:
+          # renovate: depName="Kubernetes / Views / Nodes"
+          gnetId: 15759
+          revision: 29
+          datasource: Prometheus
+        kubernetes-pods:
+          # renovate: depName="Kubernetes / Views / Pods"
+          gNetId: 15760
+          revision: 21
+          datasource: Prometheus
+        kubernetes-volumes:
+          # renovate: depName="K8s / Storage / Volumes / Cluster"
+          gnetId: 11454
+          revision: 14
+          datasource: Prometheus
+      nginx:
+        nginx:
+          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/nginx.json
+          datasource: Prometheus
+        nginx-request-handling-performance:
+          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/request-handling-performance.json
+          datasource: Prometheus
+      prometheus:
+        prometheus:
+          # renovate: depName="Prometheus"
+          gnetId: 19105
+          revision: 3
+          datasource: Prometheus
+      unifi:
+        unifi-insights:
+          # renovate: depName="UniFi-Poller: Client Insights - Prometheus"
+          gnetId: 11315
+          revision: 9
+          datasource: Prometheus
+        unifi-network-sites:
+          # renovate: depName="UniFi-Poller: Network Sites - Prometheus"
+          gnetId: 11311
+          revision: 5
+          datasource: Prometheus
+        unifi-uap:
+          # renovate: depName="UniFi-Poller: UAP Insights - Prometheus"
+          gnetId: 11314
+          revision: 10
+          datasource: Prometheus
+        unifi-usw:
+          # renovate: depName="UniFi-Poller: USW Insights - Prometheus"
+          gnetId: 11312
+          revision: 9
+          datasource: Prometheus
+
 
     ## Expose the grafana service to be accessed from outside the cluster (LoadBalancer service).
     ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
@@ -125,9 +325,39 @@ spec:
     service:
       enabled: true
       type: ClusterIP
-      port: 80
-      targetPort: 3000
+      ports:
+        web:
+          protocol: TCP
+          port: 80
+          primary: true
+          targetPort: 3000
         # targetPort: 4181 To be used with a proxy extraContainer
       ## Service annotations. Can be templated.
-      annotations:
-        io.cilium/lb-ipam-ips: 192.168.1.113
+
+    ingress:
+      enabled: true
+      ingressClassName: internal
+      hosts:
+        - "grafana.${SECRET_DOMAIN}"
+        - "grafana.${LOCAL_DOMAIN}"
+
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: ${SC_UID}
+      runAsGroup: ${SC_GID}
+      fsGroup: ${SC_FSG}
+
+    initChownData:
+      enabled: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: ${SC_UID}
+        runAsGroup: ${SC_GID}
+        fsGroup: ${SC_FSG}
+
+    downloadDashboards:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: ${SC_UID}
+        runAsGroup: ${SC_GID}
+        fsGroup: ${SC_FSG}

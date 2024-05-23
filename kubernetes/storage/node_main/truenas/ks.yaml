@@ -7,7 +7,6 @@ metadata:
 spec:
   dependsOn:
     - name: storage-openebs
-  targetNamespace: storage
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

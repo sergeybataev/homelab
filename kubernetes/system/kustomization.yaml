@@ -8,3 +8,5 @@ resources:
   - ./kube-vip/ks.yaml
   - ./upgrade/upgrade-controller/ks.yaml
   - ./upgrade/k3s/ks.yaml
+  - ./node-feature-discovery/ks.yaml
+  - ./intel-device-plugin/ks.yaml

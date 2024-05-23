@@ -1,0 +1,243 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: loki
+spec:
+  interval: 15m
+  timeout: 5m
+  chart:
+    spec:
+      chart: loki
+      version: 6.5.2
+      sourceRef:
+        kind: HelmRepository
+        name: grafana-charts
+        namespace: flux-system
+  install:
+    crds: Skip
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    crds: Skip
+    remediation:
+      # strategy: rollback
+      retries: 3
+  values:
+    deploymentMode: SingleBinary
+    loki:
+      schemaConfig:
+        configs:
+          - from: "2024-04-01"
+            store: tsdb
+            object_store: filesystem
+            schema: v13
+            index:
+              prefix: index_
+              period: 24h
+
+      auth_enabled: false
+      commonConfig:
+        replication_factor: 1
+      rulerConfig:
+        storage:
+          type: local
+      storage:
+        type: filesystem
+    monitoring:
+      lokiCanary:
+        enabled: false
+      selfMonitoring:
+        enabled: false
+        grafanaAgent:
+          installOperator: false
+      serviceMonitor:
+        enabled: false
+      dashboards:
+        annotations:
+          grafana_folder: Loki
+    singleBinary:
+      extraArgs:
+        - '-config.expand-env=true'
+        - '-log.level=warn'
+      extraEnv:
+        - name: TZ
+          value: ${TIMEZONE}
+      persistence:
+        type: pvc
+        enabled: true
+        storageClass: hl-zfs-pv-fast
+        accessModes:
+          - ReadWriteOnce
+        size: 100Gi
+    sidecar:
+      image:
+        repository: ghcr.io/kiwigrid/k8s-sidecar
+    #gateway:
+    #  ingress:
+    #    enabled: true
+    #    hosts:
+    #      - host: FIXME
+    #        paths:
+    #          - path: /
+    #            pathType: Prefix
+
+    # deploymentMode: SingleBinary
+    # singleBinary:
+    #   replicas: 1
+    #   resources:
+    #     limits:
+    #       cpu: 3
+    #       memory: 4Gi
+    #     requests:
+    #       cpu: 2
+    #       memory: 2Gi
+    #   extraEnv:
+    #     # Keep a little bit lower than memory limits
+    #     - name: GOMEMLIMIT
+    #       value: 3750MiB
+    #   persistence:
+    #     type: pvc
+    #     enabled: true
+    #     storageClassName: hl-zfs-pv-fast
+    #     accessModes:
+    #       - ReadWriteOnce
+    #     size: 100Gi
+
+    # chunksCache:
+    #   # default is 500MB, with limited memory keep this smaller
+    #   writebackSizeLimit: 10MB
+
+    # # Enable minio for storage
+    # minio:
+    #   enabled: false
+
+    # Zero out replica counts of other deployment modes
+    backend:
+      replicas: 0
+    read:
+      replicas: 0
+    write:
+      replicas: 0
+
+    ingester:
+      replicas: 0
+    querier:
+      replicas: 0
+    queryFrontend:
+      replicas: 0
+    queryScheduler:
+      replicas: 0
+    distributor:
+      replicas: 0
+    compactor:
+      replicas: 0
+    indexGateway:
+      replicas: 0
+    bloomCompactor:
+      replicas: 0
+    bloomGateway:
+      replicas: 0
+
+    # loki:
+    #   schemaConfig:
+    #     configs:
+    #       - from: 2020-05-15
+    #         store: tsdb
+    #         object_store: filesystem
+    #         schema: v13
+    #         index:
+    #           prefix: loki_index_
+    #           period: 24h
+    #   structuredConfig:
+    #     auth_enabled: false
+    #     server:
+    #       log_level: info
+    #       http_listen_port: 3100
+    #       grpc_listen_port: 9095
+    #       grpc_server_max_recv_msg_size: 8388608
+    #       grpc_server_max_send_msg_size: 8388608
+    #     limits_config:
+    #       ingestion_burst_size_mb: 128
+    #       ingestion_rate_mb: 64
+    #       max_query_parallelism: 100
+    #       per_stream_rate_limit: 64M
+    #       per_stream_rate_limit_burst: 128M
+    #       reject_old_samples: true
+    #       reject_old_samples_max_age: 168h
+    #       retention_period: 30d
+    #       shard_streams:
+    #         enabled: true
+    #       split_queries_by_interval: 1h
+    #     query_scheduler:
+    #       max_outstanding_requests_per_tenant: 4096
+    #     frontend:
+    #       max_outstanding_per_tenant: 4096
+    #     ruler:
+    #       enable_api: true
+    #       storage:
+    #         type: local
+    #         local:
+    #           directory: /rules
+    #       rule_path: /rules/fake
+    #     analytics:
+    #       reporting_enabled: false
+    #   commonConfig:
+    #     replication_factor: 1 # monolithic mode
+    # gateway:
+    #   replicas: 1
+
+    # # monolithic mode
+    # deploymentMode: SingleBinary
+    # write:
+    #   replicas: 0
+    # read:
+    #   replicas: 0
+    # backend:
+    #   replicas: 0
+    # singleBinary:
+    #   # workaround to fix helm error due to weird default value of zero replicas: https://github.com/grafana/loki/issues/8443#issuecomment-1421636858
+    #   replicas: 1
+    #   extraArgs:
+    #     - -config.expand-env=true
+    #     - -log.level=warn
+    #   extraEnv:
+    #     - name: TZ
+    #       value: ${TIMEZONE}
+    #   persistence:
+    #     type: pvc
+    #     enabled: true
+    #     storageClassName: hl-zfs-pv-fast
+    #     accessModes:
+    #       - ReadWriteOnce
+    #     size: 100Gi
+
+    # # TODO: CEPH support
+    # # backend:
+    # #   replicas: 1
+    # #   persistence:
+    # #     type: pvc
+    # #     enabled: true
+
+    # # read:
+    # #   replicas: 1
+    # # write:
+    # #   replicas: 1
+    # #   persistence:
+    # #     type: pvc
+    # #     enabled: true
+    # serviceMonitor:
+    #   # disabled due to requirement of grafana operator: https://github.com/grafana/loki/issues/7546
+    #   enabled: false
+    # sidecar:
+    #   image:
+    #     repository: ghcr.io/kiwigrid/k8s-sidecar
+    #   rules:
+    #     searchNamespace: ALL
+    #     folder: /rules/fake
+    # lokiCanary:
+    #   enabled: false
+    # test:
+    #   enabled: false
