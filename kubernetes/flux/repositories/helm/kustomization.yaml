@@ -21,5 +21,8 @@ resources:
   - ./monitoring/opentelemetry-charts.yaml
 # storage
   - ./storage/openebs.yaml
+# database
+  - ./database/emqx.yaml
+  - ./database/cloudnative-pg.yaml
 # test
   - ./test/podinfo-source.yaml
