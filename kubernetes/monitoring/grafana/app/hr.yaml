@@ -342,19 +342,22 @@ spec:
         - "grafana.${LOCAL_DOMAIN}"
 
     securityContext:
-      runAsNonRoot: true
+      runAsNonRoot: ${SC_NONROOT}
       runAsUser: ${SC_UID}
       runAsGroup: ${SC_GID}
+      fsGroup: ${SC_FSG}
 
     initChownData:
       enabled: true
       securityContext:
-        runAsNonRoot: true
+        runAsNonRoot: ${SC_NONROOT}
         runAsUser: ${SC_UID}
         runAsGroup: ${SC_GID}
+        fsGroup: ${SC_FSG}
 
     downloadDashboards:
       securityContext:
-        runAsNonRoot: true
+        runAsNonRoot: ${SC_NONROOT}
         runAsUser: ${SC_UID}
         runAsGroup: ${SC_GID}
+        fsGroup: ${SC_FSG}
