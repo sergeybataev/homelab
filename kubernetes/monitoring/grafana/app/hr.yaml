@@ -342,8 +342,9 @@ spec:
         - "grafana.${LOCAL_DOMAIN}"
 
     securityContext:
-      fsGroup: ${SC_FSG}
-      fsGroupChangePolicy: "OnRootMismatch"
+      runAsNonRoot: true
+      runAsUser: ${SC_UID}
+      runAsGroup: ${SC_GID}
 
     initChownData:
       enabled: true
