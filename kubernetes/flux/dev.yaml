@@ -8,7 +8,7 @@ metadata:
 spec:
   namePrefix: "dev-"
   dependsOn:
-    - name: cluster-development
+    - name: cluster
   interval: 30m
   path: ./kubernetes/development
   prune: true
