@@ -39,6 +39,7 @@ metadata:
     prune.flux.home.arpa/disabled: "false"
     wait.flux.home.arpa/disabled: "false"
 spec:
+  dependsOn: []
   path: ./kubernetes/monitoring/kps/crds
   prune: true
   sourceRef:
