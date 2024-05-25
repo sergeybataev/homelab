@@ -199,6 +199,9 @@ spec:
               resources:
                 requests:
                   storage: 200Gi
+        podMonitorSelector:
+          matchLabels:
+            app.kubernetes.io/component: monitoring
         # without thanos
         enableRemoteWriteReceiver: false
         # TODO check

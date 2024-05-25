@@ -46,6 +46,10 @@ spec:
           type: local
       storage:
         type: filesystem
+      serviceMonitor:
+        enabled: true
+        additionalLabels:
+          app.kubernetes.io/part-of: kube-prometheus-stack
     monitoring:
       lokiCanary:
         enabled: false

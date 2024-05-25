@@ -7,6 +7,5 @@ kind: Kustomization
 #     objref:
 #       name:
 resources:
-# - ./crds/
 - ./hr.yaml
 
