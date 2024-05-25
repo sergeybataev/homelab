@@ -25,7 +25,7 @@ spec:
   test:
     enable: true
   values:
-    replicaCount: 2
+    replicaCount: 1
     crds:
       create: true
     monitoring:
