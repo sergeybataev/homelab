@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   # - ./externalsecret.yaml
   - ./hr.yaml
+  - ./secret-cloudnative-pg.sops.yaml
