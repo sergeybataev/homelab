@@ -6,4 +6,3 @@ resources:
   - ./main16.yaml
   - ./prometheusrule.yaml
   - ./service.yaml
-  - ./dashboard
