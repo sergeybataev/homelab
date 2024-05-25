@@ -22,7 +22,10 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  test:
+    enable: true
   values:
+    replicaCount: 2
     crds:
       create: true
     monitoring:
