@@ -60,6 +60,7 @@ spec:
       serviceMonitor:
         enabled: false
       dashboards:
+        enabled: true
         annotations:
           grafana_folder: Loki
     singleBinary:
