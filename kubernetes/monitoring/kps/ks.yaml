@@ -1,4 +1,29 @@
 ---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: prometheus-stack-crds
+  namespace: flux-system
+  labels: &ll
+    kustomization.flux.home.arpa/default: "true"
+    kustomization.flux.home.arpa/helmpatches: "true"
+    substitution.flux.home.arpa/disabled: "false"
+    prune.flux.home.arpa/disabled: "false"
+    wait.flux.home.arpa/disabled: "false"
+spec:
+  dependsOn: []
+  path: ./kubernetes/monitoring/kps/crds
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  postBuild:
+    substituteFrom: []
+  interval: 15m
+  retryInterval: 1m
+  timeout: 5m
+---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -17,7 +42,40 @@ spec:
     - name: cluster-storage
     - name: network-cert-manager
     - name: system-metrics-server
+    - name: monitoring-prometheus-stack-crds
+    - name: monitoring-prometheus-rules
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/monitoring/kps/app
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  interval: 15m
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: prometheus-rules
+  namespace: flux-system
+  labels: &ll
+    kustomization.flux.home.arpa/default: "true"
+    kustomization.flux.home.arpa/helmpatches: "true"
+    substitution.flux.home.arpa/disabled: "false"
+    prune.flux.home.arpa/disabled: "false"
+    wait.flux.home.arpa/disabled: "false"
+spec:
+  path: ./kubernetes/monitoring/kps/rules
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  postBuild:
+    substituteFrom: []
+  interval: 15m
+  retryInterval: 1m
+  timeout: 5m
+  dependsOn:
+    - name: monitoring-prometheus-stack-crds

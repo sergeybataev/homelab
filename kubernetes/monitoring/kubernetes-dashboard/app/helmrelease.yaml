@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: &app kubernetes-dashboard
-  namespace: monitoring
 spec:
   chart:
     spec:
@@ -37,6 +36,7 @@ spec:
 
       ingress:
         enabled: true
+        ingressClassName: internal
       #   useDefaultIngressClass: true
       #   annotations:
       #     # hajimari.io/enable: "true"
@@ -51,7 +51,18 @@ spec:
         hosts:
           - &host dashboard.${SECRET_DOMAIN}
           - dashboard.k8s.${LOCAL_DOMAIN}
-      protocolHttp: true
+        issuer:
+          name: selfsigned
+          # Scope determines what kind of issuer annotation will be used on ingress resource
+          # - default - adds 'cert-manager.io/issuer'
+          # - cluster - adds 'cert-manager.io/cluster-issuer'
+          # - disabled - disables cert-manager annotations
+          scope: default
+        tls:
+          secretName: null
+          hosts:
+          - *host
+          - dashboard.k8s.${LOCAL_DOMAIN}
 
     metricsScraper:
       enabled: true

@@ -187,6 +187,9 @@ spec:
           revision: 6
           datasource:
             - { name: DS_PROMETHEUS, value: Prometheus }
+        dragonfly:
+          url: https://raw.githubusercontent.com/dragonflydb/dragonfly/main/tools/local/monitoring/grafana/provisioning/dashboards/dashboard.json
+          datasource: Prometheus
         external-dns:
           # renovate: depName="External-dns"
           gnetId: 15038
@@ -342,7 +345,7 @@ spec:
         - "grafana.${LOCAL_DOMAIN}"
 
     securityContext:
-      runAsNonRoot: true
+      runAsNonRoot: ${SC_NONROOT}
       runAsUser: ${SC_UID}
       runAsGroup: ${SC_GID}
       fsGroup: ${SC_FSG}
@@ -350,14 +353,14 @@ spec:
     initChownData:
       enabled: true
       securityContext:
-        runAsNonRoot: true
+        runAsNonRoot: ${SC_NONROOT}
         runAsUser: ${SC_UID}
         runAsGroup: ${SC_GID}
         fsGroup: ${SC_FSG}
 
     downloadDashboards:
       securityContext:
-        runAsNonRoot: true
+        runAsNonRoot: ${SC_NONROOT}
         runAsUser: ${SC_UID}
         runAsGroup: ${SC_GID}
         fsGroup: ${SC_FSG}
