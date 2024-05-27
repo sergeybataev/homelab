@@ -34,3 +34,6 @@ spec:
         create: true
         annotations:
           grafana_folder: Databases
+    enableSuperuserAccess: true
+    superuserSecret:
+      name: superuser-secret
