@@ -46,6 +46,30 @@ allowedTopologies:
       - key: kubernetes.io/hostname
         values:
           - main.storage
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: cloudnative-pg
+  namespace: storage
+  labels:
+    storage: zfs
+    type: nvme
+    node: main.storage
+
+parameters:
+  fstype: "zfs"
+  poolname: apps/.k8s/pv-private
+  shared: "yes"
+provisioner: zfs.csi.openebs.io
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: kubernetes.io/hostname
+        values:
+          - main.storage
 # ---
 # apiVersion: storage.k8s.io/v1
 # kind: StorageClass
