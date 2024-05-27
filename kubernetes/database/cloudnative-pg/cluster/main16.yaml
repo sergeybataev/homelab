@@ -14,6 +14,13 @@ spec:
   superuserSecret:
     name: cloudnative-pg-secret
   enableSuperuserAccess: true
+  bootstrap:
+    initdb:
+      owner: main16
+      database:  main16
+      secret:
+        name: main16-secret
+      encoding: 'UTF8'
   postgresql:
     parameters:
       max_connections: "400"
