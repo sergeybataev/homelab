@@ -42,7 +42,7 @@ spec:
         metadata:
           name: not-used
         spec:
-          interval: 5m0s
+          interval: 30m0s
           retryInterval: 1m0s
           timeout: 10m0s
           decryption:
@@ -61,7 +61,7 @@ spec:
         metadata:
           name: not-used
         spec:
-          interval: 5m0s
+          interval: 30m0s
           retryInterval: 1m0s
           timeout: 10m0s
           prune: true
@@ -83,7 +83,7 @@ spec:
           sourceRef:
             kind: GitRepository
             name: home-kubernetes
-          interval: 5m0s
+          interval: 30m0s
       target:
         group: kustomize.toolkit.fluxcd.io
         version: v1
@@ -176,7 +176,7 @@ spec:
               metadata:
                 name: not-used
               spec:
-                interval: 5m0s
+                interval: 30m0s
                 retryInterval: 1m0s
                 timeout: 10m0s
                 decryption:
@@ -195,7 +195,7 @@ spec:
               metadata:
                 name: not-used
               spec:
-                interval: 5m0s
+                interval: 30m0s
                 retryInterval: 1m0s
                 timeout: 10m0s
                 prune: true
@@ -217,7 +217,7 @@ spec:
                 sourceRef:
                   kind: GitRepository
                   name: home-kubernetes
-                interval: 5m0s
+                interval: 30m0s
             target:
               group: kustomize.toolkit.fluxcd.io
               version: v1
