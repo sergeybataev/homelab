@@ -21,6 +21,7 @@ resources:
   - ./monitoring/opentelemetry-charts.yaml
 # storage
   - ./storage/openebs.yaml
+  - ./storage/rook-ceph.yaml
 # database
   - ./database/emqx.yaml
   - ./database/cloudnative-pg.yaml
