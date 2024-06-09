@@ -32,8 +32,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: longhorn
-  path: ./kubernetes/apps/storage/longhorn/jobs
+    - name: storage-longhorn
+  path: ./kubernetes/storage/longhorn/jobs
   prune: true
   sourceRef:
     kind: GitRepository
