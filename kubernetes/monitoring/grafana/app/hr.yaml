@@ -353,6 +353,8 @@ spec:
 
     initChownData:
       enabled: true
+      # runAsUser: 0
+      runAsNonRoot: false
 
     downloadDashboards:
       securityContext:
