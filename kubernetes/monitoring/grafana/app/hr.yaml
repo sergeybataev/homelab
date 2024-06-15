@@ -353,11 +353,6 @@ spec:
 
     initChownData:
       enabled: true
-      securityContext:
-        runAsNonRoot: ${SC_NONROOT}
-        runAsUser: ${SC_UID}
-        runAsGroup: ${SC_GID}
-        fsGroup: ${SC_FSG}
 
     downloadDashboards:
       securityContext:
