@@ -20,10 +20,10 @@ spec:
     persistence:
       type: pvc
       enabled: true
-      storageClassName: hl-path-configs
       accessModes:
         - ReadWriteOnce
       size: 10Gi
+      storageClassName: longhorn
 
     plugins:
       - grafana-clock-panel
