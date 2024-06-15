@@ -42,3 +42,5 @@ spec:
       enabled: true
       ingressClassName: internal
       host: &host longhorn.${LOCAL_DOMAIN}
+    persistence:
+      defaultClassReplicaCount: 1
