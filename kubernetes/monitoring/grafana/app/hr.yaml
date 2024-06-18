@@ -340,9 +340,9 @@ spec:
 
     ingress:
       enabled: true
-      ingressClassName: external
+      ingressClassName: internal
       hosts:
-        - "grafana.${SECRET_DOMAIN}"
+        # - "grafana.${SECRET_DOMAIN}"
         - "grafana.${LOCAL_DOMAIN}"
 
     securityContext:
@@ -353,7 +353,7 @@ spec:
 
     initChownData:
       enabled: true
-      # runAsUser: 0
+      runAsUser: 0
       runAsNonRoot: false
 
     downloadDashboards:
