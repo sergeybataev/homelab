@@ -6,6 +6,7 @@ resources:
   - ./metrics-server/ks.yaml
   - ./reloader/ks.yaml
   - ./kube-vip/ks.yaml
+  - ./kube-cleanup-operator/ks.yaml
   - ./upgrade/upgrade-controller/ks.yaml
   - ./upgrade/k3s/ks.yaml
   - ./node-feature-discovery/ks.yaml
