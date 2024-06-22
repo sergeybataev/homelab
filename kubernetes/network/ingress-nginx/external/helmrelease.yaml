@@ -92,7 +92,7 @@ spec:
         - name: TEMPLATE_NAME
           value: l7-light
         - name: SHOW_DETAILS
-          value: "true"
+          value: "false"
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -106,4 +106,7 @@ spec:
                     - key: app.kubernetes.io/component
                       operator: In
                       values: ["default-backend"]
+                    - key: app.kubernetes.io/instance
+                      operator: In
+                      values: ["ingress-nginx-external"]
                 topologyKey: kubernetes.io/hostname
