@@ -35,6 +35,9 @@ spec:
         pullPolicy: IfNotPresent
 
       ingress:
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: 192.168.4.22
         enabled: true
         ingressClassName: internal
       #   useDefaultIngressClass: true
