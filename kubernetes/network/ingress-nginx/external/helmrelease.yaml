@@ -3,8 +3,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: ingress-nginx-external
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: "external.${PUBLIC_DOMAIN}"
 spec:
   interval: 30m
   chart:
@@ -26,8 +24,6 @@ spec:
     - name: cloudflared
       namespace: network
   values:
-    annotations:
-      external-dns.alpha.kubernetes.io/hostname: "external.${PUBLIC_DOMAIN}"
     fullnameOverride: ingress-nginx-external
     controller:
       replicaCount: 1
