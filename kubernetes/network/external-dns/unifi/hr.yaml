@@ -65,6 +65,7 @@ spec:
     txtOwnerId: default
     txtPrefix: k8s.
     domainFilters:
+      - "${PUBLIC_DOMAIN}"
       - "${SECRET_DOMAIN}"
       - "${LOCAL_DOMAIN}"
     serviceMonitor:
