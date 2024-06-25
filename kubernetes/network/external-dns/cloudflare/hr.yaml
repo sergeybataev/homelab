@@ -37,6 +37,9 @@ spec:
       - --cloudflare-proxied
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
+      - --cloudflare-dns-records-per-page=1000
+      - --events
+      - --ignore-ingress-tls-spec
     policy: sync
     sources: ["crd", "ingress"]
     txtPrefix: k8s.
