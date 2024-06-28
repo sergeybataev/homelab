@@ -73,7 +73,7 @@ spec:
       persistence:
         type: pvc
         enabled: true
-        storageClass: hl-zfs-pv-fast
+        storageClass: hl-zfs-pv-slow
         accessModes:
           - ReadWriteOnce
         size: 100Gi
@@ -106,7 +106,7 @@ spec:
     #   persistence:
     #     type: pvc
     #     enabled: true
-    #     storageClassName: hl-zfs-pv-fast
+    #     storageClassName: hl-zfs-pv-slow
     #     accessModes:
     #       - ReadWriteOnce
     #     size: 100Gi
@@ -214,7 +214,7 @@ spec:
     #   persistence:
     #     type: pvc
     #     enabled: true
-    #     storageClassName: hl-zfs-pv-fast
+    #     storageClassName: hl-zfs-pv-slow
     #     accessModes:
     #       - ReadWriteOnce
     #     size: 100Gi

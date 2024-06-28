@@ -2,7 +2,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: hl-zfs-pv-fast
+  name: hl-zfs-pv-slow
   namespace: storage
   labels:
     storage: zfs
@@ -11,7 +11,7 @@ metadata:
 
 parameters:
   fstype: "zfs"
-  poolname: apps/.k8s/pv
+  poolname: mainV1P2/.k8s/pv
   shared: "yes"
 provisioner: zfs.csi.openebs.io
 reclaimPolicy: Retain
@@ -26,7 +26,7 @@ allowedTopologies:
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: hl-zfs-pv-fast-private
+  name: hl-zfs-pv-slow-private
   namespace: storage
   labels:
     storage: zfs
@@ -35,7 +35,7 @@ metadata:
 
 parameters:
   fstype: "zfs"
-  poolname: apps/.k8s/pv-private
+  poolname: mainV1P2/.k8s/pv-private
   shared: "yes"
 provisioner: zfs.csi.openebs.io
 reclaimPolicy: Retain
@@ -59,7 +59,7 @@ metadata:
 
 parameters:
   fstype: "zfs"
-  poolname: apps/.k8s/pv-private
+  poolname: mainV1P2/.k8s/pg
   shared: "yes"
 provisioner: zfs.csi.openebs.io
 reclaimPolicy: Retain

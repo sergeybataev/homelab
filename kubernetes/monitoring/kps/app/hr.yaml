@@ -197,7 +197,7 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: hl-zfs-pv-fast
+              storageClassName: hl-zfs-pv-slow
               # storageClassName: rook-ceph-block
               resources:
                 requests:
