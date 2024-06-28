@@ -160,6 +160,9 @@ spec:
 
     prometheus:
       ingress:
+        # type: LoadBalancer
+        # annotations:
+        #   io.cilium/lb-ipam-ips: ${PROMETHEUS_IP}
         enabled: true
         ingressClassName: internal
         pathType: Prefix

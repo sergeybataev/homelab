@@ -4,4 +4,3 @@ kind: Kustomization
 resources:
   - ./staging.yaml
   - ./production.yaml
-# kustomize build failed: accumulating resources: accumulation err='accumulating resources from './kubernetes/bootstrap/flux': read /tmp/kustomization-1077350659/kubernetes/bootstrap/flux: is a directory': recursed merging from path '/tmp/kustomization-1077350659/kubernetes/bootstrap/flux': may not add resource with an already registered id: Namespace.v1.[noGrp]/flux-system.[noNs]

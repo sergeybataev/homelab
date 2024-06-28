@@ -38,6 +38,14 @@ spec:
   dependsOn:
     - name: network-ingress-nginx-certificates
   path: ./kubernetes/network/ingress-nginx/internal
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: false
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -56,6 +64,14 @@ spec:
   dependsOn:
     - name: network-ingress-nginx-certificates
   path: ./kubernetes/network/ingress-nginx/external
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: false
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -73,3 +89,11 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/network/ingress-nginx/dashboard
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: false
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
