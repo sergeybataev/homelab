@@ -42,7 +42,7 @@ spec:
     - name: cluster-storage
     - name: network-cert-manager
     - name: system-metrics-server
-    - name: monitoring-prometheus-stack-crds
+    # - name: monitoring-prometheus-stack-crds
     - name: monitoring-prometheus-rules
   commonMetadata:
     labels:
@@ -77,5 +77,5 @@ spec:
   interval: 15m
   retryInterval: 1m
   timeout: 5m
-  dependsOn:
-    - name: monitoring-prometheus-stack-crds
+  dependsOn: []
+    # - name: monitoring-prometheus-stack-crds
