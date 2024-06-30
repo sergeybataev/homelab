@@ -80,9 +80,9 @@ spec:
       mgr:
         count: 1
         allowMultiplePerNode: true
-        modules:
-          - name: pg_autoscaler
-            enabled: true
+        # modules:
+        #   - name: pg_autoscaler
+        #     enabled: true
       mon:
         count: 1
         allowMultiplePerNode: true
