@@ -39,7 +39,7 @@ spec:
         reloader.stakater.com/auto: "true"
     spec:
       volumeClaimTemplates:
-        storageClassName: rook-ceph-block
+        storageClassName: ceph-block
         resources:
           requests:
             storage: 400Mi
