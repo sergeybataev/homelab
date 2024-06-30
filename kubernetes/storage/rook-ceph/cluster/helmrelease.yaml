@@ -1,0 +1,343 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rook-ceph-cluster
+  namespace: rook-ceph
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: rook-ceph-cluster
+      version: v1.14.7
+      sourceRef:
+        kind: HelmRepository
+        name: rook-ceph
+        namespace: flux-system
+
+  maxHistory: 3
+
+  install:
+    timeout: 5m
+    replace: true
+    crds: CreateReplace
+    createNamespace: true
+    remediation:
+      retries: 3
+
+  upgrade:
+    cleanupOnFail: true
+    crds: CreateReplace
+    remediation:
+      retries: 3
+
+  test:
+    enable: true
+
+  # rollback:
+  #   recreate: true
+  #   force: true
+  #   cleanupOnFail: true
+
+  uninstall:
+    keepHistory: false
+
+  values:
+    toolbox:
+      enabled: true
+
+    operatorNamespace: rook-ceph
+
+    monitoring:
+      enabled: true
+      createPrometheusRules: true
+
+    ingress:
+      dashboard:
+        ingressClassName: internal
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
+        host:
+          name: &host rook.${SECRET_DOMAIN}
+          path: "/"
+        tls:
+          - hosts:
+              - *host
+            # secretName: rook-ceph-tls-secret
+
+
+    configOverride: |
+      [global]
+      bdev_enable_discard = true
+      bdev_async_discard = true
+      osd_pool_default_size = 1
+
+    cephClusterSpec:
+      dataDirHostPath: /var/lib/rook
+      mgr:
+        count: 1
+
+      crashCollector:
+        disable: false
+
+      dashboard:
+        enabled: true
+        urlPrefix: /
+        ssl: false
+
+      storage:
+        # when onlyApplyOSDPlacement is false, will merge both placement.All() and storageClassDeviceSets.Placement.
+        onlyApplyOSDPlacement: false
+
+        useAllNodes: false
+        useAllDevices: false
+
+        config:
+          osdsPerDevice: "1"
+        nodes:
+          - name: "main.storage"
+            devices:
+              - name: "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNG0M218299R"
+
+        # storageClassDeviceSets:
+        #   - name: ceph-on-zfs
+        #     # The number of OSDs to create from this device set
+        #     count: 1
+
+        #     # IMPORTANT: If volumes specified by the storageClassName are not portable across nodes
+        #     # this needs to be set to false. For example, if using the local storage provisioner
+        #     # this should be false.
+        #     portable: false
+
+        #     # Certain storage class in the Cloud are slow
+        #     # Rook can configure the OSD running on PVC to accommodate that by tuning some of the Ceph internal
+        #     # Currently, "gp2" has been identified as such
+        #     tuneDeviceClass: false # local ZFS is pretty fast...
+
+        #     # Certain storage class in the Cloud are fast
+        #     # Rook can configure the OSD running on PVC to accommodate that by tuning some of the Ceph internal
+        #     # Currently, "managed-premium" has been identified as such
+        #     tuneFastDeviceClass: true
+
+        #     # whether to encrypt the deviceSet or not
+        #     encrypted: false
+
+        #     # Since the OSDs could end up on any node, an effort needs to be made to spread the OSDs
+        #     # across nodes as much as possible. Unfortunately the pod anti-affinity breaks down
+        #     # as soon as you have more than one OSD per node. The topology spread constraints will
+        #     # give us an even spread on K8s 1.18 or newer.
+        #     placement:
+        #       topologySpreadConstraints:
+        #         - maxSkew: 1
+        #           topologyKey: kubernetes.io/hostname
+        #           whenUnsatisfiable: ScheduleAnyway
+        #           labelSelector:
+        #             matchExpressions:
+        #               - key: app
+        #                 operator: In
+        #                 values:
+        #                   - rook-ceph-osd
+
+        #     # (still under storage class deviceset)
+        #     preparePlacement:
+        #       podAntiAffinity:
+        #         preferredDuringSchedulingIgnoredDuringExecution:
+        #           - weight: 100
+        #             podAffinityTerm:
+        #               labelSelector:
+        #                 matchExpressions:
+        #                   - key: app
+        #                     operator: In
+        #                     values:
+        #                       - rook-ceph-osd
+        #                   - key: app
+        #                     operator: In
+        #                     values:
+        #                       - rook-ceph-osd-prepare
+        #               topologyKey: kubernetes.io/hostname
+        #       topologySpreadConstraints:
+        #         - maxSkew: 1
+        #           # IMPORTANT: If you don't have zone labels, change this to another key such as kubernetes.io/hostname
+        #           #topologyKey: topology.kubernetes.io/zone
+        #           topologyKey: kubernetes.io/hostname
+        #           whenUnsatisfiable: DoNotSchedule
+        #           labelSelector:
+        #             matchExpressions:
+        #               - key: app
+        #                 operator: In
+        #                 values:
+        #                   - rook-ceph-osd-prepare
+
+            # (still under stoarge class deviceset)
+            # These are the OSD daemon limits. For OSD prepare limits, see the separate section below for "prepareosd" resources
+
+
+      resources:
+        mgr:
+          count: 1
+          allowMultiplePerNode: true
+          modules:
+            - name: pg_autoscaler
+              enabled: true
+          requests:
+            cpu: "125m"
+            memory: "512Mi"
+          limits:
+            memory: "1Gi"
+        mon:
+          # This is one of the tweaks - normally you'd want more than one monitor and
+          # you'd want to spread them out
+          count: 1
+          allowMultiplePerNode: true
+          requests:
+            cpu: "50m"
+            memory: "512Mi"
+          limits:
+            memory: "1Gi"
+        osd:
+          requests:
+            cpu: "300m"
+            memory: "512Mi"
+          limits:
+            memory: "6Gi"
+        mgr-sidecar:
+          requests:
+            cpu: "50m"
+            memory: "100Mi"
+          limits:
+            memory: "200Mi"
+        # crashcollector:
+        #   requests:
+        #     cpu: "15m"
+        #     memory: "64Mi"
+        #   limits:
+        #     memory: "128Mi"
+        logcollector:
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+          limits:
+            memory: "1Gi"
+        prepareosd:
+          # limits: It is not recommended to set limits on the OSD prepare job
+          #         since it's a one-time burst for memory that must be allowed to
+          #         complete without an OOM kill.  Note however that if a k8s
+          #         limitRange guardrail is defined external to Rook, the lack of
+          #         a limit here may result in a sync failure, in which case a
+          #         limit should be added.  1200Mi may suffice for up to 15Ti
+          #         OSDs ; for larger devices 2Gi may be required.
+          #         cf. https://github.com/rook/rook/pull/11103
+          requests:
+            cpu: "250m"
+            memory: "50Mi"
+          # limits:
+          #   memory: "2Gi"
+        cleanup:
+          requests:
+            cpu: "250m"
+            memory: "100Mi"
+          limits:
+            memory: "1Gi"
+
+    cephBlockPools:
+      - name: ceph-blockpool
+        spec:
+          failureDomain: host
+          replicated:
+            size: 1
+
+        storageClass:
+          enabled: true
+          name: ceph-block
+          isDefault: true
+          reclaimPolicy: Delete
+          allowVolumeExpansion: true
+          parameters:
+            imageFormat: "2"
+            imageFeatures: layering
+            csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+            csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+            csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+            csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+            csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+            csi.storage.k8s.io/fstype: ext4
+
+    cephFileSystems:
+      - name: ceph-filesystem
+        spec:
+          metadataPool:
+            replicated:
+              size: 1
+              requireSafeReplicaSize: false # remove after increase replica size
+          dataPools:
+            - failureDomain: host
+              replicated:
+                size: 1
+                requireSafeReplicaSize: false # remove after increase replica size
+              name: data0
+              compressionMode: none
+          metadataServer:
+            activeCount: 1
+            activeStandby: false # change to true after increase replica size
+            priorityClassName: system-cluster-critical
+            resources:
+              requests:
+                cpu: 1000m
+                memory: 4Gi
+              limits:
+                memory: 4Gi
+
+        storageClass:
+          enabled: true
+          isDefault: false
+          name: ceph-filesystem
+          pool: data0
+          reclaimPolicy: Delete
+          allowVolumeExpansion: true
+          parameters:
+            csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+            csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+            csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+            csi.storage.k8s.io/fstype: ext4
+
+    cephObjectStores:
+      - name: ceph-objectstore
+        spec:
+          metadataPool:
+            failureDomain: host
+            replicated:
+              size: 1
+          dataPool:
+            failureDomain: host
+            # For production it is recommended to use more chunks, such as 4+2 or 8+4
+            erasureCoded:
+              dataChunks: 2
+              codingChunks: 1
+          preservePoolsOnDelete: true
+          gateway:
+            # securePort: 443
+            port: 80
+            # resources:
+            #   requests:
+            #     cpu: 1000m
+            #     memory: 1Gi
+            #   limits:
+            #     memory: 2Gi
+            instances: 1
+            priorityClassName: system-cluster-critical
+          healthCheck:
+            bucket:
+              interval: 60s
+        storageClass:
+          enabled: true
+          name: ceph-bucket
+          reclaimPolicy: Delete
+          # parameters:
+          #   region: us-east-1

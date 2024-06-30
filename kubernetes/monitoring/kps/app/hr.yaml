@@ -158,17 +158,16 @@ spec:
         certManager:
           enabled: true
 
-    prometheus:
-      ingress:
-        # type: LoadBalancer
-        # annotations:
-        #   io.cilium/lb-ipam-ips: ${PROMETHEUS_IP}
-        enabled: true
-        ingressClassName: internal
-        pathType: Prefix
-        hosts:
-          - "prometheus.${SECRET_DOMAIN}"
-          - "prometheus.${LOCAL_DOMAIN}"
+    # prometheus:
+    #   ingress:
+    #     # type: LoadBalancer
+    #     # annotations:
+    #     # io.cilium/lb-ipam-ips: ${PROMETHEUS_IP}
+    #     enabled: true
+    #     ingressClassName: internal
+    #     pathType: Prefix
+    #     hosts:
+    #       - "prometheus.${SECRET_DOMAIN}"
 
       prometheusSpec:
         replicas: 1
@@ -235,7 +234,7 @@ spec:
         #   type: LoadBalancer
         #   annotations:
         #     external-dns.alpha.kubernetes.io/hostname: thanos.turbo.ac
-        #     io.cilium/lb-ipam-ips: 192.168.1.6
+        #     io.cilium/lb-ipam-ips: ${PROMETHEUS_IP}
         #   externalTrafficPolicy: Cluster
         # thanosServiceMonitor:
         #   enabled: true

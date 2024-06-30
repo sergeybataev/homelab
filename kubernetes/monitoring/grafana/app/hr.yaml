@@ -342,7 +342,7 @@ spec:
       enabled: true
       ingressClassName: internal
       hosts:
-        # - "grafana.${SECRET_DOMAIN}"
+        - "grafana.${SECRET_DOMAIN}"
         - "grafana.${LOCAL_DOMAIN}"
 
     securityContext:
