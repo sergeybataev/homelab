@@ -157,7 +157,7 @@ spec:
         enabled: false
         certManager:
           enabled: true
-
+    prometheus:
     # prometheus:
     #   ingress:
     #     # type: LoadBalancer
@@ -204,7 +204,7 @@ spec:
         # podMonitorSelector:
         #   matchLabels:
         #     app.kubernetes.io/component: monitoring
-        
+
         # without thanos
         enableRemoteWriteReceiver: false
         # TODO check
