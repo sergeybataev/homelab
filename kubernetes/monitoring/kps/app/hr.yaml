@@ -192,18 +192,19 @@ spec:
           requests:
             cpu: 100m
           limits:
-            memory: 3Gi
+            memory: 8Gi
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: hl-zfs-pv-slow
-              # storageClassName: rook-ceph-block
+              storageClassName: ceph-block
               resources:
                 requests:
-                  storage: 200Gi
-        podMonitorSelector:
-          matchLabels:
-            app.kubernetes.io/component: monitoring
+                  storage: 160Gi
+
+        # podMonitorSelector:
+        #   matchLabels:
+        #     app.kubernetes.io/component: monitoring
+        
         # without thanos
         enableRemoteWriteReceiver: false
         # TODO check
