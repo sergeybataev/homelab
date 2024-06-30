@@ -64,7 +64,7 @@ spec:
       extraVolumes:
         - name: init-mqtt
           configMap:
-            name: emqx-init-mqtt-configmap
+            name: emqx-init-mqtt
   listenersServiceTemplate:
     metadata:
       annotations:
