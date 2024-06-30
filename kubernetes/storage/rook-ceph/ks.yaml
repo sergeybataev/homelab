@@ -44,6 +44,7 @@ spec:
       name: rook-ceph-cluster
       namespace: rook-ceph
   dependsOn:
+    - name: system-backup-snapshot-controller
     - name: storage-rook-ceph
 
 ---
