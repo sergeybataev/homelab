@@ -7,6 +7,8 @@ resources:
   - ./system/cilium.yaml
   - ./system/metrics-server.yaml
   - ./system/lwolf.yaml
+  - ./system/fairwinds-charts.yaml
+  - ./system/piraeus.yaml
 # network
   - ./network/jetstack.yaml
   - ./network/ingress-nginx.yaml

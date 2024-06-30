@@ -42,7 +42,7 @@ spec:
     - name: cluster-storage
     - name: network-cert-manager
     - name: system-metrics-server
-    # - name: monitoring-prometheus-stack-crds
+    - name: monitoring-prometheus-stack-crds
     - name: monitoring-prometheus-rules
   commonMetadata:
     labels:
