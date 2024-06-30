@@ -79,6 +79,13 @@ spec:
       dataDirHostPath: /var/lib/rook
       mgr:
         count: 1
+        allowMultiplePerNode: true
+        modules:
+          - name: pg_autoscaler
+            enabled: true
+      mon:
+        count: 1
+        allowMultiplePerNode: true
 
       crashCollector:
         disable: false
@@ -177,11 +184,6 @@ spec:
 
       resources:
         mgr:
-          count: 1
-          allowMultiplePerNode: true
-          modules:
-            - name: pg_autoscaler
-              enabled: true
           requests:
             cpu: "125m"
             memory: "512Mi"
@@ -190,8 +192,6 @@ spec:
         mon:
           # This is one of the tweaks - normally you'd want more than one monitor and
           # you'd want to spread them out
-          count: 1
-          allowMultiplePerNode: true
           requests:
             cpu: "50m"
             memory: "512Mi"
