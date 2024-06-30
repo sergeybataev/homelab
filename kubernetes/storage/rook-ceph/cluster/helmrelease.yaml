@@ -57,16 +57,10 @@ spec:
       dashboard:
         ingressClassName: internal
         annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-prod
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
           external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
         host:
           name: &host rook.${SECRET_DOMAIN}
           path: "/"
-        tls:
-          - hosts:
-              - *host
-            # secretName: rook-ceph-tls-secret
 
 
     configOverride: |
