@@ -63,6 +63,7 @@ spec:
           http:
             port: 8080
     serviceMonitor:
+      enabled: true
       app:
         serviceName: intel-device-plugin-exporter
         endpoints:

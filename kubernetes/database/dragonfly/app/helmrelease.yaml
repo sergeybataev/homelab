@@ -90,6 +90,7 @@ spec:
             port: 8080
     serviceMonitor:
       app:
+        enabled: true
         serviceName: *app
         endpoints:
           - port: metrics
