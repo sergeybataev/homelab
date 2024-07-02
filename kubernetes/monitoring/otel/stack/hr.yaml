@@ -25,15 +25,13 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-    # force: true
-    crds: Skip
   uninstall:
     keepHistory: false
 
   values:
     clusterName: ${CLUSTER_NAME}
-    opentelemetry-operator:
-      enabled: true
+    # opentelemetry-operator:
+    #   enabled: true
     collectors:
       daemon:
         suffix: daemon
@@ -60,7 +58,6 @@ spec:
             pipelines:
               metrics:
                 exporters: [debug]
-
   # Target allocator configuration
   # targetAllocator: {}
   # replicas: 1
