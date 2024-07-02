@@ -39,7 +39,6 @@ spec:
         mode: daemonset
         enabled: true
         config:
-          exporters:
           service:
             pipelines:
               metrics:
@@ -53,7 +52,6 @@ spec:
         replicas: 1
         mode: deployment
         config:
-          exporters:
           service:
             pipelines:
               metrics:
