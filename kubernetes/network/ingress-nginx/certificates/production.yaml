@@ -12,5 +12,6 @@ spec:
   dnsNames:
     - "${SECRET_DOMAIN}"
     - "*.${SECRET_DOMAIN}"
+    - "*.k8s.${SECRET_DOMAIN}"
     - "${PUBLIC_DOMAIN}"
     - "*.${PUBLIC_DOMAIN}"
