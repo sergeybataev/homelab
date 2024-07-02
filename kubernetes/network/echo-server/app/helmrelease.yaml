@@ -91,7 +91,7 @@ spec:
                 service:
                   identifier: app
                   port: http
-      app_public:
+      app-public:
         className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${PUBLIC_DOMAIN}"
