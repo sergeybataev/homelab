@@ -38,7 +38,8 @@ spec:
         enabled: true
         ingressClassName: external
       #   useDefaultIngressClass: true
-      #   annotations:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
       #     # hajimari.io/enable: "true"
       #     # hajimari.io/icon: logos:kubernetes
       #     # hajimari.io/info: Kubernetes dashboard
@@ -50,15 +51,15 @@ spec:
       #       10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
         hosts:
           - dashboard.k8s.${SECRET_DOMAIN}
-        issuer:
-          name: selfsigned
-          # Scope determines what kind of issuer annotation will be used on ingress resource
-          # - default - adds 'cert-manager.io/issuer'
-          # - cluster - adds 'cert-manager.io/cluster-issuer'
-          # - disabled - disables cert-manager annotations
-          scope: default
+        # issuer:
+        #   name: selfsigned
+        #   # Scope determines what kind of issuer annotation will be used on ingress resource
+        #   # - default - adds 'cert-manager.io/issuer'
+        #   # - cluster - adds 'cert-manager.io/cluster-issuer'
+        #   # - disabled - disables cert-manager annotations
+        #   scope: default
         tls:
-          secretName: null
+          # secretName: null
           hosts:
           - dashboard.k8s.${SECRET_DOMAIN}
 
