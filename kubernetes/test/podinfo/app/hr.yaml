@@ -18,7 +18,7 @@ spec:
         name: *app
         namespace: flux-system
       version: '>5.0.0'
-  interval: 1m0s
+  interval: 60m0s
   releaseName: *app
   values:
     replicaCount: 1
@@ -28,3 +28,4 @@ spec:
       requests:
         cpu: 100m
         memory: 32Mi
+    extraEnvs:

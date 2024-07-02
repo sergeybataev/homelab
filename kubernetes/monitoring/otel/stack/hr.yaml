@@ -25,7 +25,8 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-
+    # force: true
+    crds: Skip
   uninstall:
     keepHistory: false
 
@@ -39,6 +40,8 @@ spec:
         mode: daemonset
         enabled: true
         config:
+          exporters:
+            debug: {}
           service:
             pipelines:
               metrics:
@@ -49,9 +52,10 @@ spec:
                 exporters: [debug]
       cluster:
         suffix: cluster-stats
-        replicas: 1
         mode: deployment
         config:
+          exporters:
+            debug: {}
           service:
             pipelines:
               metrics:
