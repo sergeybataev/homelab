@@ -91,6 +91,8 @@ spec:
     serviceMonitor:
       app:
         enabled: true
+        annotations:
+          prometheus.io/scrape: "true"
         serviceName: cloudflared
         endpoints:
           - port: http
