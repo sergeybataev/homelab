@@ -357,8 +357,8 @@ spec:
       enabled: true
       ingressClassName: external
       hosts:
-        - "grafana.k8s.${SECRET_DOMAIN}"
-        - "grafana.k8s.${LOCAL_DOMAIN}"
+        - "grafana.${SECRET_DOMAIN}"
+        - "grafana.${LOCAL_DOMAIN}"
 
     securityContext:
       runAsNonRoot: ${SC_NONROOT}
