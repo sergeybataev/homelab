@@ -35,9 +35,11 @@ spec:
       enabled: true
     collectors:
       daemon:
+        suffix: daemon
+        mode: daemonset
+        enabled: true
         config:
           exporters:
-
           service:
             pipelines:
               metrics:
@@ -47,6 +49,9 @@ spec:
               logs:
                 exporters: [debug]
       cluster:
+        suffix: cluster-stats
+        replicas: 1
+        mode: deployment
         config:
           exporters:
           service:
