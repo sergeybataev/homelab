@@ -121,6 +121,14 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/ceph-folder
+          - name: emqx
+            orgId: 1
+            folder: EMQX
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/emqx-folder
           - name: flux
             orgId: 1
             folder: Flux
@@ -153,22 +161,14 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/prometheus-folder
-          - name: thanos
-            orgId: 1
-            folder: Thanos
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/thanos-folder
-          - name: truenas
-            orgId: 1
-            folder: Truenas
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/truenas
+          # - name: thanos
+          #   orgId: 1
+          #   folder: Thanos
+          #   type: file
+          #   disableDeletion: false
+          #   editable: true
+          #   options:
+          #     path: /var/lib/grafana/dashboards/thanos-folder
           - name: unifi
             orgId: 1
             folder: Unifi
@@ -218,28 +218,6 @@ spec:
           gnetId: 7845
           revision: 4
           datasource: Prometheus
-        truenas_old:
-          # renovate: depName="TrueNAS"
-          gnetId: 19661
-          revision: 1
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
-        truenas_old2:
-          # renovate: depName="TrueNAS[Graphite][Flux]"
-          url: https://raw.githubusercontent.com/Supporterino/truenas-graphite-to-prometheus/main/dashboards/truenas_scale.json
-          gnetId: 20199
-          revision: 1
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
-      truenas:
-        truenas_dashboard:
-          url: https://raw.githubusercontent.com/Supporterino/truenas-graphite-to-prometheus/main/dashboards/truenas_scale.json
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
-        truenas_scale_disk_inisghts:
-          url: https://raw.githubusercontent.com/Supporterino/truenas-graphite-to-prometheus/main/dashboards/truenas_scale_disk_inisghts.json
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
       flux:
         flux-cluster:
           url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/cluster.json
@@ -320,7 +298,44 @@ spec:
           gnetId: 11312
           revision: 9
           datasource: Prometheus
-
+      ceph:
+        ceph-cluster:
+          # renovate: depName="Ceph Cluster"
+          gnetId: 2842
+          revision: 17
+          datasource: Prometheus
+        ceph-osd:
+          # renovate: depName="Ceph - OSD (Single)"
+          gnetId: 5336
+          revision: 9
+          datasource: Prometheus
+        ceph-pools:
+          # renovate: depName="Ceph - Pools"
+          gnetId: 5342
+          revision: 9
+          datasource: Prometheus
+      emqx:
+        emqx-authentication:
+          url: https://raw.githubusercontent.com/emqx/emqx-exporter/main/grafana-dashboard/template/emqx-5/authentication.json
+          datasource: Prometheus
+        emqx-authorization:
+          url: https://raw.githubusercontent.com/emqx/emqx-exporter/main/grafana-dashboard/template/emqx-5/authorization.json
+          datasource: Prometheus
+        emqx-client-events:
+          url: https://raw.githubusercontent.com/emqx/emqx-exporter/main/grafana-dashboard/template/emqx-5/client-events.json
+          datasource: Prometheus
+        emqx-messages:
+          url: https://raw.githubusercontent.com/emqx/emqx-exporter/main/grafana-dashboard/template/emqx-5/messages.json
+          datasource: Prometheus
+        emqx-overview:
+          url: https://raw.githubusercontent.com/emqx/emqx-exporter/main/grafana-dashboard/template/emqx-5/overview.json
+          datasource: Prometheus
+        emqx-rule-engine-count:
+          url: https://raw.githubusercontent.com/emqx/emqx-exporter/main/grafana-dashboard/template/emqx-5/rule-engine-count.json
+          datasource: Prometheus
+        emqx-rule-engine-rate:
+          url: https://raw.githubusercontent.com/emqx/emqx-exporter/main/grafana-dashboard/template/emqx-5/rule-engine-rate.json
+          datasource: Prometheus
 
     ## Expose the grafana service to be accessed from outside the cluster (LoadBalancer service).
     ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
@@ -340,10 +355,10 @@ spec:
 
     ingress:
       enabled: true
-      ingressClassName: internal
+      ingressClassName: external
       hosts:
-        - "grafana.${SECRET_DOMAIN}"
-        - "grafana.${LOCAL_DOMAIN}"
+        - "grafana.k8s.${SECRET_DOMAIN}"
+        - "grafana.k8s.${LOCAL_DOMAIN}"
 
     securityContext:
       runAsNonRoot: ${SC_NONROOT}

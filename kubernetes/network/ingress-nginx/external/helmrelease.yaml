@@ -92,7 +92,7 @@ spec:
         - name: TEMPLATE_NAME
           value: l7-light
         - name: SHOW_DETAILS
-          value: "false"
+          value: "true"
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
