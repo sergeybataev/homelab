@@ -201,10 +201,12 @@ spec:
                 requests:
                   storage: 160Gi
 
-        # podMonitorSelector:
-        #   matchLabels:
-        #     app.kubernetes.io/component: monitoring
-
+        podMonitorSelector:
+          matchLabels:
+            app.kubernetes.io/part-of: kube-prometheus-stack
+        serviceMonitorSelector:
+          matchLabels:
+            app.kubernetes.io/part-of: kube-prometheus-stack
         # without thanos
         enableRemoteWriteReceiver: false
         # TODO check

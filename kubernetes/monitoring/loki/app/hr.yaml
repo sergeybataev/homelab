@@ -58,7 +58,7 @@ spec:
         grafanaAgent:
           installOperator: false
       serviceMonitor:
-        enabled: false
+        enabled: true
       dashboards:
         enabled: true
         annotations:
