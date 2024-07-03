@@ -9,6 +9,6 @@ resources:
   - ./grafana/ks.yaml
   - ./loki/ks.yaml
   # - ./otel/ks.yaml temporary disabled
-  # - ./unpoller/ks.yaml
+  - ./unpoller/ks.yaml
 # Exporters
   - ./exporters/
