@@ -8,6 +8,7 @@ resources:
   - ./kps/ks.yaml
   - ./grafana/ks.yaml
   - ./loki/ks.yaml
-  - ./otel/ks.yaml
+  # - ./otel/ks.yaml temporary disabled
+  - ./unpoller/ks.yaml
 # Exporters
   - ./exporters/
