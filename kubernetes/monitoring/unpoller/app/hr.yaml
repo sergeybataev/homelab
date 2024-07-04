@@ -37,7 +37,7 @@ spec:
 
     defaultPodOptions:
       annotations:
-        secret.reloader.stakater.com/reload: unpoller-secret
+        secret.reloader.stakater.com/reload: unpoller
 
     controllers:
       unpoller:
@@ -53,13 +53,13 @@ spec:
 
             env:
               TZ: ${TIMEZONE}
-              UP_UNIFI_DEFAULT_ROLE: home-ops
+              UP_UNIFI_DEFAULT_ROLE: automation
               UP_UNIFI_DEFAULT_VERIFY_SSL: false
               UP_INFLUXDB_DISABLE: true
 
             envFrom:
               - secretRef:
-                  name: unpoller-secret
+                  name: unpoller
 
             resources:
               requests:
