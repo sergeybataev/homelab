@@ -56,6 +56,11 @@ spec:
               UP_UNIFI_DEFAULT_ROLE: automation
               UP_UNIFI_DEFAULT_VERIFY_SSL: false
               UP_INFLUXDB_DISABLE: true
+              UP_UNIFI_DEFAULT_SAVE_IDS: true
+              UP_UNIFI_DEFAULT_SAVE_EVENTS: true
+              UP_UNIFI_DEFAULT_SAVE_ALARMS: true
+              UP_UNIFI_DEFAULT_SAVE_ANOMALIES: true
+              UP_POLLER_DEBUG: false
 
             envFrom:
               - secretRef:
