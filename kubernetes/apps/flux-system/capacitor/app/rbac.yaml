@@ -11,6 +11,7 @@ rules:
   resources:
     - pods
     - pods/log
+    - daemonsets
     - ingresses
     - deployments
     - services
@@ -28,6 +29,7 @@ rules:
   resources:
     - gitrepositories
     - ocirepositories
+    - helmrepositories
     - buckets
     - kustomizations
     - helmreleases
