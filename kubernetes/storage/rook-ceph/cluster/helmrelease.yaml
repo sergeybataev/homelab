@@ -314,7 +314,7 @@ spec:
             erasureCoded:
               dataChunks: 2
               codingChunks: 1
-          preservePoolsOnDelete: true
+          preservePoolsOnDelete: false
           gateway:
             securePort: 443
             port: 80
