@@ -183,7 +183,7 @@ spec:
         spec:
           patches:
           - patch: |-
-              apiVersion: helm.toolkit.fluxcd.io/v2beta1
+              apiVersion: helm.toolkit.fluxcd.io/v2
               kind: HelmRelease
               metadata:
                 name: not-used
@@ -206,7 +206,7 @@ spec:
               kind: HelmRelease
               labelSelector: helm.flux.home.arpa/default notin (false)
           - patch: |-
-              apiVersion: helm.toolkit.fluxcd.io/v2beta1
+              apiVersion: helm.toolkit.fluxcd.io/v2
               kind: HelmRelease
               metadata:
                 name: not-used

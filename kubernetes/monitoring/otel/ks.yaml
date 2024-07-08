@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: otel-stack
+  name: otel-operator
   namespace: flux-system
   labels: &ll
     kustomization.flux.home.arpa/default: "true"
@@ -15,10 +15,34 @@ spec:
   targetNamespace: monitoring
   commonMetadata:
     labels:
-      app.kubernetes.io/name: &app otel-stack
-  path: "./kubernetes/monitoring/otel/stack"
+      app.kubernetes.io/name: &app otel-operator
+  path: "./kubernetes/monitoring/otel/operator"
   postBuild:
     substituteFrom: []
     substitute:
       APP: *app
   dependsOn: []
+# ---
+# apiVersion: kustomize.toolkit.fluxcd.io/v1
+# kind: Kustomization
+# metadata:
+#   name: otel-stack
+#   namespace: flux-system
+#   labels: &ll
+#     kustomization.flux.home.arpa/default: "true"
+#     kustomization.flux.home.arpa/helmpatches: "true"
+#     substitution.flux.home.arpa/disabled: "false"
+#     prune.flux.home.arpa/disabled: "false"
+#     wait.flux.home.arpa/disabled: "false"
+#     storage.flux.home.arpa/required: "true"
+# spec:
+#   targetNamespace: monitoring
+#   commonMetadata:
+#     labels:
+#       app.kubernetes.io/name: &app otel-stack
+#   path: "./kubernetes/monitoring/otel/stack"
+#   postBuild:
+#     substituteFrom: []
+#     substitute:
+#       APP: *app
+#   dependsOn: []

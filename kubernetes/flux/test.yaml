@@ -295,7 +295,7 @@ spec:
               labelSelector: wait.flux.home.arpa/disabled in (true)
               # labelSelector: wait.flux.home.arpa/disabled notin (true)
           - patch: |-
-              apiVersion: helm.toolkit.fluxcd.io/v2beta1
+              apiVersion: helm.toolkit.fluxcd.io/v2
               kind: HelmRelease
               metadata:
                 name: not-used
@@ -318,7 +318,7 @@ spec:
               kind: HelmRelease
               labelSelector: helm.flux.home.arpa/default notin (false)
           - patch: |-
-              apiVersion: helm.toolkit.fluxcd.io/v2beta1
+              apiVersion: helm.toolkit.fluxcd.io/v2
               kind: HelmRelease
               metadata:
                 name: not-used
