@@ -41,3 +41,13 @@ spec:
   driftDetection:
     mode: enabled
   maxHistory: 3
+  values:
+    manager:
+      # controller_runtime_webhook_latency_seconds_bucket has high cardinality, no option to drop as of 0.33.0
+      # serviceMonitor:
+      #   enabled: true
+      collectorImage:
+        # https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/distributions/otelcol-contrib/manifest.yaml
+        repository: otel/opentelemetry-collector-contrib
+        # https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/distributions/otelcol-k8s/manifest.yaml
+        # repository: "otel/opentelemetry-collector-k8s"
