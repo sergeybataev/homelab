@@ -63,7 +63,7 @@ spec:
             uid: prometheus
             access: proxy
             url: http://thanos-query-frontend.monitoring.svc.cluster.local.:10902
-            isDefault: true
+            # isDefault: true
           - name: Loki
             type: loki
             access: proxy
