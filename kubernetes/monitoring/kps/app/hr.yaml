@@ -213,33 +213,33 @@ spec:
 
       # Thanos
       # https://thanos.io/ - Open source, highly available Prometheus setup with long term storage capabilities.
+      # thanosService:
+      #   enabled: true
+      # thanosServiceMonitor:
+      #   enabled: false
+      #if need to use thanos for prometheus HA
+      podMetadata:
+        annotations:
+          secret.reloader.stakater.com/reload: &secret thanos-objstore-config
+      thanos:
+        image: quay.io/thanos/thanos:${THANOS_VERSION}
+        version: "${THANOS_VERSION#v}"
+        objectStorageConfig:
+          existingSecret:
+            name: *secret
+            key: config
+      # if thanos as external service
       thanosService:
         enabled: true
+      thanosServiceExternal:
+        enabled: true
+        type: LoadBalancer
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: thanos-lb.${SECRET_DOMAIN}
+          io.cilium/lb-ipam-ips: ${PROMETHEUS_IP}
+        externalTrafficPolicy: Cluster
       thanosServiceMonitor:
-        enabled: false
-        #if need to use thanos for prometheus HA
-        podMetadata:
-          annotations:
-            secret.reloader.stakater.com/reload: &secret thanos-objstore-config
-        thanos:
-          image: quay.io/thanos/thanos:${THANOS_VERSION}
-          version: "${THANOS_VERSION#v}"
-          objectStorageConfig:
-            existingSecret:
-              name: *secret
-              key: config
-        # if thanos as external service
-        thanosService:
-          enabled: true
-        thanosServiceExternal:
-          enabled: true
-          type: LoadBalancer
-          annotations:
-            external-dns.alpha.kubernetes.io/hostname: thanos.${SECRET_DOMAIN}
-            # io.cilium/lb-ipam-ips: ${PROMETHEUS_IP}
-          externalTrafficPolicy: Cluster
-        thanosServiceMonitor:
-          enabled: true
+        enabled: true
 
     nodeExporter:
       enabled: true
