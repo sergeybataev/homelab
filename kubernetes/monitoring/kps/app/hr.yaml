@@ -158,16 +158,15 @@ spec:
         certManager:
           enabled: true
     prometheus:
-    # prometheus:
-    #   ingress:
-    #     # type: LoadBalancer
-    #     # annotations:
-    #     # io.cilium/lb-ipam-ips: ${PROMETHEUS_IP}
-    #     enabled: true
-    #     ingressClassName: internal
-    #     pathType: Prefix
-    #     hosts:
-    #       - "prometheus.${SECRET_DOMAIN}"
+      ingress:
+        # type: LoadBalancer
+        # annotations:
+        # io.cilium/lb-ipam-ips: ${PROMETHEUS_IP}
+        enabled: true
+        ingressClassName: internal
+        pathType: Prefix
+        hosts:
+          - &host "prometheus.${SECRET_DOMAIN}"
 
       prometheusSpec:
         replicas: 1
@@ -208,7 +207,7 @@ spec:
           matchLabels:
             app.kubernetes.io/part-of: kube-prometheus-stack
         # without thanos
-        enableRemoteWriteReceiver: true
+        # enableRemoteWriteReceiver: true
         # TODO check
         # podAntiAffinity: hard
 
@@ -218,29 +217,30 @@ spec:
         enabled: true
       thanosServiceMonitor:
         enabled: false
-        # if need to use thanos for prometheus HA
-        # podMetadata:
-        #   annotations:
-        #     secret.reloader.stakater.com/reload: &secret thanos-objstore-config
-        # thanos:
-        #   image: quay.io/thanos/thanos:${THANOS_VERSION}
-        #   version: "${THANOS_VERSION#v}"
-        #   objectStorageConfig:
-        #     existingSecret:
-        #       name: *secret
-        #       key: config
-        # # if thanos as external service
-        # thanosService:
-        #   enabled: true
-        # thanosServiceExternal:
-        #   enabled: true
-        #   type: LoadBalancer
-        #   annotations:
-        #     external-dns.alpha.kubernetes.io/hostname: thanos.turbo.ac
-        #     io.cilium/lb-ipam-ips: ${PROMETHEUS_IP}
-        #   externalTrafficPolicy: Cluster
-        # thanosServiceMonitor:
-        #   enabled: true
+        #if need to use thanos for prometheus HA
+        podMetadata:
+          annotations:
+            secret.reloader.stakater.com/reload: &secret thanos-objstore-config
+        thanos:
+          image: quay.io/thanos/thanos:${THANOS_VERSION}
+          version: "${THANOS_VERSION#v}"
+          objectStorageConfig:
+            existingSecret:
+              name: *secret
+              key: config
+        # if thanos as external service
+        thanosService:
+          enabled: true
+        thanosServiceExternal:
+          enabled: true
+          type: LoadBalancer
+          annotations:
+            external-dns.alpha.kubernetes.io/hostname: thanos.${SECRET_DOMAIN}
+            # io.cilium/lb-ipam-ips: ${PROMETHEUS_IP}
+          externalTrafficPolicy: Cluster
+        thanosServiceMonitor:
+          enabled: true
+
     nodeExporter:
       enabled: true
 
