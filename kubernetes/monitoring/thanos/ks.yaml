@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: rook-ceph-cluster
+    - name: storage-rook-ceph-cluster
   path: ./kubernetes/monitoring/thanos/app
   prune: true
   sourceRef:

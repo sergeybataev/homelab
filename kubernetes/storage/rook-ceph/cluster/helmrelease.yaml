@@ -316,7 +316,7 @@ spec:
               codingChunks: 1
           preservePoolsOnDelete: false
           gateway:
-            securePort: 443
+            #securePort: 443
             port: 80
             # resources:
             #   requests:
