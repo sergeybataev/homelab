@@ -71,8 +71,8 @@ spec:
         - --retention.resolution-1h=60d
       persistence: &persistence
         enabled: true
-        storageClass: openebs-hostpath
-        size: 10Gi
+        storageClass: ceph-block
+        size: 30Gi
     query:
       replicas: 1
       extraArgs: ["--alert.query-url=https://thanos.${SECRET_DOMAIN}"]
