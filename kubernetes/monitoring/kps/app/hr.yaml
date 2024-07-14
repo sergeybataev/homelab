@@ -67,6 +67,28 @@ spec:
         prometheusOperator: false
         windows: false
 
+    kubeControllerManager:
+      enabled: false
+    kubelet:
+      enabled: false
+    kubeApiServer:
+      enabled: false
+    kubernetesServiceMonitors:
+      enabled: false
+    coreDns:
+      enabled: false
+    kubeEtcd:
+      enabled: false
+    kubeScheduler:
+      enabled: false
+    kubeProxy:
+      enabled: false
+    kubeStateMetrics:
+      enabled: false
+    nodeExporter:
+      enabled: false
+
+
     crds:
       enabled: false
     cleanPrometheusOperatorObjectNames: true
