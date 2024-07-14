@@ -9,7 +9,7 @@ spec:
   targetAllocator:
     image: ghcr.io/open-telemetry/opentelemetry-operator/target-allocator:main
     enabled: true
-    allocationStrategy: per-node
+    # allocationStrategy: per-node
     serviceAccount: opentelemetry-collector
     prometheusCR:
       enabled: true
