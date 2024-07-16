@@ -13,6 +13,8 @@ spec:
         size_in_percentage: 40
 
     receivers:
+        k8s_events:
+
         otlp:
           protocols:
             grpc:
@@ -229,6 +231,7 @@ spec:
           receivers:
           - filelog
           - otlp
+          - k8s_events
           processors:
           - k8sattributes
           - resourcedetection/env
