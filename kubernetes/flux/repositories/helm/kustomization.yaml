@@ -25,7 +25,7 @@ resources:
 # storage
   - ./storage/openebs.yaml
   - ./storage/rook-ceph.yaml
-  - ./storage/longhorn.yaml
+  - ./storage/backube.yaml
 # database
   - ./database/emqx.yaml
   - ./database/cloudnative-pg.yaml
