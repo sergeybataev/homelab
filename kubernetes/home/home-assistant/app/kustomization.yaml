@@ -5,4 +5,4 @@ kind: Kustomization
 resources:
   - ./secret-home-assistant.sops.yaml
   - ./helmrelease.yaml
-  - ../../../../templates/volsync
+  - ../../../templates/volsync
