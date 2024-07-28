@@ -23,8 +23,8 @@ spec:
       strategy: rollback
       retries: 3
   dependsOn:
-    - name: system-backup-snapshot-controller
-      namespace: system
+    - name: snapshot-controller
+      namespace: kube-system
   values:
     manageCRDs: true
     metrics:
