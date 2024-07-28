@@ -103,12 +103,3 @@ spec:
                 service:
                   identifier: app
                   port: http
-      local:
-        className: internal
-        hosts:
-          - host: "{{ .Release.Name }}.${LOCAL_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http

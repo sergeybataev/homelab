@@ -91,8 +91,9 @@ spec:
       extraArgs: ["--query-range.response-cache-config=$(THANOS_CACHE_CONFIG)"]
       ingress:
         enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: "internal.${SECRET_DOMAIN}"
         ingressClassName: internal
-        external-dns.alpha.kubernetes.io/target: "internal.${SECRET_DOMAIN}"
         hosts:
           - thanos.${SECRET_DOMAIN}
       podAnnotations: &podAnnotations
