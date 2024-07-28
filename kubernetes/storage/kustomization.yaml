@@ -5,6 +5,5 @@ resources:
   - ./namespace.yaml
   - ./openebs-system/ks.yaml
   - ./rook-ceph/ks.yaml
-  # - ./longhorn/ks.yaml
-  # - ./node_main/truenas/ks.yaml
+  - ./volsync/ks.yaml
   - ./node_main/storage/ks.yaml
