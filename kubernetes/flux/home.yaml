@@ -10,6 +10,7 @@ spec:
   dependsOn:
     - name: cluster-config
     - name: cluster-storage
+
   interval: 30m
   path: ./kubernetes/home
   prune: true
