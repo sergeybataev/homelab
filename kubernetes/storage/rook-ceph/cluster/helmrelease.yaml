@@ -309,14 +309,17 @@ spec:
             replicated:
               size: 1
           dataPool:
-            replicated:
-              size: 1
             # failureDomain: host
             # For production it is recommended to use more chunks, such as 4+2 or 8+4
             # uncomment after 3+ nodes
             # erasureCoded:
             #   dataChunks: 2
             #   codingChunks: 1
+
+            # and remove replicated:
+            replicated:
+              size: 1
+              requireSafeReplicaSize: false
           preservePoolsOnDelete: false
           gateway:
             #securePort: 443
