@@ -302,7 +302,7 @@ spec:
             csi.storage.k8s.io/fstype: ext4
 
     cephObjectStores:
-      - name: ceph-objectstore
+      - name: ceph-objectstore-non-ec
         spec:
           metadataPool:
             failureDomain: host
