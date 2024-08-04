@@ -337,7 +337,7 @@ spec:
               interval: 60s
         storageClass:
           enabled: true
-          name: ceph-bucket
+          name: ceph-bucket-non-ec
           reclaimPolicy: Delete
           parameters:
             region: eu-central-1
