@@ -311,7 +311,6 @@ spec:
           dataPool:
             replicated:
               size: 1
-            erasureCoded: {}
             # failureDomain: host
             # For production it is recommended to use more chunks, such as 4+2 or 8+4
             # uncomment after 3+ nodes
