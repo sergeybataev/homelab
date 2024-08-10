@@ -48,3 +48,7 @@ spec:
         memory: 400M
       limits:
         memory: 400M
+
+    csi:
+      provisionerNodeAffinity: feature.node.kubernetes.io/storage-nonrotationaldisk="true" #key1=value1,value2; key2=value3
+

@@ -89,6 +89,16 @@ spec:
         urlPrefix: /
         ssl: false
 
+      placement:
+        mgr: &placement
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: node-role.kubernetes.io/control-plane
+                      operator: Exists
+        mon: *placement
+
       storage:
         # when onlyApplyOSDPlacement is false, will merge both placement.All() and storageClassDeviceSets.Placement.
         onlyApplyOSDPlacement: false
