@@ -51,4 +51,4 @@ spec:
 
     csi:
       provisionerNodeAffinity: feature.node.kubernetes.io/storage-nonrotationaldisk="true" #key1=value1,value2; key2=value3
-
+      pluginNodeAffinity: feature.node.kubernetes.io/storage-nonrotationaldisk="true" #key1=value1,value2; key2=value3
