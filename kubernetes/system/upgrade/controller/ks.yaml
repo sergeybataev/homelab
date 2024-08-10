@@ -9,7 +9,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/system/upgrade/upgrade-controller/app
+  path: ./kubernetes/system/upgrade/controller/app
   prune: true
   sourceRef:
     kind: GitRepository

@@ -37,6 +37,10 @@ spec:
       namespace: flux-system
     - apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization
+      name: cluster-home
+      namespace: flux-system
+    - apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
       name: cluster-monitoring
       namespace: flux-system
     - apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -55,4 +59,3 @@ spec:
       kind: Kustomization
       name: cluster-test
       namespace: flux-system
-

@@ -6,6 +6,9 @@ metadata:
   namespace: flux-system
 spec:
   targetNamespace: kube-system
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   path: ./kubernetes/system/cilium/app
   prune: false # never should be deleted
   sourceRef:
@@ -23,6 +26,9 @@ metadata:
   namespace: flux-system
 spec:
   targetNamespace: kube-system
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   dependsOn:
     - name: system-cilium
   path: ./kubernetes/system/cilium/config

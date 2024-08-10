@@ -160,6 +160,7 @@ bootstrap_cloudflare:
   enabled: true
   # (Required) Cloudflare Domain
   domain: ""
+  public_domain: ""
   # (Required) Cloudflare API Token (NOT API Key)
   #   1. Head over to Cloudflare and create a API Token by going to
   #      https://dash.cloudflare.com/profile/api-tokens
