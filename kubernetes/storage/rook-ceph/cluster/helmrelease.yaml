@@ -79,7 +79,7 @@ spec:
         #     enabled: true
       mon:
         count: 3
-        # allowMultiplePerNode: true
+        allowMultiplePerNode: true
 
       crashCollector:
         disable: false
@@ -90,14 +90,17 @@ spec:
         ssl: false
 
       placement:
-        mgr: &placement
+        all: &placement
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
                 - matchExpressions:
                     - key: node-role.kubernetes.io/control-plane
                       operator: Exists
-        mon: *placement
+                    - key: storage.io/ebs
+                      operator: Equal
+                      values:
+                        - "true"
 
       storage:
         # when onlyApplyOSDPlacement is false, will merge both placement.All() and storageClassDeviceSets.Placement.
@@ -112,7 +115,12 @@ spec:
           - name: "main.storage"
             devices:
               - name: "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNG0M218299R"
-
+          # - name: "rpi-5-1-green"
+          #   devices:
+          #     - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_2TB_S7GDNS0X203177N"
+          # - name: "rpi-5-2-yellow"
+          #   devices:
+          #     - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_1TB_S7GCNS0X121015K"
         # storageClassDeviceSets:
         #   - name: ceph-on-zfs
         #     # The number of OSDs to create from this device set
@@ -247,6 +255,29 @@ spec:
             memory: "1Gi"
 
     cephBlockPools:
+      # - name: ceph-blockpool-ec
+      #   spec:
+      #     failureDomain: osd
+      #     erasureCoded:
+      #       dataChunks: 2
+      #       codingChunks: 1
+      #   storageClass:
+      #     enabled: true
+      #     name: ceph-block-ec
+      #     isDefault: true
+      #     reclaimPolicy: Delete
+      #     allowVolumeExpansion: true
+      #     parameters:
+      #       imageFormat: "2"
+      #       imageFeatures: layering
+      #       csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+      #       csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+      #       csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+      #       csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+      #       csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+      #       csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+      #       csi.storage.k8s.io/fstype: ext4
+
       - name: ceph-blockpool
         spec:
           failureDomain: host

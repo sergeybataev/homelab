@@ -56,5 +56,9 @@ spec:
             enabled: false
       analytics:
         enabled: false
+      # zfsNode contains the configurables for
+      # the zfs node daemonset
       zfsNode:
         kubeletDir: "/var/lib/kubelet/"
+        nodeSelector:
+          storage.io/zfs: true

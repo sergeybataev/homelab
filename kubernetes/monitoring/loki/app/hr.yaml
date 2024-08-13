@@ -233,16 +233,10 @@ spec:
     # #   persistence:
     # #     type: pvc
     # #     enabled: true
-    # serviceMonitor:
-    #   # disabled due to requirement of grafana operator: https://github.com/grafana/loki/issues/7546
-    #   enabled: false
-    # sidecar:
-    #   image:
-    #     repository: ghcr.io/kiwigrid/k8s-sidecar
-    #   rules:
-    #     searchNamespace: ALL
-    #     folder: /rules/fake
-    # lokiCanary:
-    #   enabled: false
-    # test:
-    #   enabled: false
+
+    serviceMonitor:
+      enabled: true
+    lokiCanary:
+      enabled: false
+    test:
+      enabled: false
