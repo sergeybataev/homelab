@@ -39,6 +39,8 @@ spec:
       localpv:
         image:
           registry: quay.io/
+        nodeSelector:
+          storage.io/hostpath: "true"
       hostpathClass:
         enabled: true
         name: openebs-hostpath
@@ -61,4 +63,4 @@ spec:
       zfsNode:
         kubeletDir: "/var/lib/kubelet/"
         nodeSelector:
-          storage.io/zfs: true
+          storage.io/zfs: "true"
