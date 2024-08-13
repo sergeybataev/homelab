@@ -98,7 +98,7 @@ spec:
                     - key: node-role.kubernetes.io/control-plane
                       operator: Exists
                     - key: storage.io/ebs
-                      operator: Equal
+                      operator: In
                       values:
                         - "true"
 

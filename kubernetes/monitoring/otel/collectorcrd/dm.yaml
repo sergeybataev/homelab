@@ -13,117 +13,178 @@ spec:
         size_in_percentage: 40
 
     receivers:
-        k8s_events:
+      k8s_events:
+        namespaces: []
 
-        otlp:
-          protocols:
-            grpc:
-              endpoint: 0.0.0.0:4317
-            http:
-              endpoint: 0.0.0.0:4318
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
 
-        filelog:
-          exclude: []
-          include:
+      filelog:
+        exclude: []
+        include:
           - /var/log/pods/*/*/*.log
-          include_file_name: false
-          include_file_path: true
-          operators:
+        include_file_name: false
+        include_file_path: true
+        operators:
           - id: container-parser
             max_log_size: 102400
             type: container
-          retry_on_failure:
-            enabled: true
-          start_at: end
+          # Find out which format is used by kubernetes
+          - type: router
+            id: get-format
+            routes:
+              - output: parser-docker
+                expr: 'body matches "^\\{"'
+              - output: parser-crio
+                expr: 'body matches "^[^ Z]+ "'
+              - output: parser-containerd
+                expr: 'body matches "^[^ Z]+Z"'
+          # Parse CRI-O format
+          - type: regex_parser
+            id: parser-crio
+            regex: '^(?P<time>[^ Z]+) (?P<stream>stdout|stderr) (?P<logtag>[^ ]*) ?(?P<log>.*)$'
+            output: extract_metadata_from_filepath
+            timestamp:
+              parse_from: attributes.time
+              layout_type: gotime
+              layout: '2006-01-02T15:04:05.999999999Z07:00'
+          # Parse CRI-Containerd format
+          - type: regex_parser
+            id: parser-containerd
+            regex: '^(?P<time>[^ ^Z]+Z) (?P<stream>stdout|stderr) (?P<logtag>[^ ]*) ?(?P<log>.*)$'
+            output: extract_metadata_from_filepath
+            timestamp:
+              parse_from: attributes.time
+              layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+          # Parse Docker format
+          - type: json_parser
+            id: parser-docker
+            output: extract_metadata_from_filepath
+            timestamp:
+              parse_from: attributes.time
+              layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+          # Extract metadata from file path
+          - type: regex_parser
+            id: extract_metadata_from_filepath
+            # Pod UID is not always 36 characters long
+            regex: '^.*\/(?P<namespace>[^_]+)_(?P<pod_name>[^_]+)_(?P<uid>[a-f0-9\-]{16,36})\/(?P<container_name>[^\._]+)\/(?P<restart_count>\d+)\.log$'
+            parse_from: attributes["log.file.path"]
+            cache:
+              size: 128 # default maximum amount of Pods per Node is 110
+          # Rename attributes
+          - type: move
+            from: attributes.log
+            to: body
+          - type: move
+            from: attributes.stream
+            to: attributes["log.iostream"]
+          - type: move
+            from: attributes.container_name
+            to: resource["k8s.container.name"]
+          - type: move
+            from: attributes.namespace
+            to: resource["k8s.namespace.name"]
+          - type: move
+            from: attributes.pod_name
+            to: resource["k8s.pod.name"]
+          - type: move
+            from: attributes.restart_count
+            to: resource["k8s.container.restart_count"]
+          - type: move
+            from: attributes.uid
+            to: resource["k8s.pod.uid"]
+        # retry_on_failure:
+        #   enabled: true
+        start_at: beginning
 
-        hostmetrics:
-          collection_interval: 10s
-          root_path: /hostfs
-          scrapers:
-            cpu:
-              metrics:
-                system.cpu.utilization:
-                  enabled: true
-            disk: {}
-            filesystem:
-              exclude_fs_types:
-                fs_types:
-                - autofs
-                - binfmt_misc
-                - bpf
-                - cgroup2
-                - configfs
-                - debugfs
-                - devpts
-                - devtmpfs
-                - fusectl
-                - hugetlbfs
-                - iso9660
-                - mqueue
-                - nsfs
-                - overlay
-                - proc
-                - procfs
-                - pstore
-                - rpc_pipefs
-                - securityfs
-                - selinuxfs
-                - squashfs
-                - sysfs
-                - tracefs
-                match_type: strict
-              exclude_mount_points:
-                match_type: regexp
-                mount_points:
-                - /dev/*
-                - /proc/*
-                - /sys/*
-                - /run/k3s/containerd/*
-                - /var/lib/docker/*
-                - /var/lib/kubelet/*
-                - /snap/*
-              metrics:
-                system.filesystem.utilization:
-                  enabled: true
-            load: {}
-            memory:
-              metrics:
-                system.memory.utilization:
-                  enabled: true
-            network: {}
+      hostmetrics:
+        collection_interval: 10s
+        root_path: /hostfs
+        scrapers:
+          cpu:
+            metrics:
+              system.cpu.utilization:
+                enabled: true
+          disk: {}
+          filesystem:
+            exclude_fs_types:
+              fs_types:
+              - autofs
+              - binfmt_misc
+              - bpf
+              - cgroup2
+              - configfs
+              - debugfs
+              - devpts
+              - devtmpfs
+              - fusectl
+              - hugetlbfs
+              - iso9660
+              - mqueue
+              - nsfs
+              - overlay
+              - proc
+              - procfs
+              - pstore
+              - rpc_pipefs
+              - securityfs
+              - selinuxfs
+              - squashfs
+              - sysfs
+              - tracefs
+              match_type: strict
+            exclude_mount_points:
+              match_type: regexp
+              mount_points:
+              - /dev/*
+              - /proc/*
+              - /sys/*
+              - /run/k3s/containerd/*
+              - /var/lib/docker/*
+              - /var/lib/kubelet/*
+              - /snap/*
+            metrics:
+              system.filesystem.utilization:
+                enabled: true
+          load: {}
+          memory:
+            metrics:
+              system.memory.utilization:
+                enabled: true
+          network: {}
 
-        kubeletstats:
+      kubeletstats:
+        auth_type: serviceAccount
+        collection_interval: 15s
+        endpoint: https://${env:OTEL_K8S_NODE_IP}:10250
+        extra_metadata_labels:
+        - container.id
+        - k8s.volume.type
+        insecure_skip_verify: true
+        k8s_api_config:
           auth_type: serviceAccount
-          collection_interval: 15s
-          endpoint: https://${env:OTEL_K8S_NODE_IP}:10250
-          extra_metadata_labels:
-          - container.id
-          - k8s.volume.type
-          insecure_skip_verify: true
-          k8s_api_config:
-            auth_type: serviceAccount
-          metric_groups:
-          - node
-          - pod
-          - volume
-          - container
-          metrics:
-            container.cpu.usage:
-              enabled: true
-            k8s.node.cpu.usage:
-              enabled: true
-            k8s.node.uptime:
-              enabled: true
-            k8s.pod.cpu.usage:
-              enabled: true
-            k8s.pod.uptime:
-              enabled: true
+        metric_groups:
+        - node
+        - pod
+        - volume
+        - container
+        metrics:
+          container.cpu.usage:
+            enabled: true
+          k8s.node.cpu.usage:
+            enabled: true
+          k8s.node.uptime:
+            enabled: true
+          k8s.pod.cpu.usage:
+            enabled: true
+          k8s.pod.uptime:
+            enabled: true
 
     processors:
-      batch:
-        send_batch_max_size: 1500
-        send_batch_size: 1000
-        timeout: 1s
       memory_limiter:
         check_interval: 5s
         limit_percentage: 80
@@ -195,6 +256,23 @@ spec:
         - env
         override: false
         timeout: 2s
+      transform:
+        error_mode: ignore
+        log_statements:
+          - context: log
+            statements:
+              # Parse body as JSON and merge the resulting map with the cache map, ignoring non-json bodies.
+              # cache is a field exposed by OTTL that is a temporary storage place for complex operations.
+              - merge_maps(cache, ParseJSON(body), "upsert") where IsMatch(body, "^\\{")
+      resource:
+        attributes:
+          - action: insert
+            key: loki.resource.labels
+            value: service.name, service.namespace, service.version, deployment.environment, k8s.node.name, k8s.pod.ip
+      batch:
+        send_batch_max_size: 1500
+        send_batch_size: 1000
+        timeout: 1s
 
     exporters:
       debug: {}
@@ -236,6 +314,8 @@ spec:
           - k8sattributes
           - resourcedetection/env
           - memory_limiter
+          - transform
+          - resource
           - batch
           exporters:
           - otlphttp
