@@ -363,7 +363,7 @@ spec:
 
         storageClass:
           enabled: true
-          name: ceph-block-ec
+          name: ceph-block
           isDefault: true
           reclaimPolicy: Delete
           allowVolumeExpansion: true
