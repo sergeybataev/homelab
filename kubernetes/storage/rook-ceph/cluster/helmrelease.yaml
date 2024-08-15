@@ -112,7 +112,8 @@ spec:
           # are already enabled by other settings in the cluster CR.
           - name: pg_autoscaler
             enabled: true
-
+          - name: rook
+            enabled: true
 
       # enable the crash collector for ceph daemon crash collection
       crashCollector:
