@@ -34,13 +34,16 @@ spec:
     keepHistory: false
 
   values:
+    logLevel: DEBUG
     annotations:
       configmap.reloader.stakater.com/reload: rook-ceph-operator-config
+
     crds:
       enabled: true
 
     csi:
       provisionerReplicas: 3
+      logLevel: 5
 
     pspEnable: false
 
