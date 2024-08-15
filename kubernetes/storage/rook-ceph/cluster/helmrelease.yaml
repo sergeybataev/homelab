@@ -210,12 +210,12 @@ spec:
           - name: "main.storage"
             devices:
               - name: "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNG0M218299R"
-          # - name: "rpi-5-1-green"
-          #   devices:
-          #     - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_2TB_S7GDNS0X203177N"
-          # - name: "rpi-5-2-yellow"
-          #   devices:
-          #     - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_1TB_S7GCNS0X121015K"
+          - name: "rpi-5-1-green"
+            devices:
+              - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_2TB_S7GDNS0X203177N"
+          - name: "rpi-5-2-yellow"
+            devices:
+              - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_1TB_S7GCNS0X121015K"
         # storageClassDeviceSets:
         #   - name: ceph-on-zfs
         #     # The number of OSDs to create from this device set
