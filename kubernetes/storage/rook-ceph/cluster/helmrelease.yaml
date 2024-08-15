@@ -44,16 +44,25 @@ spec:
     keepHistory: false
 
   values:
-    toolbox:
-      enabled: true
-
     operatorNamespace: rook-ceph
 
-    monitoring:
+    # Installs a debugging toolbox deployment
+    toolbox:
+      # -- Enable Ceph debugging pod deployment. See [toolbox](../Troubleshooting/ceph-toolbox.md)
       enabled: true
+
+    monitoring:
+      # -- Enable Prometheus integration, will also create necessary RBAC rules to allow Operator to create ServiceMonitors.
+      # Monitoring requires Prometheus to be pre-installed
+      enabled: true
+      # -- Whether to create the Prometheus rules for Ceph alerts
       createPrometheusRules: true
 
+    # -- Create & use PSP resources. Set this to the same value as the rook-ceph chart.
+    pspEnable: false
+
     ingress:
+      # -- Enable an ingress for the ceph-dashboard
       dashboard:
         ingressClassName: external
         annotations:
@@ -69,38 +78,124 @@ spec:
       bdev_async_discard = true
       osd_pool_default_size = 1
 
+    # All values below are taken from the CephCluster CRD
+    # -- Cluster configuration.
+    # @default -- See [below](#ceph-cluster-spec)
     cephClusterSpec:
+      # This cluster spec example is for a converged cluster where all the Ceph daemons are running locally,
+      # as in the host-based example (cluster.yaml). For a different configuration such as a
+      # PVC-based cluster (cluster-on-pvc.yaml), external cluster (cluster-external.yaml),
+      # or stretch cluster (cluster-stretched.yaml), replace this entire `cephClusterSpec`
+      # with the specs from those examples.
+
+      # The path on the host where configuration files will be persisted. Must be specified.
+      # Important: if you reinstall the cluster, make sure you delete this directory from each host or else the mons will fail to start on the new cluster.
+      # In Minikube, the '/data' directory is configured to persist across reboots. Use "/data/rook" in Minikube environment.
       dataDirHostPath: /var/lib/rook
+
+      mon:
+        # Set the number of mons to be started. Generally recommended to be 3.
+        # For highest availability, an odd number of mons should be specified.
+        count: 3
+        # The mons should be on unique nodes. For production, at least 3 nodes are recommended for this reason.
+        # Mons should only be allowed on the same node for test environments where data loss is acceptable.
+        allowMultiplePerNode: true
+
       mgr:
+        # When higher availability of the mgr is needed, increase the count to 2.
+        # In that case, one mgr will be active and one in standby. When Ceph updates which
+        # mgr is active, Rook will update the mgr services to match the active mgr.
         count: 2
         allowMultiplePerNode: true
-        # modules:
-        #   - name: pg_autoscaler
-        #     enabled: true
-      mon:
-        count: 3
-        allowMultiplePerNode: true
+        modules:
+          # Several modules should not need to be included in this list. The "dashboard" and "monitoring" modules
+          # are already enabled by other settings in the cluster CR.
+          - name: pg_autoscaler
+            enabled: true
 
+
+      # enable the crash collector for ceph daemon crash collection
       crashCollector:
         disable: false
+        # Uncomment daysToRetain to prune ceph crash entries older than the
+        # specified number of days.
+        # daysToRetain: 30
 
+      # enable the ceph dashboard for viewing cluster status
       dashboard:
         enabled: true
+
+        # serve the dashboard under a subpath (useful when you are accessing the dashboard via a reverse proxy)
         urlPrefix: /
+        # serve the dashboard at the given port.
+        # port: 8443
+        # Serve the dashboard using SSL (if using ingress to expose the dashboard and `ssl: true` you need to set
+        # the corresponding "backend protocol" annotation(s) for your ingress controller of choice)
         ssl: false
 
+      # automate [data cleanup process](https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/ceph-teardown.md#delete-the-data-on-hosts) in cluster destruction.
+      cleanupPolicy:
+        # Since cluster cleanup is destructive to data, confirmation is required.
+        # To destroy all Rook data on hosts during uninstall, confirmation must be set to "yes-really-destroy-data".
+        # This value should only be set when the cluster is about to be deleted. After the confirmation is set,
+        # Rook will immediately stop configuring the cluster and only wait for the delete command.
+        # If the empty string is set, Rook will not destroy any data on hosts during uninstall.
+        confirmation: ""
+        # sanitizeDisks represents settings for sanitizing OSD disks on cluster deletion
+        sanitizeDisks:
+          # method indicates if the entire disk should be sanitized or simply ceph's metadata
+          # in both case, re-install is possible
+          # possible choices are 'complete' or 'quick' (default)
+          method: quick
+          # dataSource indicate where to get random bytes from to write on the disk
+          # possible choices are 'zero' (default) or 'random'
+          # using random sources will consume entropy from the system and will take much more time then the zero source
+          dataSource: zero
+          # iteration overwrite N times instead of the default (1)
+          # takes an integer value
+          iteration: 1
+        # allowUninstallWithVolumes defines how the uninstall should be performed
+        # If set to true, cephCluster deletion does not wait for the PVs to be deleted.
+        allowUninstallWithVolumes: false
+
+      # To control where various services will be scheduled by kubernetes, use the placement configuration sections below.
+      # The example under 'all' would have all services scheduled on kubernetes nodes labeled with 'role=storage-node' and
+      # tolerate taints with a key of 'storage-node'.
+      # placement:
+      #   all:
+      #     nodeAffinity:
+      #       requiredDuringSchedulingIgnoredDuringExecution:
+      #         nodeSelectorTerms:
+      #           - matchExpressions:
+      #             - key: role
+      #               operator: In
+      #               values:
+      #               - storage-node
+      #     podAffinity:
+      #     podAntiAffinity:
+      #     topologySpreadConstraints:
+      #     tolerations:
+      #     - key: storage-node
+      #       operator: Exists
       placement:
         all: &placement
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
                 - matchExpressions:
-                    - key: node-role.kubernetes.io/control-plane
-                      operator: Exists
                     - key: storage.io/ebs
                       operator: In
                       values:
                         - "true"
+
+      # # The option to automatically remove OSDs that are out and are safe to destroy.
+      # removeOSDsIfOutAndSafeToRemove: false
+
+      # # priority classes to apply to ceph resources
+      # priorityClassNames:
+      #   mon: system-node-critical
+      #   osd: system-node-critical
+      #   mgr: system-cluster-critical
 
       storage:
         # when onlyApplyOSDPlacement is false, will merge both placement.All() and storageClassDeviceSets.Placement.
@@ -254,55 +349,60 @@ spec:
           limits:
             memory: "1Gi"
 
+    # -- A list of CephBlockPool configurations to deploy
+    # @default -- See [below](#ceph-block-pools)
     cephBlockPools:
-      - name: ceph-blockpool-ec
+      - name: ceph-blockpool
         spec:
-          failureDomain: osd
-          erasureCoded:
-            dataChunks: 2
-            codingChunks: 1
+          failureDomain: host
+          replicated:
+            size: 1
+          # Enables collecting RBD per-image IO statistics by enabling dynamic OSD performance counters. Defaults to false.
+          # For reference: https://docs.ceph.com/docs/master/mgr/prometheus/#rbd-io-statistics
+          enableRBDStats: true
+
         storageClass:
           enabled: true
           name: ceph-block-ec
           isDefault: true
           reclaimPolicy: Delete
           allowVolumeExpansion: true
+
+          # see https://kubernetes.io/docs/concepts/storage/storage-classes/#allowed-topologies
+          allowedTopologies: []
+          #        - matchLabelExpressions:
+          #            - key: rook-ceph-role
+          #              values:
+          #                - storage-node
+
+          # see https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/Block-Storage-RBD/block-storage.md#provision-storage for available configuration
           parameters:
+            # RBD image format. Defaults to "2".
             imageFormat: "2"
+
+            # RBD image features, equivalent to OR'd bitfield value: 63
+            # Available for imageFormat: "2". Older releases of CSI RBD
+            # support only the `layering` feature. The Linux kernel (KRBD) supports the
+            # full feature complement as of 5.4.0.
             imageFeatures: layering
+
             csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
-            csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+            csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
             csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
-            csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+            csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
             csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
-            csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+            csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
+
+            # Specify the filesystem type of the volume. If not specified, csi-provisioner
+            # will set default as `ext4`. Note that `xfs` is not recommended due to potential deadlock
+            # in hyperconverged settings where the volume is mounted on the same node as the osds.
             csi.storage.k8s.io/fstype: ext4
 
-      - name: ceph-blockpool
-        spec:
-          failureDomain: host
-          replicated:
-            size: 1
-
-        storageClass:
-          enabled: true
-          name: ceph-block
-          isDefault: true
-          reclaimPolicy: Delete
-          allowVolumeExpansion: true
-          parameters:
-            imageFormat: "2"
-            imageFeatures: layering
-            csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
-            csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
-            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
-            csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
-            csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
-            csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
-            csi.storage.k8s.io/fstype: ext4
-
+    # -- A list of CephFileSystem configurations to deploy
+    # @default -- See [below](#ceph-file-systems)
     cephFileSystems:
       - name: ceph-filesystem
+        # see https://github.com/rook/rook/blob/master/Documentation/CRDs/Shared-Filesystem/ceph-filesystem-crd.md#filesystem-settings for available configuration
         spec:
           metadataPool:
             replicated:
@@ -335,12 +435,39 @@ spec:
           allowVolumeExpansion: true
           parameters:
             csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+            csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
             csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+            csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
             csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-            csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+            csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
+            # Specify the filesystem type of the volume. If not specified, csi-provisioner
+            # will set default as `ext4`. Note that `xfs` is not recommended due to potential deadlock
+            # in hyperconverged settings where the volume is mounted on the same node as the osds.
             csi.storage.k8s.io/fstype: ext4
+
+    # -- Settings for the filesystem snapshot class
+    # @default -- See [CephFS Snapshots](../Storage-Configuration/Ceph-CSI/ceph-csi-snapshot.md#cephfs-snapshots)
+    cephFileSystemVolumeSnapshotClass:
+      enabled: false
+      name: ceph-filesystem
+      isDefault: true
+      deletionPolicy: Delete
+      annotations: {}
+      labels: {}
+      # see https://rook.io/docs/rook/v1.10/Storage-Configuration/Ceph-CSI/ceph-csi-snapshot/#cephfs-snapshots for available configuration
+      parameters: {}
+
+    # -- Settings for the block pool snapshot class
+    # @default -- See [RBD Snapshots](../Storage-Configuration/Ceph-CSI/ceph-csi-snapshot.md#rbd-snapshots)
+    cephBlockPoolsVolumeSnapshotClass:
+      enabled: false
+      name: ceph-block
+      isDefault: false
+      deletionPolicy: Delete
+      annotations: {}
+      labels: {}
+      # see https://rook.io/docs/rook/v1.10/Storage-Configuration/Ceph-CSI/ceph-csi-snapshot/#rbd-snapshots for available configuration
+      parameters: {}
 
     cephObjectStores:
       - name: ceph-objectstore-non-ec
@@ -392,3 +519,60 @@ spec:
           host:
             name: rgw.${SECRET_DOMAIN}
             path: /
+
+## cephECBlockPools are disabled by default, please remove the comments and set desired values to enable it
+## For erasure coded a replicated metadata pool is required.
+## https://rook.io/docs/rook/latest/CRDs/Shared-Filesystem/ceph-filesystem-crd/#erasure-coded
+#cephECBlockPools:
+#  - name: ec-pool
+#    spec:
+#      metadataPool:
+#        replicated:
+#          size: 2
+#      dataPool:
+#        failureDomain: osd
+#        erasureCoded:
+#          dataChunks: 2
+#          codingChunks: 1
+#        deviceClass: hdd
+#
+#    parameters:
+#      # clusterID is the namespace where the rook cluster is running
+#      # If you change this namespace, also change the namespace below where the secret namespaces are defined
+#      clusterID: rook-ceph # namespace:cluster
+#      # (optional) mapOptions is a comma-separated list of map options.
+#      # For krbd options refer
+#      # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
+#      # For nbd options refer
+#      # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
+#      # mapOptions: lock_on_read,queue_depth=1024
+#
+#      # (optional) unmapOptions is a comma-separated list of unmap options.
+#      # For krbd options refer
+#      # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
+#      # For nbd options refer
+#      # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
+#      # unmapOptions: force
+#
+#      # RBD image format. Defaults to "2".
+#      imageFormat: "2"
+#
+#      # RBD image features, equivalent to OR'd bitfield value: 63
+#      # Available for imageFormat: "2". Older releases of CSI RBD
+#      # support only the `layering` feature. The Linux kernel (KRBD) supports the
+#      # full feature complement as of 5.4
+#      # imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
+#      imageFeatures: layering
+#
+#    storageClass:
+#      provisioner: rook-ceph.rbd.csi.ceph.com # csi-provisioner-name
+#      enabled: true
+#      name: rook-ceph-block
+#      isDefault: false
+#      annotations: { }
+#      labels: { }
+#      allowVolumeExpansion: true
+#      reclaimPolicy: Delete
+
+# -- CSI driver name prefix for cephfs, rbd and nfs.
+# @default -- `namespace name where rook-ceph operator is deployed`
