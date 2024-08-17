@@ -34,6 +34,15 @@ spec:
       home-assistant:
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          annotations:
+            k8s.v1.cni.cncf.io/networks: |
+              [{
+                "name":"iot-vlan",
+                "namespace": "network",
+                "ips": ["${IOT_HOME_ASSISTANT_IP}/24"],
+                "gateway": ["${IOT_GATEWAY_IP}"]
+              }]
         initContainers:
           init-db:
             image:
@@ -50,7 +59,7 @@ spec:
             env:
               TZ: &TZ ${TIMEZONE}
               HASS_EXTERNAL_URL: https://hass.${SECRET_DOMAIN}
-              HASS_TRUSTED_PROXIES: ${CLUSTER_CIDR}
+              HASS_TRUSTED_PROXIES: ${NODE_CIDR}
               HASS_HTTP_TRUSTED_PROXY_1: ${NODE_CIDR}
               HASS_HTTP_TRUSTED_PROXY_2: ${CLUSTER_CIDR}
               SERVER_HOST:

@@ -10,6 +10,7 @@ resources:
   - ./system/fairwinds-charts.yaml
   - ./system/piraeus.yaml
 # network
+  - ./network/angelnu.yaml
   - ./network/jetstack.yaml
   - ./network/ingress-nginx.yaml
   - ./network/external-dns.yaml
