@@ -97,6 +97,9 @@ spec:
         seccompProfile: { type: RuntimeDefault }
     service:
       app:
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: ${HOME_ASSISTANT_IP}
         controller: home-assistant
         ports:
           http:
