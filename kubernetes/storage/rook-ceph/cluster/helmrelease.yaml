@@ -3,8 +3,8 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: rook-ceph-cluster-test
-  namespace: rook-ceph
+  name: &name rook-ceph-cluster-test
+  namespace: &ns rook-ceph
 spec:
   interval: 5m
   chart:
@@ -44,7 +44,12 @@ spec:
     keepHistory: false
 
   values:
-    operatorNamespace: rook-ceph
+    operatorNamespace: *ns
+
+    clusterName:
+      # -- The name of the cluster. This name will be used to create the CephCluster CRD.
+      # @default -- rook-ceph
+      name: *name
 
     # Installs a debugging toolbox deployment
     toolbox:
@@ -349,6 +354,11 @@ spec:
             memory: "100Mi"
           limits:
             memory: "1Gi"
+
+    # disable defaults
+    cephBlockPools: []
+    cephFileSystems: []
+    cephObjectStores: []
 
     # # -- A list of CephBlockPool configurations to deploy
     # # @default -- See [below](#ceph-block-pools)
