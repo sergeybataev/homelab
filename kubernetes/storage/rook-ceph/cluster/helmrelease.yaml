@@ -521,58 +521,58 @@ spec:
             name: rgw.${SECRET_DOMAIN}
             path: /
 
-# cephECBlockPools are disabled by default, please remove the comments and set desired values to enable it
-# For erasure coded a replicated metadata pool is required.
-# https://rook.io/docs/rook/latest/CRDs/Shared-Filesystem/ceph-filesystem-crd/#erasure-coded
-cephECBlockPools:
- - name: ceph-block-ec-pool
-   spec:
-     metadataPool:
-       replicated:
-         size: 2
-     dataPool:
-       failureDomain: host
-       erasureCoded:
-         dataChunks: 2
-         codingChunks: 1
+    # cephECBlockPools are disabled by default, please remove the comments and set desired values to enable it
+    # For erasure coded a replicated metadata pool is required.
+    # https://rook.io/docs/rook/latest/CRDs/Shared-Filesystem/ceph-filesystem-crd/#erasure-coded
+    cephECBlockPools:
+    - name: ceph-block-ec-pool
+      spec:
+        metadataPool:
+          replicated:
+            size: 2
+        dataPool:
+          failureDomain: host
+          erasureCoded:
+            dataChunks: 2
+            codingChunks: 1
 
-   parameters:
-     # clusterID is the namespace where the rook cluster is running
-     # If you change this namespace, also change the namespace below where the secret namespaces are defined
-     clusterID: rook-ceph # namespace:cluster
-     # (optional) mapOptions is a comma-separated list of map options.
-     # For krbd options refer
-     # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
-     # For nbd options refer
-     # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
-     # mapOptions: lock_on_read,queue_depth=1024
+      parameters:
+        # clusterID is the namespace where the rook cluster is running
+        # If you change this namespace, also change the namespace below where the secret namespaces are defined
+        clusterID: rook-ceph # namespace:cluster
+        # (optional) mapOptions is a comma-separated list of map options.
+        # For krbd options refer
+        # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
+        # For nbd options refer
+        # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
+        # mapOptions: lock_on_read,queue_depth=1024
 
-     # (optional) unmapOptions is a comma-separated list of unmap options.
-     # For krbd options refer
-     # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
-     # For nbd options refer
-     # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
-     # unmapOptions: force
+        # (optional) unmapOptions is a comma-separated list of unmap options.
+        # For krbd options refer
+        # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
+        # For nbd options refer
+        # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
+        # unmapOptions: force
 
-     # RBD image format. Defaults to "2".
-     imageFormat: "2"
+        # RBD image format. Defaults to "2".
+        imageFormat: "2"
 
-     # RBD image features, equivalent to OR'd bitfield value: 63
-     # Available for imageFormat: "2". Older releases of CSI RBD
-     # support only the `layering` feature. The Linux kernel (KRBD) supports the
-     # full feature complement as of 5.4
-     # imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
-     imageFeatures: layering
+        # RBD image features, equivalent to OR'd bitfield value: 63
+        # Available for imageFormat: "2". Older releases of CSI RBD
+        # support only the `layering` feature. The Linux kernel (KRBD) supports the
+        # full feature complement as of 5.4
+        # imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
+        imageFeatures: layering
 
-   storageClass:
-     provisioner: rook-ceph.rbd.csi.ceph.com # csi-provisioner-name
-     enabled: true
-     name: ceph-block
-     isDefault: true
-     annotations: { }
-     labels: { }
-     allowVolumeExpansion: true
-     reclaimPolicy: Delete
+      storageClass:
+        provisioner: rook-ceph.rbd.csi.ceph.com # csi-provisioner-name
+        enabled: true
+        name: ceph-block
+        isDefault: true
+        annotations: { }
+        labels: { }
+        allowVolumeExpansion: true
+        reclaimPolicy: Delete
 
 # -- CSI driver name prefix for cephfs, rbd and nfs.
 # @default -- `namespace name where rook-ceph operator is deployed`
