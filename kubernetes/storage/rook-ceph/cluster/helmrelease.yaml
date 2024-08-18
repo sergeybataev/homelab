@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &name rook-ceph-cluster-test
+  name: &name rook-ceph-cluster
   namespace: &ns rook-ceph
 spec:
   interval: 5m
@@ -355,7 +355,6 @@ spec:
     # disable defaults
     cephBlockPools: []
     cephFileSystems: []
-    cephObjectStores: []
 
     # # -- A list of CephBlockPool configurations to deploy
     # # @default -- See [below](#ceph-block-pools)
@@ -477,110 +476,103 @@ spec:
     #   # see https://rook.io/docs/rook/v1.10/Storage-Configuration/Ceph-CSI/ceph-csi-snapshot/#rbd-snapshots for available configuration
     #   parameters: {}
 
-    # cephObjectStores:
-    #   - name: ceph-objectstore-replicaed-test
-    #     spec:
-    #       metadataPool:
-    #         failureDomain: host
-    #         replicated:
-    #           size: 1
-    #       dataPool:
-    #         # failureDomain: host
-    #         # For production it is recommended to use more chunks, such as 4+2 or 8+4
-    #         # uncomment after 3+ nodes
-    #         # erasureCoded:
-    #         #   dataChunks: 2
-    #         #   codingChunks: 1
+    cephObjectStores:
+      - name: ceph-objectstore
+        spec:
+          metadataPool:
+            failureDomain: host
+            replicated:
+              size: 1
+          dataPool:
+            failureDomain: host
+            # For production it is recommended to use more chunks, such as 4+2 or 8+4
+            erasureCoded:
+              dataChunks: 2
+              codingChunks: 1
+          preservePoolsOnDelete: false
+          gateway:
+            #securePort: 443
+            port: 80
+            # resources:
+            #   requests:
+            #     cpu: 1000m
+            #     memory: 1Gi
+            #   limits:
+            #     memory: 2Gi
+            instances: 1
+            priorityClassName: system-cluster-critical
+          healthCheck:
+            bucket:
+              interval: 60s
+        storageClass:
+          enabled: true
+          name: ceph-bucket
+          reclaimPolicy: Delete
+          parameters:
+            region: eu-central-1
+        ingress:
+          enabled: true
+          ingressClassName: external
+          annotations:
+            external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+            nginx.ingress.kubernetes.io/proxy-body-size: "0"
+            nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+          host:
+            name: rgw.${SECRET_DOMAIN}
+            path: /
 
-    #         # and remove replicated:
-    #         replicated:
-    #           size: 1
-    #           requireSafeReplicaSize: false
-    #       preservePoolsOnDelete: false
-    #       gateway:
-    #         #securePort: 443
-    #         port: 80
-    #         # resources:
-    #         #   requests:
-    #         #     cpu: 1000m
-    #         #     memory: 1Gi
-    #         #   limits:
-    #         #     memory: 2Gi
-    #         instances: 1
-    #         priorityClassName: system-cluster-critical
-    #       healthCheck:
-    #         bucket:
-    #           interval: 60s
-    #     storageClass:
-    #       enabled: true
-    #       name: ceph-bucket-non-ec-test
-    #       reclaimPolicy: Delete
-    #       parameters:
-    #         region: eu-central-1
-    #     ingress:
-    #       enabled: true
-    #       ingressClassName: external
-    #       annotations:
-    #         external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-    #         nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    #         nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-    #       host:
-    #         name: rgw.${SECRET_DOMAIN}
-    #         path: /
+# cephECBlockPools are disabled by default, please remove the comments and set desired values to enable it
+# For erasure coded a replicated metadata pool is required.
+# https://rook.io/docs/rook/latest/CRDs/Shared-Filesystem/ceph-filesystem-crd/#erasure-coded
+cephECBlockPools:
+ - name: ceph-block-ec-pool
+   spec:
+     metadataPool:
+       replicated:
+         size: 2
+     dataPool:
+       failureDomain: host
+       erasureCoded:
+         dataChunks: 2
+         codingChunks: 1
 
-## cephECBlockPools are disabled by default, please remove the comments and set desired values to enable it
-## For erasure coded a replicated metadata pool is required.
-## https://rook.io/docs/rook/latest/CRDs/Shared-Filesystem/ceph-filesystem-crd/#erasure-coded
-#cephECBlockPools:
-#  - name: ec-pool
-#    spec:
-#      metadataPool:
-#        replicated:
-#          size: 2
-#      dataPool:
-#        failureDomain: osd
-#        erasureCoded:
-#          dataChunks: 2
-#          codingChunks: 1
-#        deviceClass: hdd
-#
-#    parameters:
-#      # clusterID is the namespace where the rook cluster is running
-#      # If you change this namespace, also change the namespace below where the secret namespaces are defined
-#      clusterID: rook-ceph # namespace:cluster
-#      # (optional) mapOptions is a comma-separated list of map options.
-#      # For krbd options refer
-#      # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
-#      # For nbd options refer
-#      # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
-#      # mapOptions: lock_on_read,queue_depth=1024
-#
-#      # (optional) unmapOptions is a comma-separated list of unmap options.
-#      # For krbd options refer
-#      # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
-#      # For nbd options refer
-#      # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
-#      # unmapOptions: force
-#
-#      # RBD image format. Defaults to "2".
-#      imageFormat: "2"
-#
-#      # RBD image features, equivalent to OR'd bitfield value: 63
-#      # Available for imageFormat: "2". Older releases of CSI RBD
-#      # support only the `layering` feature. The Linux kernel (KRBD) supports the
-#      # full feature complement as of 5.4
-#      # imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
-#      imageFeatures: layering
-#
-#    storageClass:
-#      provisioner: rook-ceph.rbd.csi.ceph.com # csi-provisioner-name
-#      enabled: true
-#      name: rook-ceph-block
-#      isDefault: false
-#      annotations: { }
-#      labels: { }
-#      allowVolumeExpansion: true
-#      reclaimPolicy: Delete
+   parameters:
+     # clusterID is the namespace where the rook cluster is running
+     # If you change this namespace, also change the namespace below where the secret namespaces are defined
+     clusterID: rook-ceph # namespace:cluster
+     # (optional) mapOptions is a comma-separated list of map options.
+     # For krbd options refer
+     # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
+     # For nbd options refer
+     # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
+     # mapOptions: lock_on_read,queue_depth=1024
+
+     # (optional) unmapOptions is a comma-separated list of unmap options.
+     # For krbd options refer
+     # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
+     # For nbd options refer
+     # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
+     # unmapOptions: force
+
+     # RBD image format. Defaults to "2".
+     imageFormat: "2"
+
+     # RBD image features, equivalent to OR'd bitfield value: 63
+     # Available for imageFormat: "2". Older releases of CSI RBD
+     # support only the `layering` feature. The Linux kernel (KRBD) supports the
+     # full feature complement as of 5.4
+     # imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
+     imageFeatures: layering
+
+   storageClass:
+     provisioner: rook-ceph.rbd.csi.ceph.com # csi-provisioner-name
+     enabled: true
+     name: ceph-block
+     isDefault: true
+     annotations: { }
+     labels: { }
+     allowVolumeExpansion: true
+     reclaimPolicy: Delete
 
 # -- CSI driver name prefix for cephfs, rbd and nfs.
 # @default -- `namespace name where rook-ceph operator is deployed`
