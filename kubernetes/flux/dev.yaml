@@ -9,6 +9,7 @@ spec:
   namePrefix: "dev-"
   dependsOn:
     - name: cluster
+    - name: cluster-storage
   interval: 30m
   path: ./kubernetes/development
   prune: true

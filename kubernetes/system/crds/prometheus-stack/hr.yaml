@@ -3,8 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: prometheus-operator-crds
-  namespace: monitoring
+  name: system-crds-prometheus-operator
 spec:
   interval: 15m0s
   chart:
@@ -17,3 +16,5 @@ spec:
         namespace: flux-system
   upgrade:
     force: true
+  install:
+    crds: CreateReplace

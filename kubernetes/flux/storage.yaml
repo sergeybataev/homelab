@@ -9,6 +9,7 @@ spec:
   namePrefix: "storage-"
   dependsOn:
     - name: cluster-config
+    - name: cluster-network
   interval: 30m
   path: ./kubernetes/storage
   prune: true
