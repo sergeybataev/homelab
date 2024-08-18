@@ -16,8 +16,8 @@ spec:
   dependsOn:
     - name: cluster-storage
     - name: network-cert-manager
+    - name: system-crds-prometheus-stack
     - name: system-metrics-server
-    - name: monitoring-prometheus-stack-crds
     - name: monitoring-prometheus-rules
     - name: monitoring-thanos
   commonMetadata:
