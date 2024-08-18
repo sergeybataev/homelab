@@ -34,15 +34,6 @@ spec:
       home-assistant:
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          annotations:
-            k8s.v1.cni.cncf.io/networks: |
-              [{
-                "name":"iot-vlan",
-                "namespace": "network",
-                "ips": ["${IOT_HOME_ASSISTANT_IP}/24"],
-                "gateway": ["${IOT_GATEWAY_IP}"]
-              }]
         initContainers:
           init-db:
             image:
@@ -116,6 +107,18 @@ spec:
             port: 8123
           codeserver:
             port: 8080
+          # dnla-udp:
+          #   enabled: true
+          #   port: 1900
+          #   protocol: UDP
+          #   targetPort: 1900
+          #   nodePort: 1900
+          # bonjour-udp:
+          #   enabled: true
+          #   port: 5353
+          #   protocol: UDP
+          #   targetPort: 5353
+          #   nodePort: 5353
     ingress:
       app:
         enabled: true
