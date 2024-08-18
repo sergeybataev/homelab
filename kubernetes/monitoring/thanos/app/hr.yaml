@@ -74,7 +74,7 @@ spec:
         - --retention.resolution-1h=60d
       persistence: &persistence
         enabled: true
-        storageClass: ceph-block
+        storageClass: ceph-block-replicated
         size: 30Gi
     query:
       replicas: 1

@@ -353,7 +353,7 @@ spec:
     # -- A list of CephBlockPool configurations to deploy
     # @default -- See [below](#ceph-block-pools)
     cephBlockPools:
-      - name: ceph-blockpool
+      - name: ceph-blockpool-replicated
         spec:
           failureDomain: host
           replicated:
@@ -364,7 +364,7 @@ spec:
 
         storageClass:
           enabled: true
-          name: ceph-block
+          name: ceph-block-replicated
           isDefault: true
           reclaimPolicy: Delete
           allowVolumeExpansion: true
@@ -402,7 +402,7 @@ spec:
     # -- A list of CephFileSystem configurations to deploy
     # @default -- See [below](#ceph-file-systems)
     cephFileSystems:
-      - name: ceph-filesystem
+      - name: ceph-filesystem-replicated
         # see https://github.com/rook/rook/blob/master/Documentation/CRDs/Shared-Filesystem/ceph-filesystem-crd.md#filesystem-settings for available configuration
         spec:
           metadataPool:
@@ -430,7 +430,7 @@ spec:
         storageClass:
           enabled: true
           isDefault: false
-          name: ceph-filesystem
+          name: ceph-filesystem-replicated
           pool: data0
           reclaimPolicy: Delete
           allowVolumeExpansion: true
@@ -450,7 +450,7 @@ spec:
     # @default -- See [CephFS Snapshots](../Storage-Configuration/Ceph-CSI/ceph-csi-snapshot.md#cephfs-snapshots)
     cephFileSystemVolumeSnapshotClass:
       enabled: false
-      name: ceph-filesystem
+      name: ceph-filesystem-replicated
       isDefault: true
       deletionPolicy: Delete
       annotations: {}
@@ -462,7 +462,7 @@ spec:
     # @default -- See [RBD Snapshots](../Storage-Configuration/Ceph-CSI/ceph-csi-snapshot.md#rbd-snapshots)
     cephBlockPoolsVolumeSnapshotClass:
       enabled: false
-      name: ceph-block
+      name: ceph-block-replicated
       isDefault: false
       deletionPolicy: Delete
       annotations: {}
@@ -471,7 +471,7 @@ spec:
       parameters: {}
 
     cephObjectStores:
-      - name: ceph-objectstore-non-ec
+      - name: ceph-objectstore-replicated
         spec:
           metadataPool:
             failureDomain: host
