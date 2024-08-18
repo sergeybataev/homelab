@@ -46,10 +46,7 @@ spec:
   values:
     operatorNamespace: *ns
 
-    clusterName:
-      # -- The name of the cluster. This name will be used to create the CephCluster CRD.
-      # @default -- rook-ceph
-      name: *name
+    clusterName: *name
 
     # Installs a debugging toolbox deployment
     toolbox:
