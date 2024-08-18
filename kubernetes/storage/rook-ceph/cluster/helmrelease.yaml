@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: rook-ceph-cluster
+  name: rook-ceph-cluster-test
   namespace: rook-ceph
 spec:
   interval: 5m
@@ -350,176 +350,176 @@ spec:
           limits:
             memory: "1Gi"
 
-    # -- A list of CephBlockPool configurations to deploy
-    # @default -- See [below](#ceph-block-pools)
-    cephBlockPools:
-      - name: ceph-blockpool-replicated
-        spec:
-          failureDomain: host
-          replicated:
-            size: 1
-          # Enables collecting RBD per-image IO statistics by enabling dynamic OSD performance counters. Defaults to false.
-          # For reference: https://docs.ceph.com/docs/master/mgr/prometheus/#rbd-io-statistics
-          enableRBDStats: true
+    # # -- A list of CephBlockPool configurations to deploy
+    # # @default -- See [below](#ceph-block-pools)
+    # cephBlockPools:
+    #   - name: ceph-blockpool-replicated
+    #     spec:
+    #       failureDomain: host
+    #       replicated:
+    #         size: 1
+    #       # Enables collecting RBD per-image IO statistics by enabling dynamic OSD performance counters. Defaults to false.
+    #       # For reference: https://docs.ceph.com/docs/master/mgr/prometheus/#rbd-io-statistics
+    #       enableRBDStats: true
 
-        storageClass:
-          enabled: true
-          name: ceph-block-test
-          isDefault: true
-          reclaimPolicy: Delete
-          allowVolumeExpansion: true
+    #     storageClass:
+    #       enabled: true
+    #       name: ceph-block-test
+    #       isDefault: true
+    #       reclaimPolicy: Delete
+    #       allowVolumeExpansion: true
 
-          # see https://kubernetes.io/docs/concepts/storage/storage-classes/#allowed-topologies
-          allowedTopologies: []
-          #        - matchLabelExpressions:
-          #            - key: rook-ceph-role
-          #              values:
-          #                - storage-node
+    #       # see https://kubernetes.io/docs/concepts/storage/storage-classes/#allowed-topologies
+    #       allowedTopologies: []
+    #       #        - matchLabelExpressions:
+    #       #            - key: rook-ceph-role
+    #       #              values:
+    #       #                - storage-node
 
-          # see https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/Block-Storage-RBD/block-storage.md#provision-storage for available configuration
-          parameters:
-            # RBD image format. Defaults to "2".
-            imageFormat: "2"
+    #       # see https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/Block-Storage-RBD/block-storage.md#provision-storage for available configuration
+    #       parameters:
+    #         # RBD image format. Defaults to "2".
+    #         imageFormat: "2"
 
-            # RBD image features, equivalent to OR'd bitfield value: 63
-            # Available for imageFormat: "2". Older releases of CSI RBD
-            # support only the `layering` feature. The Linux kernel (KRBD) supports the
-            # full feature complement as of 5.4.0.
-            imageFeatures: layering
+    #         # RBD image features, equivalent to OR'd bitfield value: 63
+    #         # Available for imageFormat: "2". Older releases of CSI RBD
+    #         # support only the `layering` feature. The Linux kernel (KRBD) supports the
+    #         # full feature complement as of 5.4.0.
+    #         imageFeatures: layering
 
-            csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
-            csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
-            csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
-            csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
+    #         csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+    #         csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
+    #         csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+    #         csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
+    #         csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+    #         csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
 
-            # Specify the filesystem type of the volume. If not specified, csi-provisioner
-            # will set default as `ext4`. Note that `xfs` is not recommended due to potential deadlock
-            # in hyperconverged settings where the volume is mounted on the same node as the osds.
-            csi.storage.k8s.io/fstype: ext4
+    #         # Specify the filesystem type of the volume. If not specified, csi-provisioner
+    #         # will set default as `ext4`. Note that `xfs` is not recommended due to potential deadlock
+    #         # in hyperconverged settings where the volume is mounted on the same node as the osds.
+    #         csi.storage.k8s.io/fstype: ext4
 
-    # -- A list of CephFileSystem configurations to deploy
-    # @default -- See [below](#ceph-file-systems)
-    cephFileSystems:
-      - name: ceph-filesystem-test
-        # see https://github.com/rook/rook/blob/master/Documentation/CRDs/Shared-Filesystem/ceph-filesystem-crd.md#filesystem-settings for available configuration
-        spec:
-          metadataPool:
-            replicated:
-              size: 1
-              requireSafeReplicaSize: false # remove after increase replica size
-          dataPools:
-            - failureDomain: host
-              replicated:
-                size: 1
-                requireSafeReplicaSize: false # remove after increase replica size
-              name: data0
-              compressionMode: none
-          metadataServer:
-            activeCount: 1
-            activeStandby: false # change to true after increase replica size
-            priorityClassName: system-cluster-critical
-            resources:
-              requests:
-                cpu: 1000m
-                memory: 4Gi
-              limits:
-                memory: 4Gi
+    # # -- A list of CephFileSystem configurations to deploy
+    # # @default -- See [below](#ceph-file-systems)
+    # cephFileSystems:
+    #   - name: ceph-filesystem-test
+    #     # see https://github.com/rook/rook/blob/master/Documentation/CRDs/Shared-Filesystem/ceph-filesystem-crd.md#filesystem-settings for available configuration
+    #     spec:
+    #       metadataPool:
+    #         replicated:
+    #           size: 1
+    #           requireSafeReplicaSize: false # remove after increase replica size
+    #       dataPools:
+    #         - failureDomain: host
+    #           replicated:
+    #             size: 1
+    #             requireSafeReplicaSize: false # remove after increase replica size
+    #           name: data0
+    #           compressionMode: none
+    #       metadataServer:
+    #         activeCount: 1
+    #         activeStandby: false # change to true after increase replica size
+    #         priorityClassName: system-cluster-critical
+    #         resources:
+    #           requests:
+    #             cpu: 1000m
+    #             memory: 4Gi
+    #           limits:
+    #             memory: 4Gi
 
-        storageClass:
-          enabled: true
-          isDefault: false
-          name: ceph-filesystem-test
-          pool: data0
-          reclaimPolicy: Delete
-          allowVolumeExpansion: true
-          parameters:
-            csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-            csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
-            # Specify the filesystem type of the volume. If not specified, csi-provisioner
-            # will set default as `ext4`. Note that `xfs` is not recommended due to potential deadlock
-            # in hyperconverged settings where the volume is mounted on the same node as the osds.
-            csi.storage.k8s.io/fstype: ext4
+    #     storageClass:
+    #       enabled: true
+    #       isDefault: false
+    #       name: ceph-filesystem-test
+    #       pool: data0
+    #       reclaimPolicy: Delete
+    #       allowVolumeExpansion: true
+    #       parameters:
+    #         csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+    #         csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
+    #         csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+    #         csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
+    #         csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+    #         csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
+    #         # Specify the filesystem type of the volume. If not specified, csi-provisioner
+    #         # will set default as `ext4`. Note that `xfs` is not recommended due to potential deadlock
+    #         # in hyperconverged settings where the volume is mounted on the same node as the osds.
+    #         csi.storage.k8s.io/fstype: ext4
 
-    # -- Settings for the filesystem snapshot class
-    # @default -- See [CephFS Snapshots](../Storage-Configuration/Ceph-CSI/ceph-csi-snapshot.md#cephfs-snapshots)
-    cephFileSystemVolumeSnapshotClass:
-      enabled: false
-      name: ceph-filesystem-test
-      isDefault: true
-      deletionPolicy: Delete
-      annotations: {}
-      labels: {}
-      # see https://rook.io/docs/rook/v1.10/Storage-Configuration/Ceph-CSI/ceph-csi-snapshot/#cephfs-snapshots for available configuration
-      parameters: {}
+    # # -- Settings for the filesystem snapshot class
+    # # @default -- See [CephFS Snapshots](../Storage-Configuration/Ceph-CSI/ceph-csi-snapshot.md#cephfs-snapshots)
+    # cephFileSystemVolumeSnapshotClass:
+    #   enabled: false
+    #   name: ceph-filesystem-test
+    #   isDefault: true
+    #   deletionPolicy: Delete
+    #   annotations: {}
+    #   labels: {}
+    #   # see https://rook.io/docs/rook/v1.10/Storage-Configuration/Ceph-CSI/ceph-csi-snapshot/#cephfs-snapshots for available configuration
+    #   parameters: {}
 
-    # -- Settings for the block pool snapshot class
-    # @default -- See [RBD Snapshots](../Storage-Configuration/Ceph-CSI/ceph-csi-snapshot.md#rbd-snapshots)
-    cephBlockPoolsVolumeSnapshotClass:
-      enabled: false
-      name: ceph-block-test
-      isDefault: false
-      deletionPolicy: Delete
-      annotations: {}
-      labels: {}
-      # see https://rook.io/docs/rook/v1.10/Storage-Configuration/Ceph-CSI/ceph-csi-snapshot/#rbd-snapshots for available configuration
-      parameters: {}
+    # # -- Settings for the block pool snapshot class
+    # # @default -- See [RBD Snapshots](../Storage-Configuration/Ceph-CSI/ceph-csi-snapshot.md#rbd-snapshots)
+    # cephBlockPoolsVolumeSnapshotClass:
+    #   enabled: false
+    #   name: ceph-block-test
+    #   isDefault: false
+    #   deletionPolicy: Delete
+    #   annotations: {}
+    #   labels: {}
+    #   # see https://rook.io/docs/rook/v1.10/Storage-Configuration/Ceph-CSI/ceph-csi-snapshot/#rbd-snapshots for available configuration
+    #   parameters: {}
 
-    cephObjectStores:
-      - name: ceph-objectstore-test
-        spec:
-          metadataPool:
-            failureDomain: host
-            replicated:
-              size: 1
-          dataPool:
-            # failureDomain: host
-            # For production it is recommended to use more chunks, such as 4+2 or 8+4
-            # uncomment after 3+ nodes
-            # erasureCoded:
-            #   dataChunks: 2
-            #   codingChunks: 1
+    # cephObjectStores:
+    #   - name: ceph-objectstore-replicaed-test
+    #     spec:
+    #       metadataPool:
+    #         failureDomain: host
+    #         replicated:
+    #           size: 1
+    #       dataPool:
+    #         # failureDomain: host
+    #         # For production it is recommended to use more chunks, such as 4+2 or 8+4
+    #         # uncomment after 3+ nodes
+    #         # erasureCoded:
+    #         #   dataChunks: 2
+    #         #   codingChunks: 1
 
-            # and remove replicated:
-            replicated:
-              size: 1
-              requireSafeReplicaSize: false
-          preservePoolsOnDelete: false
-          gateway:
-            #securePort: 443
-            port: 80
-            # resources:
-            #   requests:
-            #     cpu: 1000m
-            #     memory: 1Gi
-            #   limits:
-            #     memory: 2Gi
-            instances: 1
-            priorityClassName: system-cluster-critical
-          healthCheck:
-            bucket:
-              interval: 60s
-        storageClass:
-          enabled: true
-          name: ceph-bucket-non-ec
-          reclaimPolicy: Delete
-          parameters:
-            region: eu-central-1
-        ingress:
-          enabled: true
-          ingressClassName: external
-          annotations:
-            external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-            nginx.ingress.kubernetes.io/proxy-body-size: "0"
-            nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-          host:
-            name: rgw.${SECRET_DOMAIN}
-            path: /
+    #         # and remove replicated:
+    #         replicated:
+    #           size: 1
+    #           requireSafeReplicaSize: false
+    #       preservePoolsOnDelete: false
+    #       gateway:
+    #         #securePort: 443
+    #         port: 80
+    #         # resources:
+    #         #   requests:
+    #         #     cpu: 1000m
+    #         #     memory: 1Gi
+    #         #   limits:
+    #         #     memory: 2Gi
+    #         instances: 1
+    #         priorityClassName: system-cluster-critical
+    #       healthCheck:
+    #         bucket:
+    #           interval: 60s
+    #     storageClass:
+    #       enabled: true
+    #       name: ceph-bucket-non-ec-test
+    #       reclaimPolicy: Delete
+    #       parameters:
+    #         region: eu-central-1
+    #     ingress:
+    #       enabled: true
+    #       ingressClassName: external
+    #       annotations:
+    #         external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+    #         nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    #         nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+    #       host:
+    #         name: rgw.${SECRET_DOMAIN}
+    #         path: /
 
 ## cephECBlockPools are disabled by default, please remove the comments and set desired values to enable it
 ## For erasure coded a replicated metadata pool is required.
