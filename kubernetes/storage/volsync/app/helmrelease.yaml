@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: volsync
-      version: 0.9.1
+      version: 0.10.0
       sourceRef:
         kind: HelmRepository
         name: backube
@@ -27,5 +27,15 @@ spec:
       namespace: kube-system
   values:
     manageCRDs: true
+    image:
+      # https://github.com/backube/volsync/issues/828
+      repository: &image ghcr.io/onedr0p/volsync
+      tag: &tag 0.10.0
+    rclone:
+      repository: *image
+      tag: *tag
+    restic:
+      repository: *image
+      tag: *tag
     metrics:
       disableAuth: true
