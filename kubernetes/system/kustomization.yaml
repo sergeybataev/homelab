@@ -13,3 +13,4 @@ resources:
   - ./intel-device-plugin/ks.yaml
   - ./snapshot-controller/ks.yaml
   - ./vpa/ks.yaml
+  - ./crds/ks.yaml
