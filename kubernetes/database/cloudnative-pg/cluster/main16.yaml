@@ -10,7 +10,7 @@ spec:
   primaryUpdateStrategy: unsupervised
   storage:
     size: 200Gi
-    storageClass: hl-zfs-pv-slow
+    storageClass: ceph-block
   superuserSecret:
     name: cloudnative-pg-secret
   enableSuperuserAccess: true

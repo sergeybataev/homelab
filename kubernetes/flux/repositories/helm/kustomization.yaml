@@ -9,6 +9,7 @@ resources:
   - ./system/lwolf.yaml
   - ./system/fairwinds-charts.yaml
   - ./system/piraeus.yaml
+  - ./system/emberstack.yaml
 # network
   - ./network/angelnu.yaml
   - ./network/jetstack.yaml

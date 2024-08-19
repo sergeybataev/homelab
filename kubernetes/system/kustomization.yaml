@@ -14,3 +14,4 @@ resources:
   - ./snapshot-controller/ks.yaml
   - ./vpa/ks.yaml
   - ./crds/ks.yaml
+  - ./reflector/ks.yaml

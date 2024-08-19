@@ -1,9 +1,9 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: grafana
+  name: &app ${APP}
   namespace: monitoring
 spec:
   interval: 30m
@@ -18,21 +18,19 @@ spec:
         namespace: flux-system
   values:
     persistence:
-      type: pvc
       enabled: true
-      storageClassName: hl-path-configs
-      accessModes:
-        - ReadWriteOnce
-      size: 10Gi
-      # storageClassName: longhorn
+      type: pvc
+      finalizers:
+        - kubernetes.io/pvc-protection
+      existingClaim: ${VOLSYNC_CLAIM}
 
     plugins:
       - grafana-clock-panel
-      - grafana-piechart-panel
       - grafana-worldmap-panel
       - natel-discrete-panel
       - pr0ps-trackmap-panel
       - vonage-status-panel
+      - isovalent-hubble-datasource
 
     env:
       GF_EXPLORE_ENABLED: true
@@ -43,6 +41,107 @@ spec:
       TZ: ${TIMEZONE}
       GF_FEATURE_TOGGLES_ENABLE: publicDashboards
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
+      GF_SECURITY_COOKIE_SAMESITE: grafana
+      GF_SERVER_ROOT_URL: https://grafana.${SECRET_DOMAIN}
+
+    envFromSecrets:
+      - name: grafana-secret
+
+    extraSecretMounts:
+      - name: cnpg
+        mountPath: /etc/secrets/db
+        secretName: main16-secret
+        defaultMode: 0444
+        readOnly: true
+      - name: cnpg-grafana-secret
+        mountPath: /etc/secrets/db_grafana
+        secretName: grafana-secret
+        defaultMode: 0444
+        readOnly: true
+
+
+    podAnnotations:
+      # configmap.reloader.stakater.com/reload: grafana-config-dashboards,grafana-dashboards-default,*app
+      secret.reloader.stakater.com/reload: cloudnative-pg-secret,main16-secret,grafana-secret
+
+    serviceMonitor:
+      enabled: true
+
+    sidecar:
+      datasources:
+        enabled: true
+        searchNamespace: ALL
+      dashboards:
+        enabled: true
+        searchNamespace: ALL
+        label: grafana_dashboard
+        folderAnnotation: grafana_folder
+        # folder: /var/lib/grafana/dashboards
+        provider:
+          disableDelete: true
+          foldersFromFilesStructure: true
+
+    extraInitContainers:
+    - name: init-db
+      image:
+        repository: ghcr.io/onedr0p/postgres-init
+        tag: 16
+      env:
+        INIT_POSTGRES_DBNAME: *app
+        INIT_POSTGRES_USER: *app
+        INIT_POSTGRES_PASS:
+          valueFrom:
+            secretKeyRef:
+              name: grafana-secret
+              key: GRAFANA_PASS
+        INIT_POSTGRES_HOST:
+          valueFrom:
+            secretKeyRef:
+              name: main16-secret
+              key: host
+        INIT_POSTGRES_SUPER_PASS:
+          valueFrom:
+            secretKeyRef:
+              name: cloudnative-pg-secret
+              key: password
+
+    grafana.ini:
+      auth.basic:
+        disable_login_form: true
+      auth.anonymous:
+        enabled: true
+      # TODO google auth
+      # auth.github:
+      #   enabled: true
+      #   allow_sign_up: true
+      #   scopes: user:email,read:org
+      #   auth_url: https://github.com/login/oauth/authorize
+      #   token_url: https://github.com/login/oauth/access_token
+      #   api_url: https://api.github.com/user
+      #   allowed_organizations: raspbernetes
+      #   client_id: '${GRAFANA_AUTH_GITHUB_CLIENT_ID}'
+      #   client_secret: '${GRAFANA_AUTH_GITHUB_CLIENT_SECRET}'
+      analytics:
+        check_for_updates: false
+        check_for_plugin_updates: true
+        reporting_enabled: false
+      log:
+        mode: console
+      grafana_net:
+        url: https://grafana.net
+      news:
+        news_feed_enabled: false
+      users:
+        auto_assign_org_role: Admin
+        viewers_can_edit: true
+      database:
+        type: postgres
+        host: $__file{/etc/secrets/db/host}:$__file{/etc/secrets/db/port}
+        name: *app
+        user: *app
+        password: $__file{/etc/secrets/db_grafana/GRAFANA_PASS}
+      server:
+        root_url: https://grafana.${SECRET_DOMAIN}
 
     datasources:
       datasources.yaml:
@@ -71,42 +170,6 @@ spec:
             version: 1
             jsonData:
               maxLines: 250
-    serviceMonitor:
-      enabled: true
-
-    sidecar:
-      datasources:
-        enabled: true
-        searchNamespace: ALL
-      dashboards:
-        enabled: true
-        searchNamespace: ALL
-        label: grafana_dashboard
-        folderAnnotation: grafana_folder
-        # folder: /var/lib/grafana/dashboards
-        provider:
-          disableDelete: true
-          foldersFromFilesStructure: true
-
-    grafana.ini:
-      auth.basic:
-        disable_login_form: true
-      auth.anonymous:
-        enabled: true
-      # TODO google auth
-      analytics:
-        check_for_updates: false
-        check_for_plugin_updates: true
-        reporting_enabled: false
-      log:
-        mode: console
-      grafana_net:
-        url: https://grafana.net
-      news:
-        news_feed_enabled: false
-      users:
-        auto_assign_org_role: Admin
-        viewers_can_edit: true
 
     dashboardProviders:
       dashboardproviders.yaml:
@@ -128,6 +191,14 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/ceph-folder
+          - name: Databases
+            orgId: 1
+            folder: databases
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/databases
           - name: emqx
             orgId: 1
             folder: EMQX
@@ -184,6 +255,14 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/unifi-folder
+          - name: apm
+            disableDeletion: false
+            editable: true
+            folder: "Application Performance"
+            options:
+              path: /var/lib/grafana/dashboards/apm
+            orgId: 1
+            type: file
     dashboards:
       default:
         cert-manager:
@@ -195,9 +274,6 @@ spec:
           revision: 6
           datasource:
             - { name: DS_PROMETHEUS, value: Prometheus }
-        dragonfly:
-          url: https://raw.githubusercontent.com/dragonflydb/dragonfly/main/tools/local/monitoring/grafana/provisioning/dashboards/dashboard.json
-          datasource: Prometheus
         external-dns:
           # renovate: depName="External-dns"
           gnetId: 15038
@@ -224,6 +300,13 @@ spec:
           # renovate: depName="ZFS"
           gnetId: 7845
           revision: 4
+          datasource: Prometheus
+      databases:
+        external-secrets:
+          url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
+          datasource: Prometheus
+        dragonfly:
+          url: https://raw.githubusercontent.com/dragonflydb/dragonfly/main/tools/local/monitoring/grafana/provisioning/dashboards/dashboard.json
           datasource: Prometheus
       flux:
         flux-cluster:
@@ -286,37 +369,44 @@ spec:
           datasource: Prometheus
       unifi:
         unifi-insights:
+          # Ref: https://grafana.com/grafana/dashboards/11315
           # renovate: depName="UniFi-Poller: Client Insights - Prometheus"
           gnetId: 11315
           revision: 9
           datasource: Prometheus
         unifi-network-sites:
+          # Ref: https://grafana.com/grafana/dashboards/11311
           # renovate: depName="UniFi-Poller: Network Sites - Prometheus"
           gnetId: 11311
           revision: 5
           datasource: Prometheus
         unifi-uap:
+          # Ref: https://grafana.com/grafana/dashboards/11314
           # renovate: depName="UniFi-Poller: UAP Insights - Prometheus"
           gnetId: 11314
           revision: 10
           datasource: Prometheus
         unifi-usw:
+          # Ref: https://grafana.com/grafana/dashboards/11315
           # renovate: depName="UniFi-Poller: USW Insights - Prometheus"
           gnetId: 11312
           revision: 9
           datasource: Prometheus
       ceph:
         ceph-cluster:
+          # Ref: https://grafana.com/grafana/dashboards/2842/
           # renovate: depName="Ceph Cluster"
           gnetId: 2842
           revision: 17
           datasource: Prometheus
         ceph-osd:
+          # Ref: https://grafana.com/grafana/dashboards/5336/
           # renovate: depName="Ceph - OSD (Single)"
           gnetId: 5336
           revision: 9
           datasource: Prometheus
         ceph-pools:
+          # Ref: https://grafana.com/grafana/dashboards/5342/
           # renovate: depName="Ceph - Pools"
           gnetId: 5342
           revision: 9
@@ -371,6 +461,11 @@ spec:
         thanos-store:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/store.json
           datasource: Prometheus-Thanos
+      apm:
+        # Ref: https://grafana.com/grafana/dashboards/19419-opentelemetry-apm/
+        apm:
+          gnetId: 19419
+          revision: 3
     ## Expose the grafana service to be accessed from outside the cluster (LoadBalancer service).
     ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
     ## ref: http://kubernetes.io/docs/user-guide/services/
