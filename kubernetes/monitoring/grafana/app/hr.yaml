@@ -83,9 +83,7 @@ spec:
 
     extraInitContainers:
     - name: init-db
-      image:
-        repository: ghcr.io/onedr0p/postgres-init
-        tag: 16
+      image: ghcr.io/onedr0p/postgres-init:16
       env:
         - name: INIT_POSTGRES_DBNAME
           value: *app
