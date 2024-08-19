@@ -26,90 +26,166 @@ spec:
       # strategy: rollback
       retries: 3
   values:
-    deploymentMode: SingleBinary
+    deploymentMode: SimpleScalable
+
     loki:
+      podAnnotations:
+        configmap.reloader.stakater.com/reload: loki-chunks-bucket-v1
+
+      auth_enabled: false
+      analytics:
+        reporting_enabled: false
+
+      compactor:
+        working_directory: /var/loki/compactor/retention
+        delete_request_store: s3
+        retention_enabled: true
+
+      frontend:
+        max_outstanding_per_tenant: 4096
+
+      ingester:
+        chunk_encoding: snappy
+
+      limits_config:
+        ingestion_burst_size_mb: 128
+        ingestion_rate_mb: 64
+        max_query_parallelism: 100
+        per_stream_rate_limit: 64M
+        per_stream_rate_limit_burst: 128M
+        reject_old_samples: true
+        reject_old_samples_max_age: 168h
+        retention_period: 30d
+        shard_streams:
+          enabled: true
+        split_queries_by_interval: 1h
+
+      query_scheduler:
+        max_outstanding_requests_per_tenant: 4096
+
+      rulerConfig:
+        storage:
+          type: local
+      # rulerConfig:
+      #   enable_api: true
+      #   enable_alertmanager_v2: true
+      #   alertmanager_url: http://alertmanager.monitoring.svc.cluster.local:9093
+      #   storage:
+      #     type: local
+      #     local:
+      #       directory: /rules
+      #   rule_path: /rules/fake
+
       schemaConfig:
         configs:
           - from: "2024-04-01"
             store: tsdb
-            object_store: filesystem
+            object_store: s3
             schema: v13
             index:
-              prefix: index_
+              prefix: loki_index_
               period: 24h
 
-      auth_enabled: false
-      commonConfig:
-        replication_factor: 1
-      rulerConfig:
-        storage:
-          type: local
+      server:
+        log_level: info
+        grpc_server_max_recv_msg_size: 8388608
+        grpc_server_max_send_msg_size: 8388608
+
       storage:
-        type: filesystem
+        type: s3
+        bucketNames:
+          chunks: loki-chunks
+          ruler: loki-ruler
+          admin: loki-admin
+        s3:
+          s3ForcePathStyle: true
+          insecure: true
+
       serviceMonitor:
         enabled: true
         additionalLabels:
           app.kubernetes.io/part-of: kube-prometheus-stack
-    monitoring:
-      lokiCanary:
-        enabled: false
-      selfMonitoring:
-        enabled: false
-        grafanaAgent:
-          installOperator: false
-      serviceMonitor:
+
+    gateway:
+      replicas: 3
+      enabled: true
+      image:
+        registry: ghcr.io
+        repository: nginxinc/nginx-unprivileged
+        tag: 1.26.0-alpine@sha256:4462758301a3ae11fd4549f1b837ff9067f98c18bfee4d0aa8cb235dd3da2009
+      deploymentStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 50%
+          maxSurge: 50%
+      topologySpreadConstraints:
+        - maxSkew: 2
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: loki
+              app.kubernetes.io/component: gateway
+      ingress:
         enabled: true
+        ingressClassName: internal
+        annotations:
+          hajimari.io/enable: "false"
+        hosts:
+          - host: &host "loki.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+
+    write:
+      replicas: 3
+      persistence:
+        storageClass: ceph-block
+        size: 20Gi
+
+    read:
+      replicas: 3
+
+    backend:
+      replicas: 3
+      persistence:
+        storageClass: ceph-block
+        size: 20Gi
+
+      resources:
+        requests:
+          cpu: 100m
+          memory: 500M
+
+    monitoring:
       dashboards:
         enabled: true
         annotations:
           grafana_folder: Loki
-    singleBinary:
-      extraArgs:
-        - '-config.expand-env=true'
-        - '-log.level=warn'
-      extraEnv:
-        - name: TZ
-          value: ${TIMEZONE}
-      persistence:
-        type: pvc
+      rules:
+        enabled: false
+      serviceMonitor:
         enabled: true
-        storageClass: ceph-block-replicated
-        accessModes:
-          - ReadWriteOnce
-        size: 100Gi
+        metricsInstance:
+          enabled: false
+      selfMonitoring:
+        enabled: false
+        grafanaAgent:
+          installOperator: false
+      lokiCanary:
+        enabled: false
+
     sidecar:
       image:
         repository: ghcr.io/kiwigrid/k8s-sidecar
-    #gateway:
-    #  ingress:
-    #    enabled: true
-    #    hosts:
-    #      - host: FIXME
-    #        paths:
-    #          - path: /
-    #            pathType: Prefix
-
-    # deploymentMode: SingleBinary
-    # singleBinary:
-    #   replicas: 1
-    #   resources:
-    #     limits:
-    #       cpu: 3
-    #       memory: 4Gi
-    #     requests:
-    #       cpu: 2
-    #       memory: 2Gi
-    #   extraEnv:
-    #     # Keep a little bit lower than memory limits
-    #     - name: GOMEMLIMIT
-    #       value: 3750MiB
-    #   persistence:
-    #     type: pvc
-    #     enabled: true
-    #     storageClassName: hl-zfs-pv-slow
-    #     accessModes:
-    #       - ReadWriteOnce
-    #     size: 100Gi
+      rules:
+        searchNamespace: ALL
+        folder: /rules/fake
 
     # chunksCache:
     #   # default is 500MB, with limited memory keep this smaller
@@ -120,123 +196,48 @@ spec:
     #   enabled: false
 
     # Zero out replica counts of other deployment modes
-    backend:
-      replicas: 0
-    read:
-      replicas: 0
-    write:
-      replicas: 0
-
-    ingester:
-      replicas: 0
-    querier:
-      replicas: 0
-    queryFrontend:
-      replicas: 0
-    queryScheduler:
-      replicas: 0
-    distributor:
-      replicas: 0
-    compactor:
-      replicas: 0
-    indexGateway:
-      replicas: 0
-    bloomCompactor:
-      replicas: 0
-    bloomGateway:
-      replicas: 0
-
-    # loki:
-    #   schemaConfig:
-    #     configs:
-    #       - from: 2020-05-15
-    #         store: tsdb
-    #         object_store: filesystem
-    #         schema: v13
-    #         index:
-    #           prefix: loki_index_
-    #           period: 24h
-    #   structuredConfig:
-    #     auth_enabled: false
-    #     server:
-    #       log_level: info
-    #       http_listen_port: 3100
-    #       grpc_listen_port: 9095
-    #       grpc_server_max_recv_msg_size: 8388608
-    #       grpc_server_max_send_msg_size: 8388608
-    #     limits_config:
-    #       ingestion_burst_size_mb: 128
-    #       ingestion_rate_mb: 64
-    #       max_query_parallelism: 100
-    #       per_stream_rate_limit: 64M
-    #       per_stream_rate_limit_burst: 128M
-    #       reject_old_samples: true
-    #       reject_old_samples_max_age: 168h
-    #       retention_period: 30d
-    #       shard_streams:
-    #         enabled: true
-    #       split_queries_by_interval: 1h
-    #     query_scheduler:
-    #       max_outstanding_requests_per_tenant: 4096
-    #     frontend:
-    #       max_outstanding_per_tenant: 4096
-    #     ruler:
-    #       enable_api: true
-    #       storage:
-    #         type: local
-    #         local:
-    #           directory: /rules
-    #       rule_path: /rules/fake
-    #     analytics:
-    #       reporting_enabled: false
-    #   commonConfig:
-    #     replication_factor: 1 # monolithic mode
-    # gateway:
-    #   replicas: 1
-
-    # # monolithic mode
-    # deploymentMode: SingleBinary
-    # write:
+    # ingester:
     #   replicas: 0
-    # read:
+    # querier:
     #   replicas: 0
-    # backend:
+    # queryFrontend:
     #   replicas: 0
-    # singleBinary:
-    #   # workaround to fix helm error due to weird default value of zero replicas: https://github.com/grafana/loki/issues/8443#issuecomment-1421636858
-    #   replicas: 1
-    #   extraArgs:
-    #     - -config.expand-env=true
-    #     - -log.level=warn
-    #   extraEnv:
-    #     - name: TZ
-    #       value: ${TIMEZONE}
-    #   persistence:
-    #     type: pvc
-    #     enabled: true
-    #     storageClassName: hl-zfs-pv-slow
-    #     accessModes:
-    #       - ReadWriteOnce
-    #     size: 100Gi
-
-    # # TODO: CEPH support
-    # # backend:
-    # #   replicas: 1
-    # #   persistence:
-    # #     type: pvc
-    # #     enabled: true
-
-    # # read:
-    # #   replicas: 1
-    # # write:
-    # #   replicas: 1
-    # #   persistence:
-    # #     type: pvc
-    # #     enabled: true
+    # queryScheduler:
+    #   replicas: 0
+    # distributor:
+    #   replicas: 0
+    # compactor:
+    #   replicas: 0
+    # indexGateway:
+    #   replicas: 0
+    # bloomCompactor:
+    #   replicas: 0
+    # bloomGateway:
+    #   replicas: 0
 
     serviceMonitor:
       enabled: true
+
     lokiCanary:
       enabled: false
+
     test:
       enabled: false
+
+  valuesFrom:
+    - targetPath: loki.structuredConfig.common.storage.s3.bucketnames
+      kind: ConfigMap
+      name: loki-chunks-bucket-v1
+      valuesKey: BUCKET_NAME
+    - targetPath: loki.structuredConfig.common.storage.s3.endpoint
+      kind: ConfigMap
+      name: loki-chunks-bucket-v1
+      valuesKey: BUCKET_HOST
+    - targetPath: loki.structuredConfig.common.storage.s3.access_key_id
+      kind: Secret
+      name: loki-chunks-bucket-v1
+      valuesKey: AWS_ACCESS_KEY_ID
+    - targetPath: loki.structuredConfig.common.storage.s3.secret_access_key
+      kind: Secret
+      name: loki-chunks-bucket-v1
+      valuesKey: AWS_SECRET_ACCESS_KEY

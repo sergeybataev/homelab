@@ -191,9 +191,9 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/ceph-folder
-          - name: Databases
+          - name: databases
             orgId: 1
-            folder: databases
+            folder: Databases
             type: file
             disableDeletion: false
             editable: true
@@ -490,20 +490,5 @@ spec:
       hosts:
         - "grafana.${SECRET_DOMAIN}"
 
-    securityContext:
-      runAsNonRoot: ${SC_NONROOT}
-      runAsUser: ${SC_UID}
-      runAsGroup: ${SC_GID}
-      fsGroup: ${SC_FSG}
-
     initChownData:
       enabled: true
-      runAsUser: 0
-      runAsNonRoot: false
-
-    downloadDashboards:
-      securityContext:
-        runAsNonRoot: ${SC_NONROOT}
-        runAsUser: ${SC_UID}
-        runAsGroup: ${SC_GID}
-        fsGroup: ${SC_FSG}

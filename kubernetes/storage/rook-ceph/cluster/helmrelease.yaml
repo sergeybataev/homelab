@@ -482,7 +482,7 @@ spec:
           metadataPool:
             failureDomain: host
             replicated:
-              size: 1
+              size: 2
           dataPool:
             failureDomain: host
             # For production it is recommended to use more chunks, such as 4+2 or 8+4
