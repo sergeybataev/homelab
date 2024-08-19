@@ -87,19 +87,21 @@ spec:
         repository: ghcr.io/onedr0p/postgres-init
         tag: 16
       env:
-        INIT_POSTGRES_DBNAME: *app
-        INIT_POSTGRES_USER: *app
-        INIT_POSTGRES_PASS:
+        - name: INIT_POSTGRES_DBNAME
+          value: *app
+        - name: INIT_POSTGRES_USER
+          value: *app
+        - name: INIT_POSTGRES_PASS
           valueFrom:
             secretKeyRef:
               name: grafana-secret
               key: GRAFANA_PASS
-        INIT_POSTGRES_HOST:
+        - name: INIT_POSTGRES_HOST
           valueFrom:
             secretKeyRef:
               name: main16-secret
               key: host
-        INIT_POSTGRES_SUPER_PASS:
+        - name: INIT_POSTGRES_SUPER_PASS
           valueFrom:
             secretKeyRef:
               name: cloudnative-pg-secret
