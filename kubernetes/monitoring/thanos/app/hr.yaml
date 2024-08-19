@@ -56,14 +56,19 @@ spec:
         type: s3
         config:
           insecure: true
+
     additionalEndpoints:
       - dnssrv+_grpc._tcp.kube-prometheus-stack-thanos-discovery.monitoring.svc.cluster.local
+
     additionalReplicaLabels: ["__replica__"]
+
     serviceMonitor:
       enabled: true
+
     receive:
       enabled: true
       replicaCount: 1
+
     compact:
       enabled: true
       extraArgs:
@@ -74,11 +79,13 @@ spec:
         - --retention.resolution-1h=60d
       persistence: &persistence
         enabled: true
-        storageClass: ceph-block-replicated
+        storageClass: ceph-block
         size: 30Gi
+
     query:
       replicas: 1
       extraArgs: ["--alert.query-url=https://thanos.${SECRET_DOMAIN}"]
+
     queryFrontend:
       enabled: true
       replicas: 1
@@ -98,6 +105,7 @@ spec:
           - thanos.${SECRET_DOMAIN}
       podAnnotations: &podAnnotations
         configmap.reloader.stakater.com/reload: *configMap
+
     rule:
       enabled: true
       replicas: 1
