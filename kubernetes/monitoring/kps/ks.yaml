@@ -13,6 +13,7 @@ metadata:
     wait.flux.home.arpa/disabled: "false"
     storage.flux.home.arpa/required: "true"
 spec:
+  targetNamespace: monitoring
   dependsOn:
     - name: cluster-storage
     - name: network-cert-manager
@@ -47,6 +48,7 @@ metadata:
     prune.flux.home.arpa/disabled: "false"
     wait.flux.home.arpa/disabled: "false"
 spec:
+  targetNamespace: monitoring
   path: ./kubernetes/monitoring/kps/rules
   prune: true
   sourceRef:

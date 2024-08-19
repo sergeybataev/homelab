@@ -13,6 +13,7 @@ metadata:
     wait.flux.home.arpa/disabled: "false"
     storage.flux.home.arpa/required: "true"
 spec:
+  targetNamespace: monitoring
   dependsOn:
     - name: monitoring-prometheus-stack
   commonMetadata:
