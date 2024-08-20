@@ -34,7 +34,7 @@ spec:
   timeout: 5m
   targetNamespace: rook-ceph
   path: ./kubernetes/storage/rook-ceph/cluster
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: home-kubernetes

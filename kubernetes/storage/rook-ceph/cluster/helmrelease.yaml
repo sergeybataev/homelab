@@ -24,7 +24,7 @@ spec:
     crds: CreateReplace
     createNamespace: true
     remediation:
-      retries: 3
+      retries: 300
 
   upgrade:
     cleanupOnFail: true
