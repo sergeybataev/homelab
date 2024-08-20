@@ -8,4 +8,4 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: hl-zfs-pv-slow
+  storageClassName: ceph-block
