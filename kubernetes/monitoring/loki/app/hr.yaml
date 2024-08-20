@@ -64,17 +64,14 @@ spec:
         max_outstanding_requests_per_tenant: 4096
 
       rulerConfig:
-        storage:
-          type: local
-      # rulerConfig:
       #   enable_api: true
       #   enable_alertmanager_v2: true
       #   alertmanager_url: http://alertmanager.monitoring.svc.cluster.local:9093
-      #   storage:
-      #     type: local
-      #     local:
-      #       directory: /rules
-      #   rule_path: /rules/fake
+        storage:
+          type: local
+          local:
+            directory: /rules
+        rule_path: /rules/fake
 
       schemaConfig:
         configs:

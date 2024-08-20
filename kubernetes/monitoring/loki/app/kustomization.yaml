@@ -5,3 +5,9 @@ kind: Kustomization
 resources:
   - ./hr.yaml
   - object-bucket-claim.yaml
+configMapGenerator:
+  - name: loki-alerting-rules
+    files:
+      - loki-alerting-rules.yaml=./resources/loki-alerting-rules.yaml
+generatorOptions:
+  disableNameSuffixHash: true
