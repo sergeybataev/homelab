@@ -19,7 +19,7 @@ spec:
   maxHistory: 3
 
   install:
-    timeout: 5m
+    timeout: 30m
     replace: true
     crds: CreateReplace
     createNamespace: true
