@@ -58,7 +58,7 @@ spec:
                   fieldRef:
                     fieldPath: status.podIP
             envFrom: *envFrom
-
+            hostNetwork: true
             securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
