@@ -124,6 +124,9 @@ spec:
         # specified number of days.
         # daysToRetain: 30
 
+      logCollector:
+        enabled: false
+
       # enable the ceph dashboard for viewing cluster status
       dashboard:
         enabled: true
