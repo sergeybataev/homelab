@@ -58,7 +58,6 @@ spec:
                   fieldRef:
                     fieldPath: status.podIP
             envFrom: *envFrom
-            hostNetwork: true
             securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -88,6 +87,7 @@ spec:
               requests:
                 cpu: 10m
     defaultPodOptions:
+      hostNetwork: true
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
