@@ -59,6 +59,7 @@ spec:
         shard_streams:
           enabled: true
         split_queries_by_interval: 1h
+        allow_structured_metadata: true
 
       query_scheduler:
         max_outstanding_requests_per_tenant: 4096
