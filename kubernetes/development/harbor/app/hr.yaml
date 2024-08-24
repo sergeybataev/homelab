@@ -31,7 +31,7 @@ spec:
     # debug, info, warning, error or fatal
     logLevel: debug
 
-    externalURL: https://registry.${SECRET_DOMAIN}
+    externalURL: https://${SECRET_REGISTRY_DOMAIN}
     ipFamily:
       ipv6:
         enabled: false
@@ -50,7 +50,7 @@ spec:
           secretName: "harbor-tls"
       ingress:
         hosts:
-          core: registry.${SECRET_DOMAIN}
+          core: ${SECRET_REGISTRY_DOMAIN}
         controller: default
         className: "internal"
         annotations:
