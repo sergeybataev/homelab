@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./secrets.sops.yaml
   - ./secrets-db.sops.yaml
+  - ./secrets-docker.sops.yaml
   - ./hr.yaml
   - ./pvc/registry.yaml
   - ./pvc/jobservice.yaml
