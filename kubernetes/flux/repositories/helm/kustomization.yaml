@@ -32,6 +32,6 @@ resources:
   - ./database/emqx.yaml
   - ./database/cloudnative-pg.yaml
 #development
-  - ./developnment/harbor.yaml
+  - ./development/harbor.yaml
 # test
   - ./test/podinfo-source.yaml
