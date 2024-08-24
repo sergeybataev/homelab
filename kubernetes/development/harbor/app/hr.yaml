@@ -1,0 +1,283 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: harbor
+  namespace: dev
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: harbor
+      version: 1.15.0
+      sourceRef:
+        kind: HelmRepository
+        name: harbor
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 300
+    timeout: 5m
+  upgrade:
+    remediation:
+      retries: 300
+  values:
+    imagePullPolicy: Always
+    updateStrategy:
+      type: Recreate
+    # debug, info, warning, error or fatal
+    logLevel: debug
+
+    externalURL: https://registry.${SECRET_DOMAIN}
+    ipFamily:
+      ipv6:
+        enabled: false
+
+    existingSecretAdminPasswordKey: admin
+    existingSecretSecretKey: "harbor-secrets"
+
+    expose:
+      type: ingress
+      tls:
+        # ! ingress=none/secret, clusterip=auto
+        certSource: secret
+        # auto:
+        #   commonName: "cr.${SECRET_EXT_DOMAIN}"
+        secret:
+          secretName: "harbor-tls"
+      ingress:
+        hosts:
+          core: registry.${SECRET_DOMAIN}
+        controller: default
+        className: "internal"
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-redirect: "true"
+          # nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          # nginx.ingress.kubernetes.io/client-body-buffer-size: "10g"
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          # Remember to NOT use CF proxying due to 100M upload limit though it
+          external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
+          external-dns.alpha.kubernetes.io/target: "internal.${SECRET_DOMAIN}"
+          # nginx.ingress.kubernetes.io/custom-http-errors: "418"
+          # nginx.ingress.kubernetes.io/proxy-connect-timeout: "480"
+
+    persistence:
+      enabled: true
+      persistentVolumeClaim:
+        registry:
+          existingClaim: "harbor-registry"
+        jobservice:
+          jobLog:
+            existingClaim: "harbor-jobservice"
+          scanDataExports:
+            existingClaim: "harbor-jobservice-scandata"
+        # redis:
+        #   existingClaim: "harbor-redis"
+        trivy:
+          existingClaim: "harbor-trivy-v2"
+
+      imageChartStorage:
+        # Specify whether to disable `redirect` for images and chart storage, for
+        # backends which not supported it (such as using minio for `s3` storage type), please disable
+        # it. To disable redirects, simply set `disableredirect` to `true` instead.
+        disableredirect: false
+        type: filesystem
+        filesystem:
+          rootdirectory: /storage
+          # maxthreads: 100
+        # s3:
+        #   # Set an existing secret for S3 accesskey and secretkey
+        #   # keys in the secret should be AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY for chartmuseum
+        #   # keys in the secret should be REGISTRY_STORAGE_S3_ACCESSKEY and REGISTRY_STORAGE_S3_SECRETKEY for registry
+        #   # existingSecret: ""
+        #   region: us-west-1
+        #   bucket: bucketname
+        #   # accesskey: awsaccesskey
+        #   # secretkey: awssecretkey
+        #   # regionendpoint: http://myobjects.local
+        #   # encrypt: false
+        #   # keyid: mykeyid
+        #   # secure: true
+        #   # skipverify: false
+        #   # v4auth: true
+        #   # chunksize: "5242880"
+        #   # rootdirectory: /s3/object/name/prefix
+        #   # storageclass: STANDARD
+        #   # multipartcopychunksize: "33554432"
+        #   # multipartcopymaxconcurrency: 100
+        #   # multipartcopythresholdsize: "33554432"
+
+    portal:
+      image:
+        repository: ghcr.io/octohelm/harbor/harbor-portal
+        tag: v2.11.0
+      revisionHistoryLimit: 3
+    core:
+      initContainers:
+        - name: init-db
+          image: ghcr.io/onedr0p/postgres-init:16.3
+          env:
+            - name: INIT_POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: main16-secret
+                  key: host
+            - name: INIT_POSTGRES_SUPER_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: cloudnative-pg-secret
+                  key: password
+            - name: INIT_POSTGRES_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: harbor-db-secrets
+                  key: name
+            - name: INIT_POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: harbor-db-secrets
+                  key: user
+            - name: INIT_POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: harbor-db-secrets
+                  key: password
+      image:
+        repository: ghcr.io/octohelm/harbor/harbor-core
+        tag: v2.11.0
+      revisionHistoryLimit: 3
+      podAnnotations:
+        secret.reloader.stakater.com/reload: "harbor-secrets"
+    jobservice:
+      image:
+        repository: ghcr.io/octohelm/harbor/harbor-jobservice
+        tag: v2.11.0
+      revisionHistoryLimit: 3
+    registry:
+      registry:
+        image:
+          repository: ghcr.io/octohelm/harbor/registry-photon
+          tag: v2.11.0
+      controller:
+        image:
+          repository: ghcr.io/octohelm/harbor/harbor-registryctl
+          tag: v2.11.0
+      upload_purging:
+        enabled: true
+        # remove files in _upload directories which exist for a period of time, default is one week.
+        age: 168h
+        # the interval of the purge operations
+        interval: 24h
+        dryrun: false
+      revisionHistoryLimit: 3
+    chartmuseum:
+      enabled: false
+    trivy:
+      enabled: true
+      image:
+        repository: ghcr.io/octohelm/harbor/trivy-adapter-photon
+        tag: v2.11.0
+    notary:
+      enabled: false
+
+    database:
+      # if external database is used, set "type" to "external"
+      # and fill the connection information in "external" section
+      type: external
+      external:
+        # host: "postgres-default-rw.database.svc.cluster.local"
+        # port: "5432"
+        # username: "harbor"
+        # coreDatabase: "harbor"
+        # if using existing secret, the key must be "password"
+        existingSecret: "harbor-db-secrets"
+      maxIdleConns: 50
+      maxOpenConns: 100
+      podAnnotations: {}
+
+    redis:
+      type: external
+      # internal:
+      #   image:
+      #     repository: ghcr.io/octohelm/harbor/redis-photon
+      #     tag: v2.11.0
+      external:
+        # support redis, redis+sentinel
+        # addr for redis: <host_redis>:<port_redis>
+        # addr for redis+sentinel: <host_sentinel1>:<port_sentinel1>,<host_sentinel2>:<port_sentinel2>,<host_sentinel3>:<port_sentinel3>
+        addr: "dragonfly.database.svc.cluster.local:6379"
+        # The name of the set of Redis instances to monitor, it must be set to support redis+sentinel
+        sentinelMasterSet: ""
+        # The "coreDatabaseIndex" must be "0" as the library Harbor
+        # used doesn't support configuring it
+        # harborDatabaseIndex defaults to "0", but it can be configured to "6", this config is optional
+        # cacheLayerDatabaseIndex defaults to "0", but it can be configured to "7", this config is optional
+        coreDatabaseIndex: "0"
+        jobserviceDatabaseIndex: "1"
+        registryDatabaseIndex: "2"
+        trivyAdapterIndex: "5"
+        # harborDatabaseIndex: "6"
+        # cacheLayerDatabaseIndex: "7"
+        # username field can be an empty string, and it will be authenticated against the default user
+        username: ""
+        password: ""
+        # If using existingSecret, the key must be REDIS_PASSWORD
+        # existingSecret: ""
+
+              # PAPERLESS_REDIS: redis://dragonfly.database.svc.cluster.local
+              # PAPERLESS_REDIS_PREFIX: paperless
+              # addr: dragonfly.database.svc.cluster.local:6379
+      podAnnotations: {}
+
+    exporter:
+      replicas: 1
+      revisionHistoryLimit: 3
+      image:
+        repository: ghcr.io/octohelm/harbor/harbor-exporter
+        tag: v2.11.0
+    metrics:
+      enabled: true
+      core:
+        path: /metrics
+        port: 8001
+      registry:
+        path: /metrics
+        port: 8001
+      jobservice:
+        path: /metrics
+        port: 8001
+      exporter:
+        path: /metrics
+        port: 8001
+      serviceMonitor:
+        enabled: true
+    trace:
+      enabled: false
+    cache:
+      enabled: false
+      expireHours: 24
+
+  valuesFrom:
+    - targetPath: harborAdminPassword
+      kind: Secret
+      name: harbor-secrets
+      valuesKey: harborAdminPassword
+    - targetPath: database.external.host
+      kind: Secret
+      name: main16-secret
+      valuesKey: host
+    - targetPath: database.external.port
+      kind: Secret
+      name: main16-secret
+      valuesKey: port
+    - targetPath: database.external.username
+      kind: Secret
+      name: harbor-db-secrets
+      valuesKey: user
+    - targetPath: database.external.coreDatabase
+      kind: Secret
+      name: harbor-db-secrets
+      valuesKey: name

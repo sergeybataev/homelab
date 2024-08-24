@@ -8,3 +8,4 @@ resources:
   # - ./actions-runner-controller/ks.yaml
   # - ./gh-safe-settings/ks.yaml
   - ./it-tools/ks.yaml
+  - ./harbor/ks.yaml

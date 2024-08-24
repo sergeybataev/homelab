@@ -1,0 +1,12 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./secrets.sops.yaml
+  - ./secrets-db.sops.yaml
+  - ./hr.yaml
+  - ./pvc/registry.yaml
+  - ./pvc/jobservice.yaml
+  - ./pvc/jobservice-scandata.yaml
+  - ./pvc/harbor-trivy-v2.yaml
