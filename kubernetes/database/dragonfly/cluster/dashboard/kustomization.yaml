@@ -5,7 +5,7 @@ kind: Kustomization
 configMapGenerator:
   - name: dragonflydb-dashboards
     files:
-      - dragonflydb-dashboard.json=https://raw.githubusercontent.com/dragonflydb/dragonfly/main/tools/local/monitoring/grafana/provisioning/dashboards/dashboard.json
+      - dragonflydb-dashboard.json=https://raw.githubusercontent.com/dragonflydb/dragonfly/main/tools/local/monitoring/grafana/provisioning/dashboards/dragonfly.json
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
