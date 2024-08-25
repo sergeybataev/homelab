@@ -415,10 +415,14 @@ spec:
               size: 3
           dataPools:
             - failureDomain: host
+              replicated:
+                size: 3
+              name: data-replicated
+            - failureDomain: host
               erasureCoded:
                 dataChunks: 2
                 codingChunks: 1
-              name: data0
+              name: data-ec
           metadataServer:
             activeCount: 1
             activeStandby: true
@@ -433,7 +437,7 @@ spec:
           enabled: true
           isDefault: false
           name: ceph-filesystem
-          pool: data0
+          pool: data-ec
           reclaimPolicy: Delete
           allowVolumeExpansion: true
           # mountOptions: []
