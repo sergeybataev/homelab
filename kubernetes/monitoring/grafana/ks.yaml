@@ -26,3 +26,4 @@ spec:
       VOLSYNC_CLAIM: grafana-config
       VOLSYNC_CAPACITY: 10Gi
       VOLSYNC_STORAGECLASS: ceph-filesystem
+      VOLSYNC_ACCESSMODES: ReadWriteMany
