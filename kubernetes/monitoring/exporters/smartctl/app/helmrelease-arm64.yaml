@@ -34,3 +34,8 @@ spec:
       tag: "master"
     nodeSelector:
       kubernetes.io/arch: arm64
+    extraInstances:
+      - config:
+          devices:
+            # TODO - Add all devices here
+            - /dev/nvme0n1

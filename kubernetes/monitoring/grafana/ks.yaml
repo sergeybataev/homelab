@@ -25,3 +25,4 @@ spec:
       APP: *app
       VOLSYNC_CLAIM: grafana-config
       VOLSYNC_CAPACITY: 10Gi
+      VOLSYNC_STORAGECLASS: ceph-filesystem
