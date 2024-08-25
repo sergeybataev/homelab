@@ -427,8 +427,8 @@ spec:
               requests:
                 cpu: "35m"
                 memory: "64M"
-              limits:
-                memory: "144M"
+              # limits:
+              #   memory: "144M"
         storageClass:
           enabled: true
           isDefault: false
