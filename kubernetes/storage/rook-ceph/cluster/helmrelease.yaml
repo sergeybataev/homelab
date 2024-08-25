@@ -408,7 +408,7 @@ spec:
     #         csi.storage.k8s.io/fstype: ext4
 
     cephFileSystems:
-      - name: ceph-filesystem
+      - name: ceph-filesystem-ec
         spec:
           metadataPool:
             replicated:
