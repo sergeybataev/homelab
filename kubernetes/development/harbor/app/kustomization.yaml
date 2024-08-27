@@ -11,3 +11,4 @@ resources:
   - ./pvc/jobservice.yaml
   - ./pvc/jobservice-scandata.yaml
   - ./pvc/harbor-trivy-v2.yaml
+  - ./dashboard/dashboard.yaml
