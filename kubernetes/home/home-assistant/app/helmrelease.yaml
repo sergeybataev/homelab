@@ -39,21 +39,21 @@ spec:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 16
             env:
-            - name: INIT_POSTGRES_DBNAME
-              valueFrom:
-                secretKeyRef:
-                  name: home-assistant-db-secret
-                  key: name
-            - name: INIT_POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: home-assistant-db-secret
-                  key: user
-            - name: INIT_POSTGRES_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: home-assistant-db-secret
-                  key: password
+              INIT_POSTGRES_DBNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: home-assistant-db-secret
+                    key: name
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: home-assistant-db-secret
+                    key: user
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: home-assistant-db-secret
+                    key: password
               INIT_POSTGRES_HOST:
                 valueFrom:
                   secretKeyRef:
