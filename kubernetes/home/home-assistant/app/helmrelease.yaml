@@ -179,11 +179,11 @@ spec:
     persistence:
       config:
         existingClaim: home-assistant
-      secrets.yaml:
-        items:
-        - key: secrets.yaml
-          path: /config/secrets.yaml
-        name: home-assistant-secret
+      # secrets.yaml:
+      #   items:
+      #   - key: secrets.yaml
+      #     path: /config/secrets.yaml
+      #   name: home-assistant-secret
       logs:
         type: emptyDir
         globalMounts:
