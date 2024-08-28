@@ -15,3 +15,5 @@ resources:
   - ./vpa/ks.yaml
   - ./crds/ks.yaml
   - ./reflector/ks.yaml
+  - ./webhooks/ks.yaml
+

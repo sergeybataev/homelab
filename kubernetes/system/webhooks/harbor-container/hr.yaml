@@ -1,0 +1,63 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: harbor-container-webhook
+  namespace: kube-system
+spec:
+  interval: 30m
+
+  chart:
+    spec:
+      chart: harbor-container-webhook
+      version: 0.7.0
+      sourceRef:
+        kind: HelmRepository
+        name: harbor-container-webhook
+        namespace: flux-system
+
+      interval: 1m
+
+
+  maxHistory: 3
+
+  install:
+    remediation:
+      retries: 3
+
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+
+  uninstall:
+    keepHistory: false
+
+  values:
+    replicaCount: 1
+    rules:
+    - name: 'docker.io rewrite rule'
+      matches:
+        - '^docker.io'
+      replace: 'registry.bataev.live/proxy-docker-hub-public'
+      excludes:
+      #      # for example, exclude goharbor from harbor's proxy cache
+        - '^docker.io/goharbor/.*$'
+      checkUpstream: false
+    - name: 'ghcr.io rewrite rule'
+      matches:
+        - '^ghcr.io'
+      replace: 'registry.bataev.live/proxy-github-public'
+      checkUpstream: false
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
