@@ -417,11 +417,13 @@ spec:
             - failureDomain: host
               replicated:
                 size: 3
-              name: data-replicated
             - failureDomain: host
               erasureCoded:
                 dataChunks: 2
                 codingChunks: 1
+              # Inline compression mode for the data pool
+              parameters:
+                compression_mode: none
               name: data-ec
           metadataServer:
             activeCount: 1
@@ -433,6 +435,43 @@ spec:
                 memory: "64M"
               # limits:
               #   memory: "144M"
+            placement:
+              #  nodeAffinity:
+              #    requiredDuringSchedulingIgnoredDuringExecution:
+              #      nodeSelectorTerms:
+              #      - matchExpressions:
+              #        - key: role
+              #          operator: In
+              #          values:
+              #          - mds-node
+              #  topologySpreadConstraints:
+              #  tolerations:
+              #  - key: mds-node
+              #    operator: Exists
+              #  podAffinity:
+              podAntiAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  - labelSelector:
+                      matchExpressions:
+                        - key: app
+                          operator: In
+                          values:
+                            - rook-ceph-mds
+                    # topologyKey: kubernetes.io/hostname will place MDS across different hosts
+                    topologyKey: kubernetes.io/hostname
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    podAffinityTerm:
+                      labelSelector:
+                        matchExpressions:
+                          - key: app
+                            operator: In
+                            values:
+                              - rook-ceph-mds
+                      # topologyKey: */zone can be used to spread MDS across different AZ
+                      # Use <topologyKey: failure-domain.beta.kubernetes.io/zone> in k8s cluster if your cluster is v1.16 or lower
+                      # Use <topologyKey: topology.kubernetes.io/zone>  in k8s cluster is v1.17 or upper
+                      topologyKey: topology.kubernetes.io/zone
         storageClass:
           enabled: true
           isDefault: false
