@@ -112,8 +112,8 @@ spec:
         modules:
           # Several modules should not need to be included in this list. The "dashboard" and "monitoring" modules
           # are already enabled by other settings in the cluster CR.
-          - name: pg_autoscaler
-            enabled: true
+          # - name: pg_autoscaler
+          #   enabled: true
           - name: rook
             enabled: true
 
@@ -413,10 +413,15 @@ spec:
           metadataPool:
             replicated:
               size: 3
+            parameters:
+              compression_mode: none
+              pg_num: "8"
           dataPools:
             - failureDomain: host
               replicated:
                 size: 3
+              parameters:
+                pg_num: "8"
             - failureDomain: host
               erasureCoded:
                 dataChunks: 2
@@ -424,6 +429,7 @@ spec:
               # Inline compression mode for the data pool
               parameters:
                 compression_mode: none
+                pg_num: "16"
               name: data-ec
           metadataServer:
             activeCount: 1
@@ -567,13 +573,17 @@ spec:
           metadataPool:
             failureDomain: host
             replicated:
-              size: 2
+              size: 3
+            parameters:
+              pg_num: "8"
           dataPool:
             failureDomain: host
             # For production it is recommended to use more chunks, such as 4+2 or 8+4
             erasureCoded:
               dataChunks: 2
               codingChunks: 1
+            parameters:
+              pg_num: "16"
           preservePoolsOnDelete: false
           gateway:
             #securePort: 443
@@ -615,13 +625,16 @@ spec:
       spec:
         metadataPool:
           replicated:
-            size: 2
+            size: 3
+          parameters:
+            pg_num: "8"
         dataPool:
           failureDomain: host
           erasureCoded:
             dataChunks: 2
             codingChunks: 1
-
+          parameters:
+            pg_num: "16"
       parameters:
         # clusterID is the namespace where the rook cluster is running
         # If you change this namespace, also change the namespace below where the secret namespaces are defined
