@@ -35,12 +35,14 @@ spec:
     keepHistory: false
 
   values:
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: harbor-container-webhook
     replicaCount: 1
     rules:
     - name: 'docker.io rewrite rule'
       matches:
         - '^docker.io'
-      replace: 'registry.bataev.live/proxy-docker-hub-public'
+      replace: 'registry.${SECRET_DOMAIN}/proxy-docker-hub-public'
       excludes:
       #      # for example, exclude goharbor from harbor's proxy cache
         - '^docker.io/goharbor/.*$'
@@ -48,7 +50,9 @@ spec:
     - name: 'ghcr.io rewrite rule'
       matches:
         - '^ghcr.io'
-      replace: 'registry.bataev.live/proxy-github-public'
+      excludes:
+        - ^ghcr.io/onedr0p/postgres-init.*$'
+      replace: 'registry.${SECRET_DOMAIN}/proxy-github-public'
       checkUpstream: false
     tolerations:
       - key: "node-role.kubernetes.io/control-plane"
