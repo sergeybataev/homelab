@@ -105,6 +105,7 @@ spec:
               tag: 4.89.1@sha256:01dfb4784e1deefe15c8d09930520bb7074e2feddbc5128e82a3e3ee57f6bcff
             env:
               TZ: *TZ
+              PORT: &code-port 18888
             envFrom: *envFrom
             args:
             - "/config"
@@ -140,7 +141,7 @@ spec:
             primary: true
             port: 8123
           codeserver:
-            port: 8080
+            port: *code-port
             # dnla-udp:
             #   enabled: true
             #   port: 1900
