@@ -660,8 +660,8 @@ spec:
         # Available for imageFormat: "2". Older releases of CSI RBD
         # support only the `layering` feature. The Linux kernel (KRBD) supports the
         # full feature complement as of 5.4
-        # imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
-        imageFeatures: layering
+        imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
+        # imageFeatures: layering
 
       storageClass:
         provisioner: rook-ceph.rbd.csi.ceph.com # csi-provisioner-name
