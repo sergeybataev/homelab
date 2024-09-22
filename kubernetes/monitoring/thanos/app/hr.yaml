@@ -67,7 +67,7 @@ spec:
 
     receive:
       enabled: true
-      replicaCount: 1
+      replicaCount: 3
 
     compact:
       enabled: true
@@ -80,7 +80,7 @@ spec:
       persistence: &persistence
         enabled: true
         storageClass: ceph-block
-        size: 30Gi
+        size: 100Gi
 
     query:
       replicas: 1
