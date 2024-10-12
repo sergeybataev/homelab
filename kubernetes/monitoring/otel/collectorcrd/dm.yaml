@@ -23,6 +23,15 @@ spec:
           http:
             endpoint: 0.0.0.0:4318
 
+      journald:
+        directory: /run/log/journal
+        # units:
+        #   - ssh
+        #   - kubelet
+        #   - docker
+        #   - containerd
+        priority: info
+
       filelog:
         exclude: []
         include:
