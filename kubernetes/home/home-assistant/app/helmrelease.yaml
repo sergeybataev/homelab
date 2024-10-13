@@ -76,6 +76,7 @@ spec:
               HASS_TRUSTED_PROXIES: ${NODE_CIDR}
               HASS_HTTP_TRUSTED_PROXY_1: ${NODE_CIDR}
               HASS_HTTP_TRUSTED_PROXY_2: ${CLUSTER_CIDR}
+              HOME_ASSISTANT__HACS_INSTALL: "true"
               SERVER_HOST:
                 valueFrom:
                   fieldRef:
@@ -121,8 +122,8 @@ spec:
               requests:
                 cpu: 10m
     defaultPodOptions:
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      # hostNetwork: true
+      # dnsPolicy: ClusterFirstWithHostNet
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
