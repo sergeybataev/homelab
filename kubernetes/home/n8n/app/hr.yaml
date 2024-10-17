@@ -125,7 +125,9 @@ spec:
             port: *port
 
     ingress:
-      external:
+      app:
+        enabled: true
+        className: external
         annotations:
           hajimari.io/icon: mdi:water-flow
           external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
