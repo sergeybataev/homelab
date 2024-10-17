@@ -1,0 +1,39 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app n8n
+  namespace: flux-system
+  labels:
+    kustomization.flux.home.arpa/default: "true"
+    kustomization.flux.home.arpa/helmpatches: "true"
+    substitution.flux.home.arpa/disabled: "false"
+    prune.flux.home.arpa/disabled: "false"
+    wait.flux.home.arpa/disabled: "false"
+    storage.flux.home.arpa/required: "true"
+spec:
+  dependsOn: []
+  targetNamespace: &ns home
+  path: ./kubernetes/home/n8n/app
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: false
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app
+      NS: *ns
+      VOLSYNC_CLAIM: n8n-config
+      VOLSYNC_CAPACITY: 5Gi
+    substituteFrom:
+      - kind: Secret
+        name: main16-secret
+        optional: false
+
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app

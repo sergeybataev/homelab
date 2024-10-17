@@ -6,3 +6,4 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   - ./home-assistant/ks.yaml
+  - ./home/n8n/ks.yaml
