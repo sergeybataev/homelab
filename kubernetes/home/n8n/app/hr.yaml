@@ -78,7 +78,7 @@ spec:
                     key: DB_POSTGRESDB_PASSWORD
             envFrom: &envFrom
               - secretRef:
-                  name: n8n-secret
+                  name: n8n-secrets
         containers:
           n8n:
             image:
