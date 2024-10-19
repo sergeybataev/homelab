@@ -35,7 +35,7 @@ spec:
               repository: docker.io/filebrowser/filebrowser
               tag: v2.29.0@sha256:47675a3fdf1262d6ce58e6ef3466322ddb6eab4ec5f2a2b7431bae314db4ee8d
             env:
-              TZ: "${CONFIG_TZ}"
+              TZ: "${TIMEZONE}"
               FB_DATABASE: /config/filebrowser.db
               FB_ROOT: /test
               FB_LOG: stdout
