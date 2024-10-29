@@ -71,7 +71,7 @@ spec:
           app:
             image:
               repository: ghcr.io/onedr0p/home-assistant
-              tag: 2024.10.2
+              tag: 2024.10.4
             env:
               TZ: &TZ ${TIMEZONE}
               HASS_EXTERNAL_URL: https://hass.${SECRET_DOMAIN}
@@ -98,6 +98,13 @@ spec:
                 cpu: 10m
               limits:
                 memory: 1Gi
+            ports:
+              - containerPort: 5353
+                name: mdns-tcp
+                protocol: TCP
+              - containerPort: 5353
+                name: mdns-udp
+                protocol: UDP
           codeserver:
             image:
               repository: ghcr.io/coder/code-server
