@@ -33,6 +33,13 @@ spec:
       home-assistant:
         annotations:
           reloader.stakater.com/auto: "true"
+          k8s.v1.cni.cncf.io/networks: |
+            [{
+              "name": "k8s-net",
+              "namespace": "network",
+              "mac": "aa:e9:02:a4:7e:01",
+              "ips": ["192.168.5.5/21"]
+            }]
         initContainers:
           init-db:
             image:
@@ -54,11 +61,7 @@ spec:
                   secretKeyRef:
                     name: home-assistant-db-secret
                     key: password
-              INIT_POSTGRES_HOST:
-                valueFrom:
-                  secretKeyRef:
-                    key: host
-                    name: main16-secret
+              INIT_POSTGRES_HOST: ${CLOUDNATIVE_PG_IP}
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
@@ -81,12 +84,7 @@ spec:
                 valueFrom:
                   fieldRef:
                     fieldPath: status.podIP
-              DB_HOST:
-                valueFrom:
-                  secretKeyRef:
-                    key: host
-                    name: main16-secret
-              HASS_RECORDER_DB_URL: "postgresql://$(DB_user):$(DB_password)@$(DB_HOST)/home_assistant"
+              HASS_RECORDER_DB_URL: "postgresql://$(DB_user):$(DB_password)@${CLOUDNATIVE_PG_IP}/home_assistant"
             envFrom: &envFrom
             - prefix: "DB_"
               secretRef:
@@ -134,8 +132,6 @@ spec:
     service:
       app:
         type: LoadBalancer
-        annotations:
-          io.cilium/lb-ipam-ips: ${HOME_ASSISTANT_IP}
         controller: home-assistant
         ports:
           http:
