@@ -315,7 +315,7 @@ spec:
             cpu: "300m"
             memory: "512Mi"
           limits:
-            memory: "6Gi"
+            memory: "2Gi"
         mgr-sidecar:
           requests:
             cpu: "50m"
