@@ -144,6 +144,16 @@ spec:
           http:
             primary: true
             port: 8123
+          bonjour-udp:
+            enabled: true
+            port: 5353
+            protocol: UDP
+            targetPort: 5353
+          bonjour-tcp:
+            enabled: true
+            port: 5353
+            protocol: TCP
+            targetPort: 5353
           codeserver:
             port: *code-port
             # dnla-udp:
@@ -152,16 +162,6 @@ spec:
             #   protocol: UDP
             #   targetPort: 1900
             #   nodePort: 1900
-            bonjour-udp:
-              enabled: true
-              port: 5353
-              protocol: UDP
-              targetPort: 5353
-            bonjour-tcp:
-              enabled: true
-              port: 5353
-              protocol: TCP
-              targetPort: 5353
     ingress:
       app:
         enabled: true
