@@ -1,10 +1,9 @@
-# ---
-# apiVersion: snapshot.storage.k8s.io/v1
-# kind: VolumeSnapshotClass
-# metadata:
-#   name: zfspv-snapclass
-#   annotations:
-#     snapshot.storage.kubernetes.io/is-default-class: "true"
-#     velero.io/csi-volumesnapshot-class: "true"
-# driver: zfs.csi.openebs.io
-# deletionPolicy: Retain
+---
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: zfspv-snapclass
+  annotations:
+    snapshot.storage.kubernetes.io/is-default-class: "true"
+driver: zfs.csi.openebs.io
+deletionPolicy: Retain
