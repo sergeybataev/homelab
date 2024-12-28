@@ -21,6 +21,30 @@ allowedTopologies:
       - key: kubernetes.io/hostname
         values:
           - main.storage
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: hl-zfs-pv-bootstrap
+  namespace: storage
+  labels:
+    storage: zfs
+    node: main.storage
+
+parameters:
+  fstype: "zfs"
+  poolname: mainV1P2/.k8s/pv-bootstrap
+  shared: "yes"
+provisioner: zfs.csi.openebs.io
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+allowedTopologies:
+  - matchLabelExpressions:
+      - key: kubernetes.io/hostname
+        values:
+          - main.storage
+
 # ---
 # apiVersion: storage.k8s.io/v1
 # kind: StorageClass
