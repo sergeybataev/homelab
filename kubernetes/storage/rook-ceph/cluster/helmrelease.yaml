@@ -555,17 +555,13 @@ spec:
     #   # see https://rook.io/docs/rook/v1.10/Storage-Configuration/Ceph-CSI/ceph-csi-snapshot/#cephfs-snapshots for available configuration
     #   parameters: {}
 
-    # # -- Settings for the block pool snapshot class
-    # # @default -- See [RBD Snapshots](../Storage-Configuration/Ceph-CSI/ceph-csi-snapshot.md#rbd-snapshots)
-    # cephBlockPoolsVolumeSnapshotClass:
-    #   enabled: false
-    #   name: ceph-block-test
-    #   isDefault: false
-    #   deletionPolicy: Delete
-    #   annotations: {}
-    #   labels: {}
-    #   # see https://rook.io/docs/rook/v1.10/Storage-Configuration/Ceph-CSI/ceph-csi-snapshot/#rbd-snapshots for available configuration
-    #   parameters: {}
+    # -- Settings for the block pool snapshot class
+    # @default -- See [RBD Snapshots](../Storage-Configuration/Ceph-CSI/ceph-csi-snapshot.md#rbd-snapshots)
+    cephBlockPoolsVolumeSnapshotClass:
+      enabled: true
+      name: csi-ceph-blockpool
+      isDefault: false
+      deletionPolicy: Delete
 
     cephObjectStores:
       - name: ceph-objectstore
