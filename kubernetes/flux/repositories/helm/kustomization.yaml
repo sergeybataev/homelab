@@ -11,6 +11,7 @@ resources:
   - ./system/piraeus.yaml
   - ./system/emberstack.yaml
   - ./system/harbor-container-webhook.yaml
+  - ./system/spegel.yaml
 # network
   - ./network/angelnu.yaml
   - ./network/jetstack.yaml
