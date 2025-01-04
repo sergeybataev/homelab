@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.1.0
+      version: 3.6.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -73,7 +73,7 @@ spec:
           app:
             image:
               repository: ghcr.io/onedr0p/home-assistant
-              tag: 2024.10.4
+              tag: 2025.1.0
             env:
               TZ: &TZ ${TIMEZONE}
               HASS_EXTERNAL_URL: https://hass.${SECRET_DOMAIN}
