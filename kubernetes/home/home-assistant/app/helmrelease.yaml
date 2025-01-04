@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: home-assistant
+  name: *app
 spec:
   interval: 30m
   chart:
@@ -92,6 +92,7 @@ spec:
               secretRef:
                 name: home-assistant-db-secret
             securityContext: &securityContext
+              privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities:
@@ -131,7 +132,7 @@ spec:
               requests:
                 cpu: 10m
     defaultPodOptions:
-      hostname: "k8s-{{.Metadata.name}}"
+      hostname: "k8s-${APP}"
       # hostNetwork: true
       # dnsPolicy: ClusterFirstWithHostNet
       securityContext:
