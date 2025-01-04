@@ -21,8 +21,6 @@ spec:
       secret:
         name: cloudnative-pg-secret
       encoding: 'UTF8'
-    recovery:
-      source: postgres16-main
   postgresql:
     parameters:
       max_connections: "400"
