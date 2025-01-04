@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: main-postgres17-lb
   annotations:
-    io.cilium/lb-ipam-ips: ${ CLOUDNATIVE_PG_IP_2 }
+    io.cilium/lb-ipam-ips: ${CLOUDNATIVE_PG_IP_2}
 spec:
   type: LoadBalancer
   ports:
