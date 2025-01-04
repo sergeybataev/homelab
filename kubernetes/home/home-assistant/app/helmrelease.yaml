@@ -33,13 +33,15 @@ spec:
       home-assistant:
         annotations:
           reloader.stakater.com/auto: "true"
-          k8s.v1.cni.cncf.io/networks: |
-            [{
-              "name": "k8s-net",
-              "namespace": "network",
-              "mac": "aa:e9:02:a4:7e:01",
-              "ips": ["192.168.5.5/21"]
-            }]
+        pod:
+          annotations:
+            k8s.v1.cni.cncf.io/networks: |
+              [{
+                "name": "k8s-net",
+                "namespace": "network",
+                "mac": "aa:e9:02:a4:7e:01",
+                "ips": ["192.168.5.5/21"]
+              }]
         initContainers:
           init-db:
             image:
@@ -92,7 +94,9 @@ spec:
             securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              capabilities:
+                add: ["NET_RAW", "NET_ADMIN"]
+                drop: ["ALL"]
             resources:
               requests:
                 cpu: 10m
@@ -127,6 +131,7 @@ spec:
               requests:
                 cpu: 10m
     defaultPodOptions:
+      hostname: "k8s-{{.Metadata.name}}"
       # hostNetwork: true
       # dnsPolicy: ClusterFirstWithHostNet
       securityContext:
