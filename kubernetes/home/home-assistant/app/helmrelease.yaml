@@ -131,6 +131,8 @@ spec:
                 memory: 256Mi
               requests:
                 cpu: 10m
+            securityContext: &securityContext
+              readOnlyRootFilesystem: false
     defaultPodOptions:
       hostname: "k8s-${APP}"
       # hostNetwork: true
