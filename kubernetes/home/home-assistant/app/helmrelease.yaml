@@ -143,8 +143,9 @@ spec:
               - '-i'
               - net1
               - udp port 5353
-            image: dockersec/tcpdump
-            imagePullPolicy: Always
+            image:
+              repository: dockersec/tcpdump
+              tag: latest
             resources: {}
             securityContext:
               allowPrivilegeEscalation: false
