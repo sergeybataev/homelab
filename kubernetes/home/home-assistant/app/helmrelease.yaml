@@ -231,3 +231,9 @@ spec:
         - path: /config/tts
       tmp:
         type: emptyDir
+      tun-device:
+        type: hostPath
+        hostPath: /dev/net/tun
+        hostPathType: CharDevice
+        globalMounts:
+          - path: /dev/net/tun
