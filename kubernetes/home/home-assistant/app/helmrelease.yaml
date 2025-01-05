@@ -95,8 +95,6 @@ spec:
               privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              runAsGroup: 0
-              runAsUser: 0
               capabilities:
                 add:
                   - NET_RAW
@@ -161,6 +159,8 @@ spec:
       # hostNetwork: true
       # dnsPolicy: ClusterFirstWithHostNet
       securityContext:
+        runAsGroup: 0
+        runAsUser: 0
         seccompProfile: {type: RuntimeDefault}
     service:
       app:
