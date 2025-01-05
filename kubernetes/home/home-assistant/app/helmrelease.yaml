@@ -141,9 +141,7 @@ spec:
               - '-i'
               - net1
               - udp port 5353
-            image:
-              repository: dockersec/tcpdump
-              tag: latest
+            image: dockersec/tcpdump
             resources: {}
             securityContext:
               allowPrivilegeEscalation: false
@@ -159,10 +157,17 @@ spec:
       # hostNetwork: true
       # dnsPolicy: ClusterFirstWithHostNet
       securityContext:
+        privileged: false
+        allowPrivilegeEscalation: false
         runAsNonRoot: false
         runAsGroup: 0
         runAsUser: 0
         seccompProfile: {type: RuntimeDefault}
+        capabilities:
+          add:
+            - NET_RAW
+          drop:
+            - ALL
     service:
       app:
         type: LoadBalancer
