@@ -37,9 +37,8 @@ spec:
           annotations:
             k8s.v1.cni.cncf.io/networks: |
               [{
-                "name": "k8s-net",
+                "name": "macvlan-static-net",
                 "namespace": "network",
-                "mac": "aa:e9:02:a4:7e:01",
                 "ips": ["192.168.5.5/16"]
               }]
         initContainers:
