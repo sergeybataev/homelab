@@ -91,14 +91,7 @@ spec:
               secretRef:
                 name: home-assistant-db-secret
             securityContext: &securityContext
-              privileged: false
-              allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities:
-                add:
-                  - NET_RAW
-                drop:
-                  - ALL
             resources:
               requests:
                 cpu: 10m
@@ -134,21 +127,6 @@ spec:
                 cpu: 10m
             securityContext: &securityContext
               readOnlyRootFilesystem: false
-          tcpdump:
-            command:
-              - tcpdump
-              - '-i'
-              - net1
-              - udp port 5353
-            image: dockersec/tcpdump
-            resources: {}
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                add:
-                  - NET_RAW
-                drop:
-                  - ALL
             terminationMessagePath: /dev/termination-log
             terminationMessagePolicy: File
     defaultPodOptions:
@@ -156,17 +134,9 @@ spec:
       # hostNetwork: true
       # dnsPolicy: ClusterFirstWithHostNet
       securityContext:
-        privileged: false
-        allowPrivilegeEscalation: false
         runAsNonRoot: false
         runAsGroup: 0
         runAsUser: 0
-        seccompProfile: {type: RuntimeDefault}
-        capabilities:
-          add:
-            - NET_RAW
-          drop:
-            - ALL
     service:
       app:
         type: LoadBalancer
