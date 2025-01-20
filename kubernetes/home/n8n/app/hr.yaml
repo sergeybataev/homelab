@@ -54,7 +54,7 @@ spec:
               - name: INIT_POSTGRES_HOST
                 valueFrom: &db_host
                   secretKeyRef:
-                    name: main16-secret
+                    name: cnpg-main17-secret
                     key: host
               - name: INIT_POSTGRES_SUPER_PASS
                 valueFrom:
