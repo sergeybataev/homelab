@@ -283,7 +283,7 @@ spec:
       #  Use a custom "base" images registry (pull registry). Default behavior will pull the default
       #  base images from the web
       #  Note: To override a pull registry for both "onbuild" and base images, use `dependantImageRegistryURL`.
-      defaultBaseRegistryURL: "${SECRET_REGISTRY_DOMAIN}"
+      defaultBaseRegistryURL: ""
 
       #  Use a custom "onbuild" images registry (pull registry).
       #  Note: To override a pull registry for both "onbuild" and base images, use `dependantImageRegistryURL`.

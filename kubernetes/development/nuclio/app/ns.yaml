@@ -5,9 +5,3 @@ metadata:
   name: dev-nuclio
   labels:
     kustomize.toolkit.fluxcd.io/prune: disabled
-
-    # docker-username: robot$myrobot
-    # docker-password: YsLH8Jeg56q8YmDb2hxWmQ5wvhgEgeS7
-    # docker-server: https://registry.bataev.live
-    # docker-email: ignored@nuclio.io
-    # {"auths":{"your-registry-server":{"username":"your-name","password":"your-pword","email":"your-email","auth":"eW91ci1uYW1lOnlvdXItcHdvcmQ="}}}
