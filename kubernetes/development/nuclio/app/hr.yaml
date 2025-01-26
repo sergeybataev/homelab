@@ -262,7 +262,7 @@ spec:
       # to push/pull from `gcr.io/<project-name>. If this is the case, specify the URL here, and it will be
       # used instead of the URL in the secrets
       #
-      # pushPullUrl: gcr.io/<project-name>
+      pushPullUrl: ${SECRET_REGISTRY_DOMAIN}/library
 
 
       # For cases where the deployed function container is pulled from a different registry than it was pushed to
@@ -283,7 +283,7 @@ spec:
       #  Use a custom "base" images registry (pull registry). Default behavior will pull the default
       #  base images from the web
       #  Note: To override a pull registry for both "onbuild" and base images, use `dependantImageRegistryURL`.
-      defaultBaseRegistryURL: ""
+      defaultBaseRegistryURL: "${SECRET_REGISTRY_DOMAIN}"
 
       #  Use a custom "onbuild" images registry (pull registry).
       #  Note: To override a pull registry for both "onbuild" and base images, use `dependantImageRegistryURL`.
