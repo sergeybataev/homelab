@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./secrets.sops.yaml
   - ./hr.yaml
+  - ./ns.yaml
