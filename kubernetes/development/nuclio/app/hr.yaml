@@ -255,7 +255,7 @@ spec:
       # If secretName is commented out or empty (and credentials are given) then the
       # chart will create a secret with default name `{releaseName}-registry-credentials`
       #
-      # secretName: registry-credentials
+      secretName: nuclio-secrets
 
       # In some cases the docker server URL in the registry secrets isn't the same as the URL with which
       # you push and pull. For example, in GKE you log into `gcr.io` (or some other regional URL) yet have
