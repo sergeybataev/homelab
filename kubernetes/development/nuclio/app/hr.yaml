@@ -33,7 +33,7 @@ spec:
       enabled: true
       image:
         repository: quay.io/nuclio/controller
-        tag: 1.14.1
+        tag: 1.14.1-amd64
         pullPolicy: IfNotPresent
       resources: {}
 
@@ -45,7 +45,8 @@ spec:
       ## Node labels for pod assignment
       ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
       ##
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/arch: amd64
 
       ## Deployment security context
       ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -106,14 +107,15 @@ spec:
       replicas: 1
       image:
         repository: quay.io/nuclio/dashboard
-        tag: 1.14.1
+        tag: 1.14.1-amd64
         pullPolicy: IfNotPresent
       resources: {}
 
       ## Node labels for pod assignment
       ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
       ##
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/arch: amd64
 
       ## Deployment security context
       ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -158,14 +160,15 @@ spec:
       replicas: 1
       image:
         repository: quay.io/nuclio/autoscaler
-        tag: 1.14.1
+        tag: 1.14.1-amd64
         pullPolicy: IfNotPresent
       resources: {}
 
       ## Node labels for pod assignment
       ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
       ##
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/arch: amd64
 
       ## Deployment security context
       ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -192,14 +195,15 @@ spec:
       replicas: 1
       image:
         repository: quay.io/nuclio/dlx
-        tag: 1.14.1
+        tag: 1.14.1-amd64
         pullPolicy: IfNotPresent
       resources: {}
 
       ## Node labels for pod assignment
       ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
       ##
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/arch: amd64
 
       ## Deployment security context
       ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
