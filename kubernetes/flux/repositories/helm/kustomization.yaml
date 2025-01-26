@@ -33,7 +33,9 @@ resources:
 # database
   - ./database/emqx.yaml
   - ./database/cloudnative-pg.yaml
+  - ./database/victoria-metrics.yaml
 #development
   - ./development/harbor.yaml
+  - ./development/nuclio.yaml
 # test
   - ./test/podinfo-source.yaml
