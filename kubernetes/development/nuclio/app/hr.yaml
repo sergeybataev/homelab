@@ -33,7 +33,7 @@ spec:
       enabled: true
       image:
         repository: quay.io/nuclio/controller
-        tag: 1.14.1-amd64
+        tag: 1.14.1
         pullPolicy: IfNotPresent
       resources: {}
 
@@ -106,7 +106,7 @@ spec:
       replicas: 1
       image:
         repository: quay.io/nuclio/dashboard
-        tag: 1.14.1-amd64
+        tag: 1.14.1
         pullPolicy: IfNotPresent
       resources: {}
 
@@ -158,7 +158,7 @@ spec:
       replicas: 1
       image:
         repository: quay.io/nuclio/autoscaler
-        tag: 1.14.1-amd64
+        tag: 1.14.1
         pullPolicy: IfNotPresent
       resources: {}
 
@@ -192,7 +192,7 @@ spec:
       replicas: 1
       image:
         repository: quay.io/nuclio/dlx
-        tag: 1.14.1-amd64
+        tag: 1.14.1
         pullPolicy: IfNotPresent
       resources: {}
 
