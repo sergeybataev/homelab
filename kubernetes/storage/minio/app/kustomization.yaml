@@ -9,5 +9,5 @@ secretGenerator:
 - name: mini-test-secret
   namespace: ${NS}
   literals:
-  - MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID}
-  - MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
+  - MINIO_ROOT_USER: '{{ .AWS_ACCESS_KEY_ID }}'
+  - MINIO_ROOT_PASSWORD: '{{ .AWS_SECRET_ACCESS_KEY }}'
