@@ -24,6 +24,9 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    defaultPodOptions:
+      nodeSelector:
+        kubernetes.io/hostname: main.storage
     controllers:
       minio:
         annotations:
