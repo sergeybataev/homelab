@@ -18,7 +18,7 @@ spec:
       kind: HelmRelease
       name: *app
       namespace: &ns storage-minio
-  interval: 30m
+  interval: 1h
   retryInterval: 1m
   timeout: 3m
   postBuild:
