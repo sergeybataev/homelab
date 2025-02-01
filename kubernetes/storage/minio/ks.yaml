@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -25,9 +25,3 @@ spec:
     substitute:
       APP: *app
       NS: *ns
-secretGenerator:
-- name: mini-test-secret
-  namespace: *ns
-  literals:
-  - MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID}
-  - MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
