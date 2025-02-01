@@ -5,6 +5,7 @@ resources:
 # system
   - ./system/bjw-s.yaml
   - ./system/cilium.yaml
+  - ./system/external-secrets.yaml
   - ./system/metrics-server.yaml
   - ./system/lwolf.yaml
   - ./system/fairwinds-charts.yaml
