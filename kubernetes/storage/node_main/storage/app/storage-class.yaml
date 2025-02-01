@@ -7,6 +7,8 @@ metadata:
   labels:
     storage: zfs
     node: main.storage
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
 
 parameters:
   fstype: "zfs"
