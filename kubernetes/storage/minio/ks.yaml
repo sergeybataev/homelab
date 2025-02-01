@@ -25,3 +25,9 @@ spec:
     substitute:
       APP: *app
       NS: *ns
+secretGenerator:
+- name: mini-test-secret
+  namespace: *ns
+  literals:
+  - MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID}
+  - MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
