@@ -39,7 +39,7 @@ spec:
         ingressClassName: internal
       #   useDefaultIngressClass: true
         annotations:
-          external-dns.alpha.kubernetes.io/target: ${INGRESS_INTERNAL_IP}
+          external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
       #     # hajimari.io/enable: "true"
       #     # hajimari.io/icon: logos:kubernetes
       #     # hajimari.io/info: Kubernetes dashboard
