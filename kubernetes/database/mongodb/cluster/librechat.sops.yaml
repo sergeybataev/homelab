@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: librechat-secret
+    namespace: database-mongodb
+    annotations:
+        reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+        reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+        reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: ai-librechat
+stringData:
+    MONGO_USER: ENC[AES256_GCM,data:V9SQcXtjM1qA,iv:01vAzKiaZQm6/jQ2hFcHy1/ROFnVL0DaXjGsuFXuXCs=,tag:3IidT19xJR9a52d1NjFfHQ==,type:str]
+    MONGO_PASS: ENC[AES256_GCM,data:UnbJ13QLkXQvmFCHjcV7SrGXKbMcaaqh,iv:ajE3eVNK890fPeQTz30AijQgX2akdeS9AzdcMuHv8bk=,tag:ZcAjlXafz18dn5hsNZhReA==,type:str]
+    MONGO_HOST: ENC[AES256_GCM,data:8j+fBkhz6w==,iv:KPopm9DR84/q848VACKtXHAEQ84NVfDSOyT30X5OJww=,tag:IrFgKyr/Js8+p/rdjV12Kw==,type:str]
+    MONGO_PORT: ENC[AES256_GCM,data:IRn5QMA=,iv:8vs0vpJ309fWFaEFvjexh0DBSC6YsL+s8Sh3eqFs2VA=,tag:wXzf9J8mRB9Ih+6+TJLQWQ==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1pf5un8v27k823gt7dahj3h39zgwk2tr99d30ru2czgyxx6x7fv2spf8x67
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBUbTZFelJJeXVpOEV2RGxo
+            ZU5zR0JNOVpIL3VuUkN5TzJTM2NQQ0UySUFFCjBQQlI5TGdBVDU0cTZ4NTllOU50
+            cDF1WkpQYW9qWTk3cXc1NzMrcDhUTFkKLS0tIDgzdTFoaWtOSnIrNWtwMnBKK3Nk
+            SE5KUUdXQUJaR2RZRzRnejNLcUo3cWMKPIpCM+KijrPbBbDyzGeG7EWRogydHKnX
+            unGjD1RH6c/dagkxsFRgatWbCtINUlDhnb2gxKBW5En4yjxMCAmmpQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-02-13T16:18:55Z"
+    mac: ENC[AES256_GCM,data:yWamv2mTEGKMgItuU/sDf6ltz4EdS/js3tofx/bCqYYFR8RBgX30+vP89ZjC7lCDXCwkh+6yS1zzgT7uOR+RoDqKwqDydHCOArGMZcNAeEP+J0PpxnWeFC96D/vbJQNV7q4JDgE3OZpO2oPoVzkK0TGRhDRdhsEOJy53kH/5Qro=,iv:9hWnXSrSbyv/2d2gc2DAcJKqmmJFIyrlI2Zq31On9cM=,tag:V/UgB/QfFQQrkVhhqd3U3w==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.9.3
