@@ -35,6 +35,7 @@ resources:
   - ./database/emqx.yaml
   - ./database/cloudnative-pg.yaml
   - ./database/victoria-metrics.yaml
+  - ./database/mongodb.yaml
 #development
   - ./development/harbor.yaml
   - ./development/nuclio.yaml
