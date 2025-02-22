@@ -159,4 +159,3 @@ spec:
   valuesFrom:
     - kind: Secret
       name: cnpg-main17-secret
-      valuesKey: host
