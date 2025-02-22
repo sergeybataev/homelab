@@ -22,8 +22,5 @@ spec:
       NS: ai-litellm
     substituteFrom:
       - kind: Secret
-        name: cloudnative-pg-secret
-        optional: false
-      - kind: Secret
         name: cnpg-main17-secret
         optional: false
