@@ -83,10 +83,7 @@ spec:
             env:
               TZ: "${TIMEZONE}"
               DATABASE_HOST: *db_host
-              DATABASE_URL_TEST: {{ .Values.env "DATABASE_HOST" }}
-              TEST_1: {{ .Values.db_host }}
-              TEST_2: {{ .db_host }}
-              TEST: postgres://${DATABASE_HOST}:{{ .Values.db_host }}-{{ .db_host }}@${DATABASE_USER}:{{ .DATABASE_USER }}:5432/${DATABASE_NAME}
+              TEST: postgres://{{ .Values.host }}:@${DATABASE_USER}:{{ .DATABASE_USER }}:5432/${DATABASE_NAME}
 
               STORE_MODEL_IN_DB: "True"
             args:
@@ -159,3 +156,7 @@ spec:
           - path: /app/config.yaml
             subPath: config.yaml
             readOnly: true
+  valuesFrom:
+    - kind: Secret
+      name: cnpg-main17-secret
+      valuesKey: host
