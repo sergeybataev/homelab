@@ -82,7 +82,8 @@ spec:
             env:
               TZ: "${TIMEZONE}"
               DATABASE_HOST: *db_host
-
+              DATABASE_PORT: "5432"
+              STORE_MODEL_IN_DB: "True"
             envFrom: *envFrom
             args:
               - "--config"
