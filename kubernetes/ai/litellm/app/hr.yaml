@@ -152,11 +152,3 @@ spec:
           - path: /app/config.yaml
             subPath: config.yaml
             readOnly: true
-  valuesFrom:
-    - kind: Secret
-      name: cnpg-main17-secret
-      valuesKey: host
-    - targetPath: controllers.litellm.containers.app.env[0].value
-      kind: Secret
-      name: cnpg-main17-secret
-      valuesKey: host
