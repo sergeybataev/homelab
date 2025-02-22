@@ -137,7 +137,7 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: mdi:math-compass
         hosts:
-          - host: &host "litellm.${SECRET_DEFAULT_DOMAIN}"
+          - host: &host "litellm.${SECRET_DOMAIN}"
             paths:
               - path: /
                 service:
