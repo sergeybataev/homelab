@@ -7,4 +7,4 @@ resources:
   - ./ns.yaml
   # Flux-Kustomizations
   - ./litellm/ks.yaml
-  - ./librechat/
+  - ./librechat/ks.yaml
