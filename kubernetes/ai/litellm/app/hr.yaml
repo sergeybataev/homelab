@@ -82,10 +82,6 @@ spec:
             envFrom: *envFrom
             env:
               TZ: "${TIMEZONE}"
-              DATABASE_HOST: *db_host
-              TEST: postgres://{{ .Values.host }}:@${DATABASE_USER}:{{ .DATABASE_USER }}:5432/${DATABASE_NAME}
-
-              STORE_MODEL_IN_DB: "True"
             args:
               - "--config"
               - "/app/config.yaml"
@@ -159,3 +155,8 @@ spec:
   valuesFrom:
     - kind: Secret
       name: cnpg-main17-secret
+      valuesKey: host
+    - targetPath: controllers.litellm.containers.app.env[0].value
+      kind: Secret
+      name: cnpg-main17-secret
+      valuesKey: host

@@ -20,3 +20,10 @@ spec:
     substitute:
       APP: *app
       NS: ai-litellm
+    substituteFrom:
+      - kind: Secret
+        name: cnpg-main17-secret
+        optional: false
+      - kind: Secret
+        name: cloudnative-pg-secret
+        optional: false
