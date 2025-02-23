@@ -42,7 +42,7 @@ spec:
         - name: readWriteAnyDatabase
           db: *lc
         - name: dbOwner
-          db: *db
+          db: *lc
       scramCredentialsSecretName: my-scram-librechat
   additionalMongodConfig:
     storage.wiredTiger.engineConfig.journalCompressor: zlib
