@@ -33,8 +33,6 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
         runAsNonRoot: true
-        allowPrivilegeEscalation: false
-        readOnlyRootFilesystem: false
         capabilities: { drop: ["ALL"] }
         seccompProfile:
           type: RuntimeDefault
