@@ -64,6 +64,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: mongodb-service-lb
+  namespace: ${NS}
   annotations:
     io.cilium/lb-ipam-ips: ${MONGODB_IP}
 spec:
