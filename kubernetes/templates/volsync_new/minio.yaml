@@ -42,13 +42,14 @@ spec:
     retain:
       hourly: 24
       daily: 7
-      weekly: 5
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/volsync.backube/replicationdestination_v1alpha1.json
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
   name: "${APP}-bootstrap"
+  labels:
+    kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
 spec:
   trigger:
     manual: restore-once
@@ -66,3 +67,6 @@ spec:
       runAsUser: ${VOLSYNC_UID:-568}
       runAsGroup: ${VOLSYNC_GID:-568}
       fsGroup: ${VOLSYNC_GID:-568}
+    enableFileDeletion: true
+    cleanupCachePVC: true
+    cleanupTempPVC: true
