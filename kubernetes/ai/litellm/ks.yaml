@@ -9,6 +9,7 @@ metadata:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   path: ./kubernetes/ai/litellm/app
+  targetNamespace: &ns ai-litellm
   prune: true
   sourceRef:
     kind: GitRepository
@@ -19,7 +20,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      NS: ai-litellm
+      NS: *ns
     substituteFrom:
       - kind: Secret
         name: cnpg-main17-secret

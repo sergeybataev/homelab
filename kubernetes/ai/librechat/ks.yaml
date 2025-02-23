@@ -9,6 +9,7 @@ metadata:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   path: ./kubernetes/ai/librechat/app
+  targetNamespace: &ns ai-librechat
   prune: true
   sourceRef:
     kind: GitRepository
@@ -19,7 +20,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      NS: ai-librechat
+      NS: *ns
       VOLSYNC_CLAIM: librechat-zfs
       VOLSYNC_CAPACITY: 10Gi
       VOLSYNC_STORAGECLASS: hl-zfs-pv
