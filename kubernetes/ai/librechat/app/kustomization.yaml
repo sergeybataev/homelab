@@ -5,6 +5,7 @@ resources:
   - ns.yaml
   - hr.yaml
   - ./secret.sops.yaml
+  - ../../../templates/volsync_new/claim.yaml
 configMapGenerator:
   - name: librechat-config
     files:
