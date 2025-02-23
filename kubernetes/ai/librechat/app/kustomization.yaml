@@ -8,5 +8,8 @@ resources:
   - ../../../templates/volsync/claim.yaml
 configMapGenerator:
   - name: librechat-config
+    namespace: ai-librechat
     files:
       - ./resources/librechat.yaml
+generatorOptions:
+  disableNameSuffixHash: true
