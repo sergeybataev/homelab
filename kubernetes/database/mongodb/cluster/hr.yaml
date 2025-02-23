@@ -24,6 +24,10 @@ spec:
           db: *db
         - name: readWriteAnyDatabase
           db: *db
+        - name: dbOwner
+          db: *db
+        - name: dbOwner
+          db: librechat
       scramCredentialsSecretName: my-scram
     - name: &lc librechat
       db: *lc
@@ -37,6 +41,8 @@ spec:
           db: *lc
         - name: readWriteAnyDatabase
           db: *lc
+        - name: dbOwner
+          db: *db
       scramCredentialsSecretName: my-scram-librechat
   additionalMongodConfig:
     storage.wiredTiger.engineConfig.journalCompressor: zlib
