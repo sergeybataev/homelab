@@ -20,3 +20,6 @@ spec:
     substitute:
       APP: *app
       NS: ai-librechat
+      VOLSYNC_CLAIM: librechat-zfs
+      VOLSYNC_CAPACITY: 10Gi
+      VOLSYNC_STORAGECLASS: hl-zfs-pv

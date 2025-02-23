@@ -1,0 +1,185 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app ${APP}
+  namespace: ${NS}
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+      interval: 30m
+  targetNamespace: ${NS}
+  install:
+    createNamespace: true
+    remediation:
+      retries: 10
+  upgrade:
+    remediation:
+      retries: 10
+  values:
+    fullnameOverride: *app
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: false
+        capabilities: { drop: ["ALL"] }
+        seccompProfile:
+          type: RuntimeDefault
+    controllers:
+      librechat:
+        type: deployment
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/danny-avila/librechat-dev
+              tag: latest@sha256:4a0793d792b2982b5b2878d92968e764d446d4e6b6a108fdc254df077cf41baa
+            envFrom: &envFrom
+              - secretRef:
+                  name: librechat-secret
+            env:
+              PORT: "3080"
+              NODE_ENV: "development"
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 1000Mi
+            probes: &probes
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: false
+          # meilisearch:
+          #   image:
+          #     repository: getmeili/meilisearch
+          #     tag: v1.10.3
+          #   envFrom: *envFrom
+          #   env:
+          #     MEILI_DB_PATH: "/meili_data"
+          #   securityContext: *securityContext
+          #   probes: *probes
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 3080
+      # meilisearch:
+      #   controller: librechat
+      #   ports:
+      #     http:
+      #       port: 7700
+      # ragapi:
+      #   controller: librechat
+      #   ports:
+      #     http:
+      #       port: 8000
+
+    ingress:
+      app:
+        enabled: true
+        className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: AI
+          gethomepage.dev/name: *app
+          gethomepage.dev/icon: https://raw.githubusercontent.com/danny-avila/LibreChat/refs/heads/main/client/public/assets/logo.svg
+          gethomepage.dev/description: "AI Chat"
+          gethomepage.dev/href: "https://chat.${SECRET_DOMAIN}"
+        hosts:
+          - host: &host "chat.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+
+    persistence:
+      # init-db:
+      #   enabled: true
+      #   type: configMap
+      #   name: librechat-initdb
+      #   advancedMounts:
+      #     librechat:
+      #       init-db:
+      #         - subPath: librechat.sql
+      #           path: /initdb/librechat.sql
+
+      config:
+        enabled: true
+        type: configMap
+        name: librechat-config
+        advancedMounts:
+          librechat:
+            app:
+              - subPath: librechat.yaml
+                path: /app/librechat.yaml
+
+      app-data:
+        enabled: true
+        type: emptyDir
+        advancedMounts:
+          librechat:
+            app:
+              - path: /app/data
+              - path: /app/api/data
+
+      tmp:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+
+      data:
+        enabled: true
+        existingClaim: ${VOLSYNC_CLAIM}
+        advancedMounts:
+          librechat:
+            app:
+              - subPath: logs
+                path: /app/api/logs
+              - subPath: images
+                path: /app/client/public/images
+              - subPath: uploads
+                path: /app/uploads
+            # mongodb:
+            #   - subPath: mongodb
+            #     path: /data/db
+            # meilisearch:
+            #   - subPath: meilisearch
+            #     path: /meili_data
+            # ragapi:
+            #   - subPath: ragapi
+            #     path: /app/uploads
+
+    serviceMonitor:
+      app:
+        serviceName: librechat
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /
+            interval: 1m
+            scrapeTimeout: 30s

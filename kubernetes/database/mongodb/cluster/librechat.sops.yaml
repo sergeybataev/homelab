@@ -10,8 +10,9 @@ metadata:
 stringData:
     MONGO_USER: ENC[AES256_GCM,data:V9SQcXtjM1qA,iv:01vAzKiaZQm6/jQ2hFcHy1/ROFnVL0DaXjGsuFXuXCs=,tag:3IidT19xJR9a52d1NjFfHQ==,type:str]
     MONGO_PASS: ENC[AES256_GCM,data:UnbJ13QLkXQvmFCHjcV7SrGXKbMcaaqh,iv:ajE3eVNK890fPeQTz30AijQgX2akdeS9AzdcMuHv8bk=,tag:ZcAjlXafz18dn5hsNZhReA==,type:str]
-    MONGO_HOST: ENC[AES256_GCM,data:8j+fBkhz6w==,iv:KPopm9DR84/q848VACKtXHAEQ84NVfDSOyT30X5OJww=,tag:IrFgKyr/Js8+p/rdjV12Kw==,type:str]
+    MONGO_HOST: ENC[AES256_GCM,data:zfOOB/qEgXfNm0z7yyjSMi4WJjRcL7ucLkkgOSGQ/lsCEbjBSRoDevHNe6MUN6p1qGGDahsa3z+lts3rdxc=,iv:3/vVjFUMO7EmkSyNbIq635To8vMrmBxosqtcgLknj1w=,tag:Rdm43R1v39GnBIPUhShY6A==,type:str]
     MONGO_PORT: ENC[AES256_GCM,data:IRn5QMA=,iv:8vs0vpJ309fWFaEFvjexh0DBSC6YsL+s8Sh3eqFs2VA=,tag:wXzf9J8mRB9Ih+6+TJLQWQ==,type:str]
+    MONGO_URI: ENC[AES256_GCM,data:BMzfa+8iZx23vvrV0LaamXki/dc6mZGjaccy8sHGRvlk1noflUNstPTcCIpYoA/009Hgcvh+u+m9s7BaHTprpUPYrZu797RHI9tTa8LHSDwxNlD+VmzCbYvAWpfjgYTXQgALSgX2zDK3+kBjuzswKSSCjdYw+1SHO+o2,iv:Yy/k9VjYd8saWthMJUki751l2AWs/x20CI0qDnM/uJ8=,tag:jSNat3OvKaEUt7LPczJNmQ==,type:str]
 sops:
     kms: []
     gcp_kms: []
@@ -27,8 +28,8 @@ sops:
             SE5KUUdXQUJaR2RZRzRnejNLcUo3cWMKPIpCM+KijrPbBbDyzGeG7EWRogydHKnX
             unGjD1RH6c/dagkxsFRgatWbCtINUlDhnb2gxKBW5En4yjxMCAmmpQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-02-13T16:18:55Z"
-    mac: ENC[AES256_GCM,data:yWamv2mTEGKMgItuU/sDf6ltz4EdS/js3tofx/bCqYYFR8RBgX30+vP89ZjC7lCDXCwkh+6yS1zzgT7uOR+RoDqKwqDydHCOArGMZcNAeEP+J0PpxnWeFC96D/vbJQNV7q4JDgE3OZpO2oPoVzkK0TGRhDRdhsEOJy53kH/5Qro=,iv:9hWnXSrSbyv/2d2gc2DAcJKqmmJFIyrlI2Zq31On9cM=,tag:V/UgB/QfFQQrkVhhqd3U3w==,type:str]
+    lastmodified: "2025-02-23T15:21:51Z"
+    mac: ENC[AES256_GCM,data:lJ8T2RD/Qyld/t9Yp465r0TZfjMUX2FMBac18WtLouYalAWbjGFrFQrhyGcG8fg7g6nK3/TCekAeQVo3/ikjgqYqvVAY1nhRIkhzs7SLrKYSraHnaSSQCVp4VDf5NnKkCwkxhz7PFUEwkUIdyxjTCvfUfTJL3QqDZlXbs7eUPPQ=,iv:Rt9UqQUfLBne7H1VzZFZPBJjeMqVW0Ry9v1KBq5ddMU=,tag:pnDY+Qr1CCDwBhPki3ClqQ==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData)$
     version: 3.9.3
