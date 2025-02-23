@@ -92,7 +92,7 @@ endpoints:
   custom:
     - name: LiteLLM
       apiKey: "$${LITELLM_API_KEY}"
-      baseURL: "https://litellm.ai-litellm.svc.cluster.local:4000"
+      baseURL: "http://litellm.ai-litellm.svc.cluster.local:4000"
       models:
         default: ["gpt-4o"]
         fetch: true
