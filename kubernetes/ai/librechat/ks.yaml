@@ -10,6 +10,8 @@ metadata:
 spec:
   path: ./kubernetes/ai/librechat/app
   targetNamespace: &ns ai-librechat
+  components:
+    - ../../templates/volsync_new
   prune: true
   sourceRef:
     kind: GitRepository
