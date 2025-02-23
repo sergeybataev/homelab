@@ -83,6 +83,7 @@ spec:
             envFrom: *envFrom
             env:
               TZ: "${TIMEZONE}"
+              LITELLM_LOG: "DEBUG"
             args:
               - "--config"
               - "/app/config.yaml"
