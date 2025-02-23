@@ -48,6 +48,9 @@ spec:
             envFrom: &envFrom
               - secretRef:
                   name: librechat-secrets
+              - secretRef:
+                  name: mongodb-librechat-secrets
+
             env:
               PORT: "3080"
               NODE_ENV: "development"
