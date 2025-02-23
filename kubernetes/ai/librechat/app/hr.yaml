@@ -28,14 +28,12 @@ spec:
     fullnameOverride: *app
     defaultPodOptions:
       securityContext:
+        runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 568
-        fsGroupChangePolicy: "OnRootMismatch"
-        runAsNonRoot: true
-        capabilities: { drop: ["ALL"] }
-        seccompProfile:
-          type: RuntimeDefault
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
     controllers:
       librechat:
         type: deployment
