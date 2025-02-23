@@ -10,8 +10,6 @@ metadata:
 spec:
   path: ./kubernetes/ai/librechat/app
   targetNamespace: &ns ai-librechat
-  components:
-    - ../../../templates/volsync_new
   prune: true
   sourceRef:
     kind: GitRepository
@@ -23,6 +21,6 @@ spec:
     substitute:
       APP: *app
       NS: *ns
-      VOLSYNC_CLAIM: librechat-zfs
+      VOLSYNC_CLAIM: librechat
       VOLSYNC_CAPACITY: 10Gi
       VOLSYNC_STORAGECLASS: hl-zfs-pv
