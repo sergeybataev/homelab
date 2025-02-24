@@ -1,12 +1,25 @@
 model_list:
-  - model_name: gpt-4o-mini
+  - model_name: gpt-4o-mini-litellm
     litellm_params:
       model: openai/gpt-4o-mini
       api_key: os.environ/SECRET_OPENAI_API_KEY
-  - model_name: gpt-4o
+  - model_name: gpt-4o-litellm
     litellm_params:
       model: openai/gpt-4o
       api_key: os.environ/SECRET_OPENAI_API_KEY
+  - model_name: o1-litellm
+    litellm_params:
+      model: openai/o1
+      api_key: os.environ/SECRET_OPENAI_API_KEY
+  - model_name: o1-mini-litellm
+    litellm_params:
+      model: openai/o1-mini
+      api_key: os.environ/SECRET_OPENAI_API_KEY
+  - model_name: o3-mini-litellm
+    litellm_params:
+      model: openai/o3-mini
+      api_key: os.environ/SECRET_OPENAI_API_KEY
+
 
 general_settings:
   store_prompts_in_spend_logs: True
