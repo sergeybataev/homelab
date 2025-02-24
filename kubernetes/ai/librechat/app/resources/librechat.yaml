@@ -94,7 +94,7 @@ endpoints:
       apiKey: "$${LITELLM_API_KEY}"
       baseURL: "http://litellm.ai-litellm.svc.cluster.local:4000"
       models:
-        default: ["gpt-4o"]
+        default: ["chatgpt-4o-latest"]
         fetch: true
       titleConvo: true
       titleModel: "gpt-4o-mini"
@@ -254,7 +254,7 @@ modelSpecs:
       iconURL: https://www.pngall.com/wp-content/uploads/15/ChatGPT-Logo-PNG-Cutout.png
       showIconInMenu: true
       showIconInHeader: true
-      default: false
+      default: true
       preset:
         endpoint: LiteLLM
         model: chatgpt-4o-latest
@@ -271,6 +271,40 @@ modelSpecs:
           Image input capabilities: Enabled
           Personality: v2
 
+    - name: gpt-4o-mini (liteLLM)
+      label: ChatGPT
+      description: ChatGPT is great for general conversation and answering questions
+      iconURL: https://www.pngall.com/wp-content/uploads/15/ChatGPT-Logo-PNG-Cutout.png
+      showIconInMenu: true
+      showIconInHeader: true
+      default: false
+      preset:
+        endpoint: LiteLLM
+        model: gpt-4o-mini
+        maxContextTokens: 128000 # Maximum context tokens
+        max_tokens: 16384 # Maximum output tokens
+        temperature: 0.7
+        modelLabel: ChatGPT 4o mini
+        greeting: Hi, I'm ChatGPT! How can I help you today?
+        tools: ["dalle", "google", "web-browser", "calculator", "tavily_search_results_json", "traversaal_search"]
+
+    - name: o1 (liteLLM)
+      label: GPT-o1
+      description: GPT-o1 is good at performing complex reasoning. It's slower and more verbose than ChatGPT.
+      iconURL: https://www.pngall.com/wp-content/uploads/15/ChatGPT-Logo-No-Background.png
+      showIconInMenu: true
+      showIconInHeader: true
+      default: false
+      preset:
+        endpoint: LiteLLM
+        model: o1
+        maxContextTokens: 128000 # Maximum context tokens
+        max_tokens: 32768 # Maximum output tokens
+        temperature: 1
+        tools: ["dalle", "google", "web-browser", "calculator", "tavily_search_results_json", "traversaal_search"]
+        modelLabel: GPT-o1
+        greeting: Ask me something complex!
+
     - name: o1-mini (liteLLM)
       label: GPT-o1 mini
       description: GPT-o1 is good at performing complex reasoning. It's slower and more verbose than ChatGPT.
@@ -286,6 +320,23 @@ modelSpecs:
         temperature: 1
         tools: ["dalle", "google", "web-browser", "calculator", "tavily_search_results_json", "traversaal_search"]
         modelLabel: GPT-o1 mini
+        greeting: Ask me something complex!
+
+    - name: o3-mini (liteLLM)
+      label: GPT-o3 mini
+      description: GPT-o3 is good at performing complex reasoning. It's slower and more verbose than ChatGPT.
+      iconURL: https://www.pngall.com/wp-content/uploads/15/ChatGPT-Logo-No-Background.png
+      showIconInMenu: true
+      showIconInHeader: true
+      default: false
+      preset:
+        endpoint: LiteLLM
+        model: o3-mini
+        maxContextTokens: 128000 # Maximum context tokens
+        max_tokens: 32768 # Maximum output tokens
+        temperature: 1
+        tools: ["dalle", "google", "web-browser", "calculator", "tavily_search_results_json", "traversaal_search"]
+        modelLabel: GPT-o3 mini
         greeting: Ask me something complex!
 
     - name: o1-mini

@@ -1,21 +1,21 @@
 model_list:
-  - model_name: gpt-4o-mini-litellm
+  - model_name: gpt-4o-mini
     litellm_params:
       model: openai/gpt-4o-mini
       api_key: os.environ/SECRET_OPENAI_API_KEY
-  - model_name: gpt-4o-litellm
+  - model_name: gpt-4o
     litellm_params:
-      model: openai/gpt-4o
+      model: openai/chatgpt-4o-latest
       api_key: os.environ/SECRET_OPENAI_API_KEY
-  - model_name: o1-litellm
+  - model_name: o1
     litellm_params:
       model: openai/o1
       api_key: os.environ/SECRET_OPENAI_API_KEY
-  - model_name: o1-mini-litellm
+  - model_name: o1-mini
     litellm_params:
       model: openai/o1-mini
       api_key: os.environ/SECRET_OPENAI_API_KEY
-  - model_name: o3-mini-litellm
+  - model_name: o3-mini
     litellm_params:
       model: openai/o3-mini
       api_key: os.environ/SECRET_OPENAI_API_KEY
