@@ -13,6 +13,7 @@ resources:
   - ./system/emberstack.yaml
   - ./system/harbor-container-webhook.yaml
   - ./system/spegel.yaml
+  - ./system/nvidia.yaml
 # network
   - ./network/angelnu.yaml
   - ./network/jetstack.yaml
