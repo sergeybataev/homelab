@@ -11,6 +11,7 @@ resources:
   - ./upgrade/k3s/ks.yaml
   - ./node-feature-discovery/ks.yaml
   - ./intel-device-plugin/ks.yaml
+  - ./nvidia-gpu-operator/ks.yaml
   - ./snapshot-controller/ks.yaml
   - ./vpa/ks.yaml
   - ./crds/ks.yaml
