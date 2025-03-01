@@ -45,3 +45,65 @@ spec:
           value: nvidia
         - name: CONTAINERD_SET_AS_DEFAULT
           value: "true"
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  creationTimestamp: "2025-03-01T12:59:42Z"
+  finalizers:
+  - finalizers.fluxcd.io
+  generation: 6
+  labels:
+    kustomize.toolkit.fluxcd.io/name: system-nvidia-gpu-operator
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: nvidia-gpu-operator
+  namespace: kube-system
+  resourceVersion: "266367997"
+  uid: 6aded9b2-174c-4857-860d-7e06bb56f030
+spec:
+  chart:
+    spec:
+      chart: gpu-operator
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: nvidia
+        namespace: flux-system
+      version: v24.9.2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  interval: 15m
+  maxHistory: 2
+  uninstall:
+    deletionPropagation: background
+    keepHistory: false
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    driver:
+      enabled: true
+      image: nvcr.io/nvidia/driver:550-5.15.0-131-nvidia-ubuntu22.04@sha256:05f21291fc87d7120e8a7ac78e8dd241758d03cd63baf83be3434735a3214898
+      repository: ""
+      version: ""
+    nfd:
+      enabled: false
+      nodefeaturerules: true
+    operator:
+      cleanupCRD: true
+      upgradeCRD: true
+    toolkit:
+      enabled: true
+      env:
+      - name: CONTAINERD_CONFIG
+        value: /var/lib/rancher/k3s/agent/etc/containerd/config.toml
+      - name: CONTAINERD_SOCKET
+        value: /run/k3s/containerd/containerd.sock
+      - name: CONTAINERD_RUNTIME_CLASS
+        value: nvidia
+      - name: CONTAINERD_SET_AS_DEFAULT
+        value: "true"
