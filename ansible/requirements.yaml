@@ -1,11 +1,11 @@
 ---
 collections:
   - name: ansible.posix
-    version: 1.5.4
+    version: 2.0.0
   - name: ansible.utils
     version: 4.1.0
   - name: community.general
-    version: 8.6.0
+    version: 8.6.10
   - name: kubernetes.core
     version: 3.0.1
 roles:
