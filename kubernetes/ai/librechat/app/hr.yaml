@@ -27,7 +27,7 @@ spec:
   values:
     fullnameOverride: *app
     defaultPodOptions:
-      securityContext:
+      securityContext: &securityContext
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
@@ -73,7 +73,6 @@ spec:
             envFrom: *envFrom
             env:
               MEILI_DB_PATH: "/meili_data"
-            securityContext: *securityContext
             probes: *probes
     service:
       app:
