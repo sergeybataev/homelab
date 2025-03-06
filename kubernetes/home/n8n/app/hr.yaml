@@ -43,7 +43,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/onedr0p/postgres-init
-              tag: 16.3
+              tag: 16.8
               pullPolicy: IfNotPresent
             env:
               - name: INIT_POSTGRES_HOST
@@ -78,7 +78,7 @@ spec:
           n8n:
             image:
               repository: docker.io/n8nio/n8n
-              tag: 1.64.3
+              tag: 1.82.1
             env:
               # Isolating N8N
               N8N_DIAGNOSTICS_ENABLED: false
