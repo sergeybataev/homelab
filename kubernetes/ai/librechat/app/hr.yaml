@@ -27,7 +27,7 @@ spec:
   values:
     fullnameOverride: *app
     defaultPodOptions:
-      securityContext: &securityContext
+      securityContext:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
