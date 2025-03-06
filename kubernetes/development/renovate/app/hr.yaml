@@ -73,7 +73,7 @@ spec:
             nameOverride: renovate
             image:
               repository: ghcr.io/mend/renovate-ce
-              tag: '9.2.0-full@sha256:d120dfe206c7a10e5480ef1f8ff95291a0a463af03df7001f43197820ac613cc'
+              tag: '9.5.0-full@sha256:7b81d57b181616950507c9e232ae9e736933a463d3fdb1af50acef679241aeaf'
 
             envFrom: *renovate_secret
 
