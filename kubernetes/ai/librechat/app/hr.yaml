@@ -67,6 +67,7 @@ spec:
               tag: v1.13.3
             envFrom: *envFrom
             env:
+              MEILI_NO_ANALYTICS: true
               MEILI_DB_PATH: "/meili_data"
             probes: *probes
     service:
