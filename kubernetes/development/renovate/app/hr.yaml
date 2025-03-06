@@ -117,11 +117,6 @@ spec:
               # RENOVATE_REPOSITORY_CACHE_TYPE: 's3://renovate/cache/'
               # RENOVATE_X_S3_PATH_STYLE: 'true'
 
-              # RENOVATE_ONBOARDING_CONFIG:
-              #   configMapKeyRef:
-              #     name: &renovate-config renovate-config
-              #     key: onboardingConfig
-
             probes:
               liveness: &probe
                 type: HTTP
@@ -160,7 +155,7 @@ spec:
       config:
         enabled: true
         type: configMap
-        name: *renovate-config
+        name: renovate-config
         globalMounts:
           - path: /usr/src/app/config.js
             readOnly: true

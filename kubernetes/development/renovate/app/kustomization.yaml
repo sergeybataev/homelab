@@ -5,3 +5,4 @@ resources:
 - ./secrets.sops.yaml
 - ./configmap.yaml
 - ./hr.yaml
+- ./ns.yaml
