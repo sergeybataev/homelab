@@ -66,26 +66,26 @@ spec:
                 enabled: true
               startup:
                 enabled: false
-          # meilisearch:
-          #   image:
-          #     repository: getmeili/meilisearch
-          #     tag: v1.10.3
-          #   envFrom: *envFrom
-          #   env:
-          #     MEILI_DB_PATH: "/meili_data"
-          #   securityContext: *securityContext
-          #   probes: *probes
+          meilisearch:
+            image:
+              repository: getmeili/meilisearch
+              tag: v1.10.3
+            envFrom: *envFrom
+            env:
+              MEILI_DB_PATH: "/meili_data"
+            securityContext: *securityContext
+            probes: *probes
     service:
       app:
         controller: *app
         ports:
           http:
             port: 3080
-      # meilisearch:
-      #   controller: librechat
-      #   ports:
-      #     http:
-      #       port: 7700
+      meilisearch:
+        controller: librechat
+        ports:
+          http:
+            port: 7700
       # ragapi:
       #   controller: librechat
       #   ports:
@@ -163,12 +163,9 @@ spec:
                 path: /app/client/public/images
               - subPath: uploads
                 path: /app/uploads
-            # mongodb:
-            #   - subPath: mongodb
-            #     path: /data/db
-            # meilisearch:
-            #   - subPath: meilisearch
-            #     path: /meili_data
+            meilisearch:
+              - subPath: meilisearch
+                path: /meili_data
             # ragapi:
             #   - subPath: ragapi
             #     path: /app/uploads
