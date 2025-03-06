@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: main-postgres17-lb
+  annotations:
+    io.cilium/lb-ipam-ips: ${CLOUDNATIVE_PG_IP_2}
+spec:
+  type: LoadBalancer
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    cnpg.io/cluster: main-postgres17
+    role: primary

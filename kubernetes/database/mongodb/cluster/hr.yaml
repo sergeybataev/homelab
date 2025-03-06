@@ -1,0 +1,83 @@
+---
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: database-mongodb-mainrs
+  namespace: ${NS}
+spec:
+  members: 1
+  type: ReplicaSet
+  version: "7.0.16"
+  security:
+    authentication:
+      modes: ["SCRAM", "SCRAM-SHA-1"]
+  users:
+    - name: mongo
+      db: &db admin
+      passwordSecretRef: # a reference to the secret that will be used to generate the user's password
+        name: mongodb-secrets
+        key: MONGO_PASS
+      roles:
+        - name: clusterAdmin
+          db: *db
+        - name: userAdminAnyDatabase
+          db: *db
+        - name: readWriteAnyDatabase
+          db: *db
+        - name: dbOwner
+          db: *db
+        - name: dbOwner
+          db: librechat
+      scramCredentialsSecretName: my-scram
+    - name: &lc librechat
+      db: *lc
+      passwordSecretRef: # a reference to the secret that will be used to generate the user's password
+        name: mongodb-librechat-secrets
+        key: MONGO_PASS
+      roles:
+        - name: clusterAdmin
+          db: *lc
+        - name: userAdminAnyDatabase
+          db: *lc
+        - name: readWriteAnyDatabase
+          db: *lc
+        - name: dbOwner
+          db: *lc
+      scramCredentialsSecretName: my-scram-librechat
+  additionalMongodConfig:
+    storage.wiredTiger.engineConfig.journalCompressor: zlib
+  statefulSet:
+    spec:
+      volumeClaimTemplates:
+        - metadata:
+            name: data-volume
+          spec:
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 30Gi
+            storageClassName: hl-zfs-pv
+        - metadata:
+            name: logs-volume
+          spec:
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 10Gi
+            storageClassName: hl-zfs-pv
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mongodb-service-lb
+  namespace: ${NS}
+  annotations:
+    io.cilium/lb-ipam-ips: ${MONGODB_IP}
+spec:
+  type: LoadBalancer
+  selector:
+    app: database-mongodb-mainrs-svc
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017

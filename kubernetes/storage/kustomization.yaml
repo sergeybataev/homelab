@@ -7,3 +7,4 @@ resources:
   - ./rook-ceph/ks.yaml
   - ./volsync/ks.yaml
   - ./node_main/storage/ks.yaml
+  - ./minio/ks.yaml

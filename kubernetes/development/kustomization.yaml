@@ -9,3 +9,5 @@ resources:
   # - ./gh-safe-settings/ks.yaml
   - ./it-tools/ks.yaml
   - ./harbor/ks.yaml
+  - ./nuclio/ks.yaml
+  - ./renovate/ks.yaml

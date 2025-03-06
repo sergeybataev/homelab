@@ -5,12 +5,15 @@ resources:
 # system
   - ./system/bjw-s.yaml
   - ./system/cilium.yaml
+  - ./system/external-secrets.yaml
   - ./system/metrics-server.yaml
   - ./system/lwolf.yaml
   - ./system/fairwinds-charts.yaml
   - ./system/piraeus.yaml
   - ./system/emberstack.yaml
   - ./system/harbor-container-webhook.yaml
+  - ./system/spegel.yaml
+  - ./system/nvidia.yaml
 # network
   - ./network/angelnu.yaml
   - ./network/jetstack.yaml
@@ -32,7 +35,10 @@ resources:
 # database
   - ./database/emqx.yaml
   - ./database/cloudnative-pg.yaml
+  - ./database/victoria-metrics.yaml
+  - ./database/mongodb.yaml
 #development
   - ./development/harbor.yaml
+  - ./development/nuclio.yaml
 # test
   - ./test/podinfo-source.yaml

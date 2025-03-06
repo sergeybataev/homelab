@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: renovate-config
+  namespace: ${NS}
+data:
+  config.js: |
+            module.exports = {
+              // Enter self-hosted configuration options here.
+              // https://docs.renovatebot.com/self-hosted-configuration/
+              baseDir: '/tmp/renovate',
+              binarySource: 'install',
+              cacheHardTtlMinutes: 240,
+              detectHostRulesFromEnv: true,
+              onboardingNoDeps: 'auto',
+              onboardingConfigFileName: '.github/renovate.json5',
+              onboardingRebaseCheckbox: true,
+              persistRepoData: true,
+              requireConfig: 'required'
+            };

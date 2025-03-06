@@ -1,0 +1,178 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ${APP}
+  namespace: ${NS}
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-charts
+
+  driftDetection:
+    mode: enabled
+  maxHistory: 3
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+
+  values:
+    controllers:
+      renovate:
+        annotations:
+          reloader.stakater.com/auto: 'true'
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom: &renovate_secret
+              - secretRef:
+                  name: renovate-secret
+            env:
+              INIT_POSTGRES_DBNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: home-assistant-db-secret
+                    key: name
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: home-assistant-db-secret
+                    key: user
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: home-assistant-db-secret
+                    key: password
+              INIT_POSTGRES_HOST:
+                valueFrom: &db_host
+                  secretKeyRef:
+                    name: cnpg-main17-secret
+                    key: host
+              INIT_POSTGRES_PORT:
+                valueFrom: &db_port
+                  secretKeyRef:
+                    name: cnpg-main17-secret
+                    key: port
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    key: password
+                    name: cloudnative-pg-secret
+        containers:
+          app:
+            nameOverride: renovate
+            image:
+              repository: ghcr.io/mend/renovate-ce
+              tag: '9.2.0-full@sha256:d120dfe206c7a10e5480ef1f8ff95291a0a463af03df7001f43197820ac613cc'
+
+            envFrom: *renovate_secret
+
+            env:
+              TZ: '${TIMEZONE}'
+              LOG_LEVEL: info
+
+              MEND_RNV_ACCEPT_TOS: 'y'
+              MEND_RNV_PLATFORM: 'github'
+              MEND_RNV_CRON_JOB_SCHEDULER_ALL: '0 */2 * * *'
+              MEND_RNV_CRON_APP_SYNC: "0 */2 * * *"
+
+              RENOVATE_PAGINATE_ALL: "true"
+
+              MEND_RNV_ADMIN_API_ENABLED: 'true'
+              MEND_RNV_REPORTING_ENABLED: "true"
+
+              MEND_RNV_WORKER_CLEANUP: '30 0 * * 0'
+              MEND_RNV_WORKER_CLEANUP_DIRS: '/opt/containerbase,/tmp/renovate/cache,/tmp/renovate/repos'
+
+              MEND_RNV_DATA_HANDLER_TYPE: postgresql
+              MEND_RNV_LOG_HISTORY_S3: 's3://renovate/log'
+
+              PGHOST: *db_host
+              PGPORT: *db_port
+
+              # MEND_RNV_S3_FORCE_PATH_STYLE: 'true'
+
+              RENOVATE_ALLOW_CUSTOM_CRATE_REGISTRIES: 'false'
+              RENOVATE_ALLOW_PLUGINS: 'false'
+
+              RENOVATE_AUTODISCOVER: 'true'
+              RENOVATE_ONBOARDING: 'true'
+
+              RENOVATE_REDIS_URL: 'redis://dragonfly.database.svc.cluster.local:6379/0'
+              # RENOVATE_REPOSITORY_CACHE: 'enabled'
+              # RENOVATE_REPOSITORY_CACHE_TYPE: 's3://renovate/cache/'
+              # RENOVATE_X_S3_PATH_STYLE: 'true'
+
+              # RENOVATE_ONBOARDING_CONFIG:
+              #   configMapKeyRef:
+              #     name: &renovate-config renovate-config
+              #     key: onboardingConfig
+
+            probes:
+              liveness: &probe
+                type: HTTP
+                path: /health
+              readiness: *probe
+              startup: *probe
+
+            resources:
+              requests:
+                cpu: 100m
+                memory: 1Gi
+              limits:
+                cpu: 1000m
+
+    service:
+      app:
+        controller: renovate
+        ports:
+          http:
+            port: 8080
+
+    ingress:
+      app:
+        className: internal
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "internal.${SECRET_DOMAIN}"
+        hosts:
+          - host: renovate.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: *renovate-config
+        globalMounts:
+          - path: /usr/src/app/config.js
+            readOnly: true
+            subPath: config.js
+
+      cache-persistence:
+        enabled: true
+        type: emptyDir
+        sizeLimit: 4Gi
+        globalMounts:
+          - path: '/tmp/renovate'
+
+      tmp:
+        enabled: true
+        type: emptyDir

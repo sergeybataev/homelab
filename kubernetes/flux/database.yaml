@@ -6,7 +6,6 @@ metadata:
   name: &name cluster-database
   namespace: flux-system
 spec:
-  namePrefix: "database-"
   dependsOn:
     - name: cluster-config
     - name: cluster-storage
