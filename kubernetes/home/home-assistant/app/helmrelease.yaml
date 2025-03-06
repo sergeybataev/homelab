@@ -68,7 +68,7 @@ spec:
           app:
             image:
               repository: ghcr.io/onedr0p/home-assistant
-              tag: 2025.1.0
+              tag: 2025.1.4
             env:
               TZ: &TZ ${TIMEZONE}
               HASS_EXTERNAL_URL: https://hass.${SECRET_DOMAIN}
