@@ -387,7 +387,7 @@ spec:
           # Ref: https://grafana.com/grafana/dashboards/2842/
           # renovate: depName="Ceph Cluster"
           gnetId: 2842
-          revision: 17
+          revision: 18
           datasource: Prometheus
         ceph-osd:
           # Ref: https://grafana.com/grafana/dashboards/5336/
