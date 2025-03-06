@@ -40,22 +40,12 @@ spec:
               tag: 16
             envFrom: &renovate_secret
               - secretRef:
-                  name: renovate-secret
+                  name: &secret renovate-secret
             env:
-              INIT_POSTGRES_DBNAME:
+              INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
-                    name: home-assistant-db-secret
-                    key: name
-              INIT_POSTGRES_USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: home-assistant-db-secret
-                    key: user
-              INIT_POSTGRES_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    name: home-assistant-db-secret
+                    name: cloudnative-pg-secret
                     key: password
               INIT_POSTGRES_HOST:
                 valueFrom: &db_host
@@ -67,11 +57,21 @@ spec:
                   secretKeyRef:
                     name: cnpg-main17-secret
                     key: port
-              INIT_POSTGRES_SUPER_PASS:
+              INIT_POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:
-                    key: password
-                    name: cloudnative-pg-secret
+                    name: *secret
+                    key: PGUSER
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PGPASSWORD
+              INIT_POSTGRES_DBNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PGDATABASE
         containers:
           app:
             nameOverride: renovate
