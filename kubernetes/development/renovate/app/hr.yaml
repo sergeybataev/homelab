@@ -160,7 +160,7 @@ spec:
       config:
         enabled: true
         type: configMap
-        name: *renovate-config
+        name: renovate-config
         globalMounts:
           - path: /usr/src/app/config.js
             readOnly: true
