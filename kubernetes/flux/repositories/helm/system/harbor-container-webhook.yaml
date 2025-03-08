@@ -6,4 +6,4 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://opensource.indeedeng.io/harbor-container-webhook
+  url: https://indeedeng.github.io/harbor-container-webhook
