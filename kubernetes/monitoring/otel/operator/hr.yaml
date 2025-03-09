@@ -48,6 +48,8 @@ spec:
       #   enabled: true
       collectorImage:
         # https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/distributions/otelcol-contrib/manifest.yaml
+        
         repository: otel/opentelemetry-collector-contrib
+        tag: 0.121.0
         # https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/distributions/otelcol-k8s/manifest.yaml
         # repository: "otel/opentelemetry-collector-k8s"
