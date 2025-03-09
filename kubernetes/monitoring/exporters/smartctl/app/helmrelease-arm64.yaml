@@ -30,8 +30,8 @@ spec:
     prometheusRules:
       enabled: false
     image:
-      repository: quay.io/prometheuscommunity/smartctl-exporter-linux-arm64
-      tag: "master"
+      repository: ghcr.io/joryirving/smartctl_exporter
+      tag: "0.13.0"
     nodeSelector:
       kubernetes.io/arch: arm64
     extraInstances:
