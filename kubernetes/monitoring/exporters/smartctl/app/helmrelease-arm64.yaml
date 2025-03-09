@@ -39,3 +39,5 @@ spec:
           devices:
             # TODO - Add all devices here
             - /dev/nvme0n1
+        nodeSelector:
+          kubernetes.io/arch: arm64
