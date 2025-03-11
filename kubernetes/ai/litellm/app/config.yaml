@@ -3,7 +3,7 @@ model_list:
     litellm_params:
       model: openai/gpt-4o-mini
       api_key: os.environ/SECRET_OPENAI_API_KEY
-  - model_name: gpt-4o
+  - model_name: chatgpt-4o-latest
     litellm_params:
       model: openai/chatgpt-4o-latest
       api_key: os.environ/SECRET_OPENAI_API_KEY
