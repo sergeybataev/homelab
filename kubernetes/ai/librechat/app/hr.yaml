@@ -72,6 +72,7 @@ spec:
             env:
               PORT: "3080"
               NODE_ENV: "development"
+              ALLOW_SOCIAL_LOGIN: "true"
             resources:
               requests:
                 cpu: 10m
@@ -124,6 +125,7 @@ spec:
                   secretKeyRef:
                     name: cnpg-main17-secret
                     key: INIT_POSTGRES_PORT
+              RAG_PORT: &rag_port "8001"
 
             securityContext: &securityContext
               allowPrivilegeEscalation: false
@@ -134,7 +136,7 @@ spec:
           exporter:
             dependsOn: app
             image:
-              repository: ghcr.io/wipash/librechatmetrics
+              repository: ghcr.io/virtuos/librechat_exporter
               tag: latest
             env:
               MONGODB_URI:
@@ -142,6 +144,11 @@ spec:
                   secretKeyRef:
                     name: mongodb-librechat-secrets
                     key: MONGO_URI
+              MONGODB_DATABASE:
+                valueFrom:
+                  secretKeyRef:
+                    name: mongodb-librechat-secrets
+                    key: MONGO_USER
 
     service:
       app:
@@ -164,6 +171,7 @@ spec:
         ports:
           http:
             port: 8000
+            targetPort: *rag_port
 
     ingress:
       app:
