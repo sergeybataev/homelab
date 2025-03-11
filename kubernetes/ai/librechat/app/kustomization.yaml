@@ -11,5 +11,9 @@ configMapGenerator:
     namespace: ai-librechat
     files:
       - ./resources/librechat.yaml
+  - name: librechat-initdb
+    namespace: ai-librechat
+    files:
+      - ./resources/librechat.sql
 generatorOptions:
   disableNameSuffixHash: true

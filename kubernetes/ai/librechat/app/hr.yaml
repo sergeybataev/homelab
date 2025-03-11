@@ -21,6 +21,7 @@ spec:
       retries: 10
   values:
     fullnameOverride: *app
+
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -29,12 +30,35 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
+
     controllers:
       librechat:
         type: deployment
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
+
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom:
+              - secretRef:
+                  name: cloudnative-pg-secret
+              - secretRef:
+                  name: cnpg-main17-secret
+            env:
+              - name: INIT_POSTGRES_DBNAME
+                value: *app
+              - name: INIT_POSTGRES_USER
+                value: *app
+              - name: INIT_POSTGRES_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: librechat-secrets
+                    key: POSTGRES_PASSWORD
+
         containers:
           app:
             image:
@@ -45,7 +69,6 @@ spec:
                   name: librechat-secrets
               - secretRef:
                   name: mongodb-librechat-secrets
-
             env:
               PORT: "3080"
               NODE_ENV: "development"
@@ -61,6 +84,7 @@ spec:
                 enabled: true
               startup:
                 enabled: false
+
           meilisearch:
             image:
               repository: getmeili/meilisearch
@@ -69,23 +93,77 @@ spec:
             env:
               MEILI_NO_ANALYTICS: true
               MEILI_DB_PATH: "/meili_data"
+              MEILI_LOG_LEVEL: "debug"
+              MEILI_LOGS_MODE: "json"
             probes: *probes
+
+          ragapi:
+            image:
+              repository: ghcr.io/danny-avila/librechat-rag-api-dev-lite
+              tag: latest@sha256:f96c21d7fc2f30a8731ce55e1d160f1204bde52a3968a6fd8a056785f3e96939
+            envFrom: *envFrom
+            env:
+              RAG_OPENAI_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: librechat-secrets
+                    key: LITELLM_API_KEY
+              RAG_OPENAI_PROXY:
+                valueFrom:
+                  secretKeyRef:
+                    name: librechat-secrets
+                    key: LITELLM_URL
+              RAG_USE_FULL_CONTEXT: "true"
+              DB_HOST: 
+                valueFrom:
+                  secretKeyRef:
+                    name: cnpg-main17-secret
+                    key: INIT_POSTGRES_HOST
+              DB_PORT: 
+                valueFrom:
+                  secretKeyRef:
+                    name: cnpg-main17-secret
+                    key: INIT_POSTGRES_PORT
+
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            probes: *probes
+
+          exporter:
+            dependsOn: app
+            image:
+              repository: ghcr.io/wipash/librechatmetrics
+              tag: latest
+            env:
+              MONGODB_URI:
+                valueFrom:
+                  secretKeyRef:
+                    name: mongodb-librechat-secrets
+                    key: MONGO_URI
+
     service:
       app:
         controller: *app
         ports:
           http:
             port: 3080
+          metrics:
+            port: &exporterport "9123"
+            targetPort: 8000
+
       meilisearch:
         controller: librechat
         ports:
           http:
             port: 7700
-      # ragapi:
-      #   controller: librechat
-      #   ports:
-      #     http:
-      #       port: 8000
+
+      ragapi:
+        controller: librechat
+        ports:
+          http:
+            port: 8000
 
     ingress:
       app:
@@ -111,15 +189,15 @@ spec:
               - *host
 
     persistence:
-      # init-db:
-      #   enabled: true
-      #   type: configMap
-      #   name: librechat-initdb
-      #   advancedMounts:
-      #     librechat:
-      #       init-db:
-      #         - subPath: librechat.sql
-      #           path: /initdb/librechat.sql
+      init-db:
+        enabled: true
+        type: configMap
+        name: librechat-initdb
+        advancedMounts:
+          librechat:
+            init-db:
+              - subPath: librechat.sql
+                path: /initdb/librechat.sql
 
       config:
         enabled: true
@@ -161,9 +239,9 @@ spec:
             meilisearch:
               - subPath: meilisearch
                 path: /meili_data
-            # ragapi:
-            #   - subPath: ragapi
-            #     path: /app/uploads
+            ragapi:
+              - subPath: ragapi
+                path: /app/uploads
 
     serviceMonitor:
       app:
