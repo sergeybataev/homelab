@@ -31,11 +31,11 @@ spec:
           reloader.stakater.com/auto: "true"
         pod:
           annotations:
-                # "ips": ["192.168.5.5/16"]
             k8s.v1.cni.cncf.io/networks: |
               [{
                 "name": "macvlan-static-net",
-                "namespace": "network"
+                "namespace": "network",
+                "ips": ["192.168.5.5/16"]
               }]
         initContainers:
           init-db:
