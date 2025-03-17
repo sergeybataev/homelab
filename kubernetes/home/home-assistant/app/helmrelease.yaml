@@ -35,7 +35,7 @@ spec:
               [{
                 "name": "macvlan-static-net",
                 "namespace": "network",
-                "ips": ["192.168.5.5/16"]
+                "ips": ["192.168.5.123/16"]
               }]
         initContainers:
           init-db:
