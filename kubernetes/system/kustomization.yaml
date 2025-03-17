@@ -17,5 +17,5 @@ resources:
   - ./crds/ks.yaml
   - ./reflector/ks.yaml
   - ./spegel/ks.yaml
-  - ./webhooks/ks.yaml
+  #- ./webhooks/ks.yaml
   - ./multus/ks.yaml

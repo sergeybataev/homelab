@@ -31,11 +31,11 @@ spec:
           reloader.stakater.com/auto: "true"
         pod:
           annotations:
+                # "ips": ["192.168.5.5/16"]
             k8s.v1.cni.cncf.io/networks: |
               [{
                 "name": "macvlan-static-net",
-                "namespace": "network",
-                "ips": ["192.168.5.5/16"]
+                "namespace": "network"
               }]
         initContainers:
           init-db:
@@ -68,7 +68,7 @@ spec:
           app:
             image:
               repository: ghcr.io/onedr0p/home-assistant
-              tag: 2025.3.3
+              tag: 2025.3.1
             env:
               TZ: &TZ ${TIMEZONE}
               HASS_EXTERNAL_URL: https://hass.${SECRET_DOMAIN}
@@ -135,6 +135,8 @@ spec:
         runAsUser: 0
     service:
       app:
+        annotations:
+          io.cilium/lb-ipam-ips: "192.168.5.5"
         type: LoadBalancer
         controller: home-assistant
         ports:
