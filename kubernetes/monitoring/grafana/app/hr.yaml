@@ -26,7 +26,6 @@ spec:
 
     plugins:
       - grafana-clock-panel
-      - grafana-worldmap-panel
       - natel-discrete-panel
       - pr0ps-trackmap-panel
       - vonage-status-panel
