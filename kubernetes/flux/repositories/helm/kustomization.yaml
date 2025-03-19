@@ -33,7 +33,7 @@ resources:
   - ./storage/rook-ceph.yaml
   - ./storage/backube.yaml
 # database
-  - ./database/emqx.yaml
+  - ./database/altinity-clickhouse.yaml
   - ./database/cloudnative-pg.yaml
   - ./database/victoria-metrics.yaml
   - ./database/mongodb.yaml
