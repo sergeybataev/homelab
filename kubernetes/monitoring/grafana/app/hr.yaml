@@ -164,6 +164,52 @@ spec:
             version: 1
             jsonData:
               maxLines: 250
+          - name: ClickHouse
+            type: grafana-clickhouse-datasource
+            jsonData:
+              defaultDatabase: otel
+              port: 9000
+              host: http://service-clickhouse-main.database-clickhouse.svc.cluster.local
+              username: clickhouse_monitoring_user
+              tlsSkipVerify: false
+              # tlsAuth: <bool>
+              # tlsAuthWithCACert: <bool>
+              # secure: <bool>
+              # dialTimeout: <seconds>
+              # queryTimeout: <seconds>
+              protocol: native
+              # defaultTable: <string>
+              # httpHeaders:
+              # - name: X-Example-Header
+              #   secure: false
+              #   value: <string>
+              # - name: Authorization
+              #   secure: true
+              logs:
+              #   defaultDatabase: <string>
+              #   defaultTable: <string>
+                otelEnabled: true
+              #   otelVersion: <string>
+              #   timeColumn: <string>
+              #   ...Column: <string>
+              traces:
+              #   defaultDatabase: <string>
+              #   defaultTable: <string>
+                otelEnabled: true
+              #   otelVersion: <string>
+              #   durationUnit: <seconds|milliseconds|microseconds|nanoseconds>
+              #   traceIdColumn: <string>
+              #   ...Column: <string>
+            secureJsonData:
+              password:
+                valueFrom:
+                  secretKeyRef:
+                    name: clickhouse-main-users
+                    key: clickhouse_monitoring_password
+              # tlsCACert: <string>
+              # tlsClientCert: <string>
+              # tlsClientKey: <string>
+              # secureHttpHeaders.Authorization: <string>
 
     dashboardProviders:
       dashboardproviders.yaml:
