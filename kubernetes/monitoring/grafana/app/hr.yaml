@@ -42,11 +42,6 @@ spec:
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
       GF_SECURITY_COOKIE_SAMESITE: grafana
       GF_SERVER_ROOT_URL: https://grafana.${SECRET_DOMAIN}
-      CH_MONITORING_PASS:
-        valueFrom:
-          secretKeyRef:
-            name: clickhouse-main-users
-            key: clickhouse_monitoring_password
 
     envFromSecrets:
       - name: grafana-secret
@@ -62,7 +57,11 @@ spec:
         secretName: grafana-secret
         defaultMode: 0444
         readOnly: true
-
+      - name: clickhouse-secrets
+        mountPath: /etc/secrets/ch
+        secretName: clickhouse-main-users
+        defaultMode: 0444
+        readOnly: true
 
     podAnnotations:
       # configmap.reloader.stakater.com/reload: grafana-config-dashboards,grafana-dashboards-default,*app
@@ -206,7 +205,7 @@ spec:
               #   traceIdColumn: <string>
               #   ...Column: <string>
             secureJsonData:
-              password: $CH_MONITORING_PASS
+              password: $__file{/etc/secrets/ch/clickhouse_monitoring_password}
               # tlsCACert: <string>
               # tlsClientCert: <string>
               # tlsClientKey: <string>
