@@ -42,6 +42,11 @@ spec:
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
       GF_SECURITY_COOKIE_SAMESITE: grafana
       GF_SERVER_ROOT_URL: https://grafana.${SECRET_DOMAIN}
+      CH_MONITORING_PASS:
+        valueFrom:
+          secretKeyRef:
+            name: clickhouse-main-users
+            key: clickhouse_monitoring_password
 
     envFromSecrets:
       - name: grafana-secret
@@ -201,11 +206,7 @@ spec:
               #   traceIdColumn: <string>
               #   ...Column: <string>
             secureJsonData:
-              password:
-                valueFrom:
-                  secretKeyRef:
-                    name: clickhouse-main-users
-                    key: clickhouse_monitoring_password
+              password: ${CH_MONITORING_PASS}
               # tlsCACert: <string>
               # tlsClientCert: <string>
               # tlsClientKey: <string>
