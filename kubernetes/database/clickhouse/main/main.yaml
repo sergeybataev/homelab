@@ -1,0 +1,246 @@
+# We may need to label nodes with clickhouse=allow label for this example to run
+# See ./label_nodes.sh for this purpose
+
+apiVersion: "clickhouse.altinity.com/v1"
+kind: "ClickHouseInstallation"
+metadata:
+  name: ${APP}
+  namespace: ${NS}
+
+spec:
+  configuration:
+    users:
+      user/password:
+        valueFrom:
+          secretKeyRef:
+            name: clickhouse-main
+            key: password_plain
+
+    clusters:
+      - name: main
+        templates:
+          podTemplate: clickhouse-v23.8
+          dataVolumeClaimTemplate: default-volume-claim
+          logVolumeClaimTemplate: default-volume-claim
+        layout:
+          # shardsCount not specified, assumed = 1, by default
+          shards:
+            - replicas:
+                - templates:
+                    podTemplate: clickhouse-main-storage
+
+    serviceTemplates:
+      - name: chi-service-template
+        # generateName understands different sets of macroses,
+        # depending on the level of the object, for which Service is being created:
+        #
+        # For CHI-level Service:
+        # 1. {chi} - ClickHouseInstallation name
+        # 2. {chiID} - short hashed ClickHouseInstallation name (BEWARE, this is an experimental feature)
+        #
+        # For Cluster-level Service:
+        # 1. {chi} - ClickHouseInstallation name
+        # 2. {chiID} - short hashed ClickHouseInstallation name (BEWARE, this is an experimental feature)
+        # 3. {cluster} - cluster name
+        # 4. {clusterID} - short hashed cluster name (BEWARE, this is an experimental feature)
+        # 5. {clusterIndex} - 0-based index of the cluster in the CHI (BEWARE, this is an experimental feature)
+        #
+        # For Shard-level Service:
+        # 1. {chi} - ClickHouseInstallation name
+        # 2. {chiID} - short hashed ClickHouseInstallation name (BEWARE, this is an experimental feature)
+        # 3. {cluster} - cluster name
+        # 4. {clusterID} - short hashed cluster name (BEWARE, this is an experimental feature)
+        # 5. {clusterIndex} - 0-based index of the cluster in the CHI (BEWARE, this is an experimental feature)
+        # 6. {shard} - shard name
+        # 7. {shardID} - short hashed shard name (BEWARE, this is an experimental feature)
+        # 8. {shardIndex} - 0-based index of the shard in the cluster (BEWARE, this is an experimental feature)
+        #
+        # For Replica-level Service:
+        # 1. {chi} - ClickHouseInstallation name
+        # 2. {chiID} - short hashed ClickHouseInstallation name (BEWARE, this is an experimental feature)
+        # 3. {cluster} - cluster name
+        # 4. {clusterID} - short hashed cluster name (BEWARE, this is an experimental feature)
+        # 5. {clusterIndex} - 0-based index of the cluster in the CHI (BEWARE, this is an experimental feature)
+        # 6. {shard} - shard name
+        # 7. {shardID} - short hashed shard name (BEWARE, this is an experimental feature)
+        # 8. {shardIndex} - 0-based index of the shard in the cluster (BEWARE, this is an experimental feature)
+        # 9. {replica} - replica name
+        # 10. {replicaID} - short hashed replica name (BEWARE, this is an experimental feature)
+        # 11. {replicaIndex} - 0-based index of the replica in the shard (BEWARE, this is an experimental feature)
+        # 12. {chiScopeIndex} - 0-based index of the host in the chi (BEWARE, this is an experimental feature)
+        # 13. {chiScopeCycleIndex} - 0-based index of the host's cycle in the chi-scope (BEWARE, this is an experimental feature)
+        # 14. {chiScopeCycleOffset} - 0-based offset of the host in the chi-scope cycle (BEWARE, this is an experimental feature)
+        # 15. {clusterScopeIndex} - 0-based index of the host in the cluster (BEWARE, this is an experimental feature)
+        # 16. {clusterScopeCycleIndex} - 0-based index of the host's cycle in the cluster-scope (BEWARE, this is an experimental feature)
+        # 17. {clusterScopeCycleOffset} - 0-based offset of the host in the cluster-scope cycle (BEWARE, this is an experimental feature)
+        # 18. {shardScopeIndex} - 0-based index of the host in the shard (BEWARE, this is an experimental feature)
+        # 19. {replicaScopeIndex} - 0-based index of the host in the replica (BEWARE, this is an experimental feature)
+        # 20. {clusterScopeCycleHeadPointsToPreviousCycleTail} - 0-based cluster-scope index of previous cycle tail
+        generateName: "service-{chi}"
+        # type ObjectMeta struct from k8s.io/meta/v1
+        # metadata:
+        #   labels:
+        #     custom.label: "custom.value"
+        #   annotations:
+        #     # For more details on Internal Load Balancer check
+        #     # https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+        #     cloud.google.com/load-balancer-type: "Internal"
+        #     service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+        #     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+        #     service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+        #     service.beta.kubernetes.io/cce-load-balancer-internal-vpc: "true"
+
+        #     # NLB Load Balancer
+        #     service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+
+        # type ServiceSpec struct from k8s.io/core/v1
+        spec:
+          ports:
+            - name: http
+              port: 8123
+            - name: tcp
+              port: 9000
+          type: LoadBalancer
+
+    volumeClaimTemplates:
+      - name: default-volume-claim
+        # Specify PVC provisioner.
+        # 1. StatefulSet. PVC would be provisioned by the StatefulSet
+        # 2. Operator. PVC would be provisioned by the operator
+        provisioner: StatefulSet
+
+        # Specify PVC reclaim policy.
+        # 1. Retain. Keep PVC from being deleted
+        #    Retaining PVC will also keep backing PV from deletion. This is useful in case we need to keep data intact.
+        # 2. Delete
+        # reclaimPolicy: Retain
+
+        # # type ObjectMeta struct {} from k8s.io/meta/v1
+        # metadata:
+        #   labels:
+        #     a: "b"
+        # # type PersistentVolumeClaimSpec struct from k8s.io/core/v1
+        # spec:
+        #   # 1. If storageClassName is not specified, default StorageClass
+        #   # (must be specified by cluster administrator) would be used for provisioning
+        #   # 2. If storageClassName is set to an empty string (‘’), no storage class will be used
+        #   # dynamic provisioning is disabled for this PVC. Existing, “Available”, PVs
+        #   # (that do not have a specified storageClassName) will be considered for binding to the PVC
+        #   #storageClassName: gold
+        #   accessModes:
+        #     - ReadWriteOnce
+        #   resources:
+        #     requests:
+        #       storage: 1Gi
+
+    podTemplates:
+      # multiple pod templates makes possible to update version smoothly
+      # pod template for ClickHouse v18.16.1
+      - name: clickhouse-main-storage
+        # We may need to label nodes with clickhouse=allow label for this example to run
+        # See ./label_nodes.sh for this purpose
+        # zone:
+        #   key: "clickhouse"
+        #   values:
+        #     - "allow"
+        # Shortcut version for AWS installations
+        #zone:
+        #  values:
+        #    - "us-east-1a"
+
+        # Possible values for podDistribution are:
+        # Unspecified - empty value
+        # ClickHouseAntiAffinity - AntiAffinity by ClickHouse instances.
+        #   Pod pushes away other ClickHouse pods, which allows one ClickHouse instance per topologyKey-specified unit
+        #   CH - (push away) - CH - (push away) - CH
+        # ShardAntiAffinity - AntiAffinity by shard name.
+        #   Pod pushes away other pods of the same shard (replicas of this shard),
+        #   which allows one replica of a shard instance per topologyKey-specified unit.
+        #   Other shards are allowed - it does not push all shards away, but CH-instances of the same shard only.
+        #   Used for data loss avoidance - keeps all copies of the shard on different topologyKey-specified units.
+        #   shard1,replica1 - (push away) - shard1,replica2 - (push away) - shard1,replica3
+        # ReplicaAntiAffinity - AntiAffinity by replica name.
+        #   Pod pushes away other pods of the same replica (shards of this replica),
+        #   which allows one shard of a replica per topologyKey-specified unit.
+        #   Other replicas are allowed - it does not push all replicas away, but CH-instances of the same replica only.
+        #   Used to evenly distribute load from "full cluster scan" queries.
+        #   shard1,replica1 - (push away) - shard2,replica1 - (push away) - shard3,replica1
+        # AnotherNamespaceAntiAffinity - AntiAffinity by "another" namespace.
+        #   Pod pushes away pods from another namespace, which allows same-namespace pods per topologyKey-specified unit.
+        #   ns1 - (push away) - ns2 - (push away) - ns3
+        # AnotherClickHouseInstallationAntiAffinity - AntiAffinity by "another" ClickHouseInstallation name.
+        #   Pod pushes away pods from another ClickHouseInstallation,
+        #   which allows same-ClickHouseInstallation pods per topologyKey-specified unit.
+        #   CHI1 - (push away) - CHI2 - (push away) - CHI3
+        # AnotherClusterAntiAffinity - AntiAffinity by "another" cluster name.
+        #   Pod pushes away pods from another Cluster,
+        #   which allows same-cluster pods per topologyKey-specified unit.
+        #   cluster1 - (push away) - cluster2 - (push away) - cluster3
+        # MaxNumberPerNode - AntiAffinity by cycle index.
+        #   Pod pushes away pods from the same cycle,
+        #   which allows to specify maximum number of ClickHouse instances per topologyKey-specified unit.
+        #   Used to setup circular replication.
+        # NamespaceAffinity - Affinity by namespace.
+        #   Pod attracts pods from the same namespace,
+        #   which allows pods from same namespace per topologyKey-specified unit.
+        #   ns1 + (attracts) + ns1
+        # ClickHouseInstallationAffinity - Affinity by ClickHouseInstallation name.
+        #   Pod attracts pods from the same ClickHouseInstallation,
+        #   which allows pods from the same CHI per topologyKey-specified unit.
+        #   CHI1 + (attracts) + CHI1
+        # ClusterAffinity - Affinity by cluster name.
+        #   Pod attracts pods from the same cluster,
+        #   which allows pods from the same Cluster per topologyKey-specified unit.
+        #   cluster1 + (attracts) + cluster1
+        # ShardAffinity - Affinity by shard name.
+        #   Pod attracts pods from the same shard,
+        #   which allows pods from the same Shard per topologyKey-specified unit.
+        #   shard1 + (attracts) + shard1
+        # ReplicaAffinity - Affinity by replica name.
+        #   Pod attracts pods from the same replica,
+        #   which allows pods from the same Replica per topologyKey-specified unit.
+        #   replica1 + (attracts) + replica1
+        # PreviousTailAffinity - Affinity to overlap cycles. Used to make cycle pod distribution
+        #   cycle head + (attracts to) + previous cycle tail
+        podDistribution:
+          - type: ClickHouseAntiAffinity
+
+        # type PodSpec struct {} from k8s.io/core/v1
+        spec:
+          affinity:
+            # Specify Pod affinity to nodes in specified availability zone
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: "kubernetes.io/hostname"
+                        operator: In
+                        values:
+                          - "main.storage"
+          containers:
+            - name: clickhouse
+              # image: clickhouse/clickhouse-server:23.8
+              volumes:
+                # Specify volume as path on local filesystem as a directory which will be created, if need be
+                - name: local-path
+                  hostPath:
+                    path: /var/lib/clickhouse
+                    type: DirectoryOrCreate
+              volumeMounts:
+                - name: local-path
+                  mountPath: /var/lib/clickhouse
+              # resources:
+              #   requests:
+              #     memory: "64Mi"
+              #     cpu: "100m"
+              #   limits:
+              #     memory: "64Mi"
+              #     cpu: "100m"
+            # - name: clickhouse-log
+            #   # image: clickhouse/clickhouse-server:23.8
+            #   command:
+            #     - "/bin/sh"
+            #     - "-c"
+            #     - "--"
+            #   args:
+            #     - "while true; do sleep 30; done;"

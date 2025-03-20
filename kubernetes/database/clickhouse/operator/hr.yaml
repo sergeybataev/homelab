@@ -732,5 +732,5 @@ spec:
       additionalLabels:
         grafana_dashboard: "1"
       # dashboards.annotations -- annotations to add to a secret with dashboards
-      annotations: {}
-      grafana_folder: Database/Clickhouse
+      annotations:
+        grafana_folder: Database/Clickhouse
