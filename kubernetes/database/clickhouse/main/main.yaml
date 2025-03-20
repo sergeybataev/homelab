@@ -20,8 +20,8 @@ spec:
       - name: main
         templates:
           podTemplate: clickhouse-v23.8
-          dataVolumeClaimTemplate: default-volume-claim
-          logVolumeClaimTemplate: default-volume-claim
+          # dataVolumeClaimTemplate: default-volume-claim
+          # logVolumeClaimTemplate: default-volume-claim
         layout:
           # shardsCount not specified, assumed = 1, by default
           shards:
