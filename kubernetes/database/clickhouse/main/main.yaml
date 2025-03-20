@@ -28,7 +28,7 @@ spec:
             - replicas:
                 - templates:
                     podTemplate: clickhouse-main-storage
-
+  templates:
     serviceTemplates:
       - name: chi-service-template
         # generateName understands different sets of macroses,
