@@ -217,15 +217,15 @@ spec:
                         operator: In
                         values:
                           - "main.storage"
+          volumes:
+            # Specify volume as path on local filesystem as a directory which will be created, if need be
+            - name: local-path
+              hostPath:
+                path: /var/lib/clickhouse
+                type: DirectoryOrCreate
           containers:
             - name: clickhouse
-              # image: clickhouse/clickhouse-server:23.8
-              volumes:
-                # Specify volume as path on local filesystem as a directory which will be created, if need be
-                - name: local-path
-                  hostPath:
-                    path: /var/lib/clickhouse
-                    type: DirectoryOrCreate
+              image: clickhouse/clickhouse-server:23.8
               volumeMounts:
                 - name: local-path
                   mountPath: /var/lib/clickhouse
