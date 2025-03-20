@@ -209,3 +209,13 @@ spec:
         hostPathType: CharDevice
         globalMounts:
           - path: /dev/net/tun
+
+    serviceMonitor:
+      app:
+        serviceName: haas
+        endpoints:
+          - port: http
+            scheme: http
+            path: /api/prometheus
+            interval: 1m
+            scrapeTimeout: 30s
