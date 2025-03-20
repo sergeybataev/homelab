@@ -9,8 +9,6 @@ spec:
   config:
     extensions:
       health_check: {}
-      memory_ballast:
-        size_in_percentage: 40
 
     receivers:
       k8s_events:
@@ -287,7 +285,42 @@ spec:
       debug: {}
       otlphttp:
         endpoint: http://loki-write.monitoring.svc.cluster.local:3100/otlp
+      clickhouse:
+        endpoint: clickhouse://service-clickhouse-main.database-clickhouse.svc.cluster.local:9000?dial_timeout=10s
+        username: clickhouse_monitoring_user
+        password: ${env:CH_MONITORING_PASSWORD}
 
+        database: otel
+        logs_table_name: otel_logs
+        traces_table_name: otel_traces
+
+        async_insert: true
+        ttl: 0
+        compress: lz4
+        create_schema: true
+        timeout: 5s
+        retry_on_failure:
+          enabled: true
+          initial_interval: 5s
+          max_interval: 30s
+          max_elapsed_time: 300s
+
+        metrics_tables:
+          gauge:
+            name: "otel_metrics_gauge"
+          sum:
+            name: "otel_metrics_sum"
+          summary:
+            name: "otel_metrics_summary"
+          histogram:
+            name: "otel_metrics_histogram"
+          exponential_histogram:
+            name: "otel_metrics_exp_histogram"
+
+        # cluster_name: my_cluster
+        # table_engine:
+        #   name: ReplicatedMergeTree
+        #   params:
     service:
       pipelines:
         traces:
@@ -300,6 +333,7 @@ spec:
           - batch
           exporters:
           - debug
+          - clickhouse
 
         metrics:
           receivers:
@@ -313,6 +347,7 @@ spec:
           - batch
           exporters:
           - debug
+          - clickhouse
 
         logs:
           receivers:
@@ -328,12 +363,18 @@ spec:
           - batch
           exporters:
           - otlphttp
+          - clickhouse
 
       # telemetry:
       #   metrics:
       #     address: $(OTEL_K8S_POD_IP):8888
 
   env:
+    - name: CH_MONITORING_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: clickhouse-main-users
+          key: clickhouse_monitoring_password
     - name: OTEL_K8S_NODE_NAME
       valueFrom:
         fieldRef:
