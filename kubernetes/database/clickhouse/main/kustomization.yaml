@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./main.yaml
   - secret.sops.yaml
+  - users.sops.yaml

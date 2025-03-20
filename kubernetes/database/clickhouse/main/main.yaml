@@ -17,9 +17,18 @@ spec:
       user/password:
         valueFrom:
           secretKeyRef:
-            name: clickhouse-main
-            key: password_plain
+            name: clickhouse-main-users
+            key: clickhouse_user_password_plain
       user/networks/ip:
+        - 0.0.0.0/0
+        - '::/0'
+
+      clickhouse_monitoring_user/password:
+        valueFrom:
+          secretKeyRef:
+            name: clickhouse-main-users
+            key: clickhouse_monitoring_password
+      clickhouse_monitoring_user/networks/ip:
         - 0.0.0.0/0
         - '::/0'
 
@@ -27,7 +36,7 @@ spec:
         valueFrom:
           secretKeyRef:
             name: clickhouse-main
-            key: password_plain
+            key: admin_password_plain
       admin/networks/ip:
         - 0.0.0.0/0
         - '::/0'

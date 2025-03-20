@@ -1,13 +1,16 @@
 apiVersion: v1
 kind: Secret
 metadata:
-    name: ${APP}
+    name: ${APP}-users
     namespace: ${NS}
     annotations:
         reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
         reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "false"
+        reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: monitoring
 stringData:
-    admin_password_plain: ENC[AES256_GCM,data:sLxRG86twUlaew==,iv:xbTFvhrsWLo0D0bwFJaNnQcx8X3ypxusTXhBydmD6NA=,tag:z8NnwC70RCIVB/i2YtVaJA==,type:str]
+    clickhouse_user_password_plain: ENC[AES256_GCM,data:MhKrvs35J0m8jQ==,iv:X6rQTyC9cs5b/soG+y6ruLkbat+ztZPceOOpmy4nsHc=,tag:LYF4P+iY6f4Z3TGwNgFEEQ==,type:str]
+    clickhouse_monitoring_user: ENC[AES256_GCM,data:YZG/1LxwlD3Ybm8u2gBm,iv:mGS1DUO2PmuWvb136ABPt7zPv3k5sWlU9WvGvJSIVX0=,tag:F7Sy17QCQIjgNMLDg3SIkA==,type:str]
+    clickhouse_monitoring_password: ENC[AES256_GCM,data:UbXA9+fT8tTA+HE=,iv:yvLn3hySdBFLaUfw8o7pBsxE98zxd6LGPvfKQJCyaBU=,tag:2mVHbg59pKq5VqwVVcxRjA==,type:str]
 sops:
     kms: []
     gcp_kms: []
@@ -23,8 +26,8 @@ sops:
             R3crOERmVTV6VW14SmhGemowVytqRGsKpCWigOp3Bbe5LByXZcqjiWVyXpn/FJM4
             VR3H1PbeKY5slOE2QNQWolgBXdERg2Bu2oJGzIbWrccPDck9eS6AeQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-03-20T13:20:36Z"
-    mac: ENC[AES256_GCM,data:6DFfYlo7JtNoi2bjvM+hRkG+hFD1TRW/YXQKXniLmd8giPj44xjF3dqbYBUbdObhSn9Z3KYTaulwMLyDOwvSTlVgB8PmL0JBb96UwNp/1M1HWz/oFeKgfLLeE1zp+VTnNvUYhBWarp+/SgFhErz3S7yLhZUwSwJ/ZHpYFwjdMRQ=,iv:a5ev0EagXtNcr0LeIbSXQVUJ0wsaxT3j/lg62INZWlU=,tag:uze+SRXqB1O1QoDdL+N1nQ==,type:str]
+    lastmodified: "2025-03-20T13:23:26Z"
+    mac: ENC[AES256_GCM,data:4isHCW8T4mXh+g+o24/mulhDzPyvDtGhXErJb4upq4m77U7EH3XwS/smyg5qwtuYTbvogByvqbvCp7K4fd4L94r+mziuX8zRnqY80B+tPy/TnTWdZrRlAOJtPWyOSr4aADYpBNGrObe1fjeLI2BKQ9lDmxKoYnV2mgcawMvgwzc=,iv:8ux4/tcwm3b2u6bR5aKkhH1BSNDeyF2OtzFQMo6aDf8=,tag:E+jQakyHb2ove8N7ho01ow==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData)$
     version: 3.9.3
