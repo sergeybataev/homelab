@@ -19,12 +19,18 @@ spec:
           secretKeyRef:
             name: clickhouse-main
             key: password_plain
+      user/networks/ip:
+        - 0.0.0.0/0
+        - '::/0'
 
       admin/password:
         valueFrom:
           secretKeyRef:
             name: clickhouse-main
             key: password_plain
+      admin/networks/ip:
+        - 0.0.0.0/0
+        - '::/0'
       admin/profile: default
       admin/quota: default
 
