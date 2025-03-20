@@ -174,7 +174,7 @@ spec:
             jsonData:
               defaultDatabase: otel
               port: 9000
-              host: http://service-clickhouse-main.database-clickhouse.svc.cluster.local
+              host: service-clickhouse-main.database-clickhouse.svc.cluster.local
               username: clickhouse_monitoring_user
               tlsSkipVerify: false
               # tlsAuth: <bool>
@@ -206,7 +206,7 @@ spec:
               #   traceIdColumn: <string>
               #   ...Column: <string>
             secureJsonData:
-              password: ${CH_MONITORING_PASS}
+              password: $CH_MONITORING_PASS
               # tlsCACert: <string>
               # tlsClientCert: <string>
               # tlsClientKey: <string>
