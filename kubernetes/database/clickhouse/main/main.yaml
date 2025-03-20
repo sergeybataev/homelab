@@ -8,6 +8,10 @@ metadata:
   namespace: ${NS}
 
 spec:
+  defaults:
+    templates:
+      serviceTemplate: chi-service-template
+
   configuration:
     users:
       user/password:
