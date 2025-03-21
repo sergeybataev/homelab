@@ -30,6 +30,7 @@ spec:
       - pr0ps-trackmap-panel
       - vonage-status-panel
       - isovalent-hubble-datasource
+      - grafana-clickhouse-datasource
 
     env:
       GF_EXPLORE_ENABLED: true
@@ -105,7 +106,7 @@ spec:
 
     grafana.ini:
       auth.basic:
-        disable_login_form: true
+        disable_login_form: false
       auth.anonymous:
         enabled: true
       # TODO google auth
