@@ -35,6 +35,7 @@ spec:
               [{
                 "name": "macvlan-static-net",
                 "namespace": "network",
+                "mac": "f2:12:dc:25:ff:46",
                 "ips": ["192.168.5.123/16"]
               }]
         initContainers:

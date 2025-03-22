@@ -96,7 +96,7 @@ spec:
       "name": "macvlan-static-net",
       "type": "macvlan",
       "master": "eth0",
-      "capabilities": { "ips": true },
+      "capabilities": { "ips": true, "mac": true },
       "ipam": {
         "type": "host-local",
         "subnet": "192.168.0.0/21",
