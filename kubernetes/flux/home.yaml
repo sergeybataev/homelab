@@ -6,7 +6,6 @@ metadata:
   name: &name cluster-home
   namespace: flux-system
 spec:
-  namePrefix: "home-"
   dependsOn:
     - name: cluster-config
     - name: cluster-storage

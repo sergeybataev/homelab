@@ -90,3 +90,13 @@ spec:
       target:
         kind: Deployment
         name: helm-controller
+    - patch: |
+        - op: add
+          path: /rules/-
+          value:
+            apiGroups: ["infra.contrib.fluxcd.io"]
+            resources: ["*"]
+            verbs: ["*"]
+      target:
+        kind: ClusterRole
+        name: crd-controller-flux-system
