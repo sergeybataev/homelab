@@ -37,9 +37,9 @@ spec:
               MINIO_UPDATE: "off"
               # MINIO_PROMETHEUS_URL: http://kube-prometheus-stack-prometheus.monitoring:9090
               # MINIO_PROMETHEUS_JOB_ID: minio
-              MINIO_BROWSER_REDIRECT_URL: https://minio.${SECRET_DOMAIN}
-              #MINIO_SERVER_URL: https://minio-s3.${SECRET_DOMAIN}
-              MINIO_API_CORS_ALLOW_ORIGIN: https://minio.${SECRET_DOMAIN},https://minio-s3.${SECRET_DOMAIN}
+              # MINIO_BROWSER_REDIRECT_URL: https://minio.${SECRET_DOMAIN}
+              # MINIO_SERVER_URL: https://minio-s3.${SECRET_DOMAIN}
+              # MINIO_API_CORS_ALLOW_ORIGIN: https://minio.${SECRET_DOMAIN},https://minio-s3.${SECRET_DOMAIN}
               # MINIO_IDENTITY_OPENID_CONFIG_URL: "https://auth.${SECRET_DOMAIN}/.well-known/openid-configuration"
               # MINIO_IDENTITY_OPENID_CLIENT_ID: minio
               # MINIO_IDENTITY_OPENID_CLIENT_SECRET: "${SECRET_MINIO_OAUTH_CLIENT_SECRET}"
@@ -96,16 +96,19 @@ spec:
           external-dns.alpha.kubernetes.io/target: &int_host ${INGRESS_INTERNAL_IP}
         #   hajimari.io/icon: mdi:pail
         hosts:
-          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
                 service:
                   identifier: app
                   port: http
+        tls:
+          - hosts:
+              - *host
       s3:
         className: internal
         annotations:
-          external-dns.alpha.kubernetes.io/target: &int_host ${INGRESS_INTERNAL_IP}
+          external-dns.alpha.kubernetes.io/target: *int_host
           hajimari.io/enable: "false"
           nginx.ingress.kubernetes.io/proxy-connect-timeout: "180"
           nginx.ingress.kubernetes.io/proxy-body-size: 1024m
@@ -113,12 +116,15 @@ spec:
           nginx.ingress.kubernetes.io/configuration-snippet: |
             chunked_transfer_encoding off;
         hosts:
-          - host: minio-s3.${SECRET_DOMAIN}
+          - host: &s3_host minio-s3.${SECRET_DOMAIN}
             paths:
               - path: /
                 service:
                   identifier: app
                   port: api
+        tls:
+          - hosts:
+              - *s3_host
     persistence:
       data:
         type: hostPath
