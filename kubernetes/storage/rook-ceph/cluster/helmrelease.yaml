@@ -411,94 +411,94 @@ spec:
     #         # in hyperconverged settings where the volume is mounted on the same node as the osds.
     #         csi.storage.k8s.io/fstype: ext4
 
-    cephFileSystems:
-      - name: ceph-filesystem-ec
-        spec:
-          metadataPool:
-            replicated:
-              size: 3
-            parameters:
-              compression_mode: none
-              pg_num: "8"
-          dataPools:
-            - failureDomain: osd
-              replicated:
-                size: 3
-              parameters:
-                pg_num: "8"
-            - failureDomain: osd
-              erasureCoded:
-                dataChunks: 2
-                codingChunks: 1
-              # Inline compression mode for the data pool
-              parameters:
-                compression_mode: none
-                pg_num: "16"
-              name: data-ec
-          metadataServer:
-            activeCount: 1
-            activeStandby: true
-            # priorityClassName: system-cluster-critical
-            resources:
-              requests:
-                cpu: "35m"
-                memory: "64M"
-              # limits:
-              #   memory: "144M"
-            placement:
-              #  nodeAffinity:
-              #    requiredDuringSchedulingIgnoredDuringExecution:
-              #      nodeSelectorTerms:
-              #      - matchExpressions:
-              #        - key: role
-              #          operator: In
-              #          values:
-              #          - mds-node
-              #  topologySpreadConstraints:
-              #  tolerations:
-              #  - key: mds-node
-              #    operator: Exists
-              #  podAffinity:
-              podAntiAffinity:
-                requiredDuringSchedulingIgnoredDuringExecution:
-                  - labelSelector:
-                      matchExpressions:
-                        - key: app
-                          operator: In
-                          values:
-                            - rook-ceph-mds
-                    # topologyKey: kubernetes.io/hostname will place MDS across different hosts
-                    topologyKey: kubernetes.io/hostname
-                preferredDuringSchedulingIgnoredDuringExecution:
-                  - weight: 100
-                    podAffinityTerm:
-                      labelSelector:
-                        matchExpressions:
-                          - key: app
-                            operator: In
-                            values:
-                              - rook-ceph-mds
-                      # topologyKey: */zone can be used to spread MDS across different AZ
-                      # Use <topologyKey: failure-domain.beta.kubernetes.io/zone> in k8s cluster if your cluster is v1.16 or lower
-                      # Use <topologyKey: topology.kubernetes.io/zone>  in k8s cluster is v1.17 or upper
-                      topologyKey: topology.kubernetes.io/zone
-        storageClass:
-          enabled: true
-          isDefault: false
-          name: ceph-filesystem
-          pool: data-ec
-          reclaimPolicy: Delete
-          allowVolumeExpansion: true
-          # mountOptions: []
-          volumeBindingMode: Immediate
-          parameters:
-            csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
-            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
-            csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-            csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
-            csi.storage.k8s.io/fstype: ext4
+    cephFileSystems: []
+      # - name: ceph-filesystem-ec
+      #   spec:
+      #     metadataPool:
+      #       replicated:
+      #         size: 3
+      #       parameters:
+      #         compression_mode: none
+      #         pg_num: "8"
+      #     dataPools:
+      #       - failureDomain: osd
+      #         replicated:
+      #           size: 3
+      #         parameters:
+      #           pg_num: "8"
+      #       - failureDomain: osd
+      #         erasureCoded:
+      #           dataChunks: 2
+      #           codingChunks: 1
+      #         # Inline compression mode for the data pool
+      #         parameters:
+      #           compression_mode: none
+      #           pg_num: "16"
+      #         name: data-ec
+      #     metadataServer:
+      #       activeCount: 1
+      #       activeStandby: true
+      #       # priorityClassName: system-cluster-critical
+      #       resources:
+      #         requests:
+      #           cpu: "35m"
+      #           memory: "64M"
+      #         # limits:
+      #         #   memory: "144M"
+      #       placement:
+      #         #  nodeAffinity:
+      #         #    requiredDuringSchedulingIgnoredDuringExecution:
+      #         #      nodeSelectorTerms:
+      #         #      - matchExpressions:
+      #         #        - key: role
+      #         #          operator: In
+      #         #          values:
+      #         #          - mds-node
+      #         #  topologySpreadConstraints:
+      #         #  tolerations:
+      #         #  - key: mds-node
+      #         #    operator: Exists
+      #         #  podAffinity:
+      #         podAntiAffinity:
+      #           requiredDuringSchedulingIgnoredDuringExecution:
+      #             - labelSelector:
+      #                 matchExpressions:
+      #                   - key: app
+      #                     operator: In
+      #                     values:
+      #                       - rook-ceph-mds
+      #               # topologyKey: kubernetes.io/hostname will place MDS across different hosts
+      #               topologyKey: kubernetes.io/hostname
+      #           preferredDuringSchedulingIgnoredDuringExecution:
+      #             - weight: 100
+      #               podAffinityTerm:
+      #                 labelSelector:
+      #                   matchExpressions:
+      #                     - key: app
+      #                       operator: In
+      #                       values:
+      #                         - rook-ceph-mds
+      #                 # topologyKey: */zone can be used to spread MDS across different AZ
+      #                 # Use <topologyKey: failure-domain.beta.kubernetes.io/zone> in k8s cluster if your cluster is v1.16 or lower
+      #                 # Use <topologyKey: topology.kubernetes.io/zone>  in k8s cluster is v1.17 or upper
+      #                 topologyKey: topology.kubernetes.io/zone
+      #   storageClass:
+      #     enabled: true
+      #     isDefault: false
+      #     name: ceph-filesystem
+      #     pool: data-ec
+      #     reclaimPolicy: Delete
+      #     allowVolumeExpansion: true
+      #     # mountOptions: []
+      #     volumeBindingMode: Immediate
+      #     parameters:
+      #       csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+      #       csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+      #       csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+      #       csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+      #       csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+      #       csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+      #       csi.storage.k8s.io/fstype: ext4
 
     # # -- A list of CephFileSystem configurations to deploy
     # # @default -- See [below](#ceph-file-systems)
@@ -567,56 +567,56 @@ spec:
       isDefault: true
       deletionPolicy: Delete
 
-    cephObjectStores:
-      - name: ceph-objectstore
-        spec:
-          metadataPool:
-            failureDomain: osd
-            replicated:
-              size: 3
-            parameters:
-              pg_num: "8"
-          dataPool:
-            failureDomain: osd
-            # For production it is recommended to use more chunks, such as 4+2 or 8+4
-            erasureCoded:
-              dataChunks: 2
-              codingChunks: 1
-            parameters:
-              pg_num: "16"
-          preservePoolsOnDelete: false
-          gateway:
-            #securePort: 443
-            port: 80
-            # resources:
-            #   requests:
-            #     cpu: 1000m
-            #     memory: 1Gi
-            #   limits:
-            #     memory: 2Gi
-            instances: 1
-            priorityClassName: system-cluster-critical
-          healthCheck:
-            bucket:
-              interval: 60s
-        storageClass:
-          enabled: true
-          isDefault: false
-          name: ceph-bucket
-          reclaimPolicy: Delete
-          volumeBindingMode: Immediate
-          parameters:
-            region: eu-central-1
-        ingress:
-          enabled: true
-          ingressClassName: external
-          annotations:
-            external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-            nginx.ingress.kubernetes.io/proxy-body-size: "0"
-            nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-          host:
-            name: rgw.${SECRET_DOMAIN}
-            path: /
+    cephObjectStores: []
+      # - name: ceph-objectstore
+      #   spec:
+      #     metadataPool:
+      #       failureDomain: osd
+      #       replicated:
+      #         size: 3
+      #       parameters:
+      #         pg_num: "8"
+      #     dataPool:
+      #       failureDomain: osd
+      #       # For production it is recommended to use more chunks, such as 4+2 or 8+4
+      #       erasureCoded:
+      #         dataChunks: 2
+      #         codingChunks: 1
+      #       parameters:
+      #         pg_num: "16"
+      #     preservePoolsOnDelete: false
+      #     gateway:
+      #       #securePort: 443
+      #       port: 80
+      #       # resources:
+      #       #   requests:
+      #       #     cpu: 1000m
+      #       #     memory: 1Gi
+      #       #   limits:
+      #       #     memory: 2Gi
+      #       instances: 1
+      #       priorityClassName: system-cluster-critical
+      #     healthCheck:
+      #       bucket:
+      #         interval: 60s
+      #   storageClass:
+      #     enabled: true
+      #     isDefault: false
+      #     name: ceph-bucket
+      #     reclaimPolicy: Delete
+      #     volumeBindingMode: Immediate
+      #     parameters:
+      #       region: eu-central-1
+      #   ingress:
+      #     enabled: true
+      #     ingressClassName: external
+      #     annotations:
+      #       external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+      #       nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      #       nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+      #     host:
+      #       name: rgw.${SECRET_DOMAIN}
+      #       path: /
 
     # cephECBlockPools are disabled by default, please remove the comments and set desired values to enable it
     # For erasure coded a replicated metadata pool is required.
