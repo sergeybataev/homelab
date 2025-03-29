@@ -208,7 +208,7 @@ spec:
         onlyApplyOSDPlacement: false
 
         useAllNodes: true
-        useAllDevices: false
+        useAllDevices: true
 
         config:
           osdsPerDevice: "1"
