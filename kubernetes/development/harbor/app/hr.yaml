@@ -120,10 +120,7 @@ spec:
           image: ghcr.io/onedr0p/postgres-init:17.4
           env:
             - name: INIT_POSTGRES_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: main16-secret
-                  key: host
+              value: ${CLOUDNATIVE_PG_IP}
             - name: INIT_POSTGRES_SUPER_PASS
               valueFrom:
                 secretKeyRef:
