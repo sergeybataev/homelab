@@ -184,7 +184,7 @@ spec:
       # and fill the connection information in "external" section
       type: external
       external:
-        # host: "postgres-default-rw.database.svc.cluster.local"
+        host: ${CLOUDNATIVE_PG_IP}
         # port: "5432"
         # username: "harbor"
         # coreDatabase: "harbor"
@@ -261,10 +261,6 @@ spec:
       kind: Secret
       name: harbor-secrets
       valuesKey: harborAdminPassword
-    - targetPath: database.external.host
-      kind: Secret
-      name: main16-secret
-      valuesKey: host
     - targetPath: database.external.port
       kind: Secret
       name: main16-secret
