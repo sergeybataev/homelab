@@ -216,6 +216,9 @@ spec:
           - name: "main.storage"
             devices:
               - name: "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNG0M218299R"
+              - name: "/dev/disk/by-id/ata-ST12000NM001G-2MV103_ZS802E0G"
+              - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1DGDA3"
+              - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1FHDYF"
           - name: "rpi-5-1-green"
             devices:
               - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_2TB_S7GDNS0X203177N"
@@ -418,12 +421,12 @@ spec:
               compression_mode: none
               pg_num: "8"
           dataPools:
-            - failureDomain: host
+            - failureDomain: osd
               replicated:
                 size: 3
               parameters:
                 pg_num: "8"
-            - failureDomain: host
+            - failureDomain: osd
               erasureCoded:
                 dataChunks: 2
                 codingChunks: 1
@@ -568,13 +571,13 @@ spec:
       - name: ceph-objectstore
         spec:
           metadataPool:
-            failureDomain: host
+            failureDomain: osd
             replicated:
               size: 3
             parameters:
               pg_num: "8"
           dataPool:
-            failureDomain: host
+            failureDomain: osd
             # For production it is recommended to use more chunks, such as 4+2 or 8+4
             erasureCoded:
               dataChunks: 2
@@ -627,7 +630,7 @@ spec:
           parameters:
             pg_num: "8"
         dataPool:
-          failureDomain: host
+          failureDomain: osd
           erasureCoded:
             dataChunks: 2
             codingChunks: 1
