@@ -5,3 +5,6 @@ kind: Kustomization
 resources:
   - helmrelease.yaml
   - builtin.yaml
+  - block-pools.yaml
+  - fs.yaml
+  - object-pools.yaml

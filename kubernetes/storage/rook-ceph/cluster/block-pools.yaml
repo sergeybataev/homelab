@@ -1,0 +1,203 @@
+---
+# Pool for Prometheus Metrics (Rep 2 on HDD)
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: metrics-rbd-hdd-rep2 # For Prometheus PVs
+  namespace: &ns rook-ceph
+spec:
+  failureDomain: osd # Only OSD failure domain in Phase 1
+  replicated:
+    size: 2
+    requireSafeReplicaSize: false # Allows pool to be created with < 3 OSDs initially if needed, size=2 is risky anyway
+  parameters:
+    # Explicitly target HDDs if desired, otherwise Ceph might mix NVMe/HDD PGs initially
+    # Requires Ceph v16+ generally for device_class parameter in pool
+    # device_class: hdd
+    pg_num_min: "8" # Give autoscaler a hint
+    # Consider setting min_size=1 if high availability is critical for Prometheus even with risk
+    min_size: "1"
+  storageClass:
+    enabled: true
+    name: ceph-metrics-rep2
+    isDefault: false
+    reclaimPolicy: Delete
+    allowVolumeExpansion: true
+    parameters:
+      imageFormat: "2"
+      imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
+      csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+      csi.storage.k8s.io/provisioner-secret-namespace: *ns
+      csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+      csi.storage.k8s.io/controller-expand-secret-namespace: *ns
+      csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+      csi.storage.k8s.io/node-stage-secret-namespace: *ns
+      csi.storage.k8s.io/fstype: ext4
+---
+# Pool for Databases - CloudNativePG, YugabyteDB (Rep 3 on HDD)
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: db-rbd-rep3 # For Databases
+  namespace: &ns rook-ceph
+spec:
+  failureDomain: osd
+  replicated:
+    size: 3
+    requireSafeReplicaSize: true # Default, ensures 3 OSDs exist
+  parameters:
+    # device_class: hdd
+    pg_num_min: "16" # Higher PG count likely needed for DBs eventually
+    min_size: "2" # Minimum number of replicas required for writes
+  storageClass:
+    enabled: true
+    name: ceph-db-rep3
+    isDefault: false
+    reclaimPolicy: Delete
+    allowVolumeExpansion: true
+    parameters:
+      imageFormat: "2"
+      imageFeatures: layering,exclusive-lock,object-map,fast-diff,deep-flatten # More features often useful for VMs/DBs
+      pool: db-rbd-rep3 # Explicitly state pool name
+      csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+      csi.storage.k8s.io/provisioner-secret-namespace: *ns
+      csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+      csi.storage.k8s.io/controller-expand-secret-namespace: *ns
+      csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+      csi.storage.k8s.io/node-stage-secret-namespace: *ns
+      csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
+---
+# Pool for CephFS Metadata (Rep 3)
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: cephfs-meta-rep3
+  namespace: &ns rook-ceph
+spec:
+  failureDomain: osd
+  replicated:
+    size: 3
+    requireSafeReplicaSize: true # Requires 3 OSDs
+  parameters:
+    # device_class: hdd
+    pg_num_min: "16"
+  storageClass:
+    enabled: false # No StorageClass needed - used internally by CephFS
+---
+# Pool for RGW Metadata (Rep 3)
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: rgw-meta-rep3
+  namespace: &ns rook-ceph
+spec:
+  failureDomain: osd
+  replicated:
+    size: 3
+    requireSafeReplicaSize: true # Requires 3 OSDs
+  parameters:
+    # device_class: hdd
+    pg_num_min: "8"
+  storageClass:
+    enabled: false # No StorageClass needed - used internally by RGW
+---
+# Pool for App Data (Rep 3 on HDD) - Used via CephFS
+kind: CephBlockPool
+metadata:
+  name:  app-data-hdd-rep3
+  namespace: &ns rook-ceph
+spec:
+  failureDomain: osd
+  replicated:
+    size: 3
+    requireSafeReplicaSize: true
+  parameters:
+    device_class: hdd
+    pg_num_min: "8"
+  storageClass:
+    enabled: false # No StorageClass needed - used internally by CephFS
+---
+# Pool for RGW Main Data (EC 2+1 on HDD) - General Buckets
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: rgw-main-data-ec21
+  namespace: &ns rook-ceph
+spec:
+  failureDomain: osd
+  erasureCoded:
+    dataChunks: 2
+    codingChunks: 1 # Requires 6+ OSDs to become active
+  parameters:
+    # device_class: hdd
+    pg_num_min: "16"
+  storageClass:
+    enabled: false # No StorageClass needed - used internally by RGW
+---
+# Pool for Media Data (EC 2+1 on HDD) - Used by CephFS
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: media-data-hdd-ec21
+  namespace: &ns rook-ceph
+spec:
+  failureDomain: osd
+  erasureCoded:
+    dataChunks: 2
+    codingChunks: 1 # Requires 3+ OSDs to become active
+  parameters:
+    device_class: hdd
+    pg_num_min: "16"
+  storageClass:
+    enabled: false # No StorageClass needed - used internally by CephFS
+# ---
+# # Pool for Media Data (EC 4+2 on HDD) - Used by CephFS
+# apiVersion: ceph.rook.io/v1
+# kind: CephBlockPool
+# metadata:
+#   name: media-data-hdd-ec42
+#   namespace: &ns rook-ceph
+# spec:
+#   failureDomain: osd
+#   erasureCoded:
+#     dataChunks: 4
+#     codingChunks: 2 # Requires 6+ OSDs to become active
+#   parameters:
+#     device_class: hdd
+#     pg_num_min: "32"
+#   storageClass:
+#     enabled: false # No StorageClass needed - used internally by CephFS
+# ---
+# # Pool for Archive Data (EC 4+2 on HDD) - Used by CephFS
+# apiVersion: ceph.rook.io/v1
+# kind: CephBlockPool
+# metadata:
+#   name: archive-data-hdd-ec42
+#   namespace: &ns rook-ceph
+# spec:
+#   failureDomain: osd
+#   erasureCoded:
+#     dataChunks: 4
+#     codingChunks: 2 # Requires 6+ OSDs to become active
+#   parameters:
+#     device_class: hdd
+#     pg_num_min: "32"
+#   storageClass:
+#     enabled: false # No StorageClass needed - used internally by CephFS
+# ---
+# # Pool for RGW Main Data (EC 4+2 on HDD) - For Thanos / General Buckets
+# apiVersion: ceph.rook.io/v1
+# kind: CephBlockPool
+# metadata:
+#   name: rgw-main-data-hdd-ec42
+#   namespace: &ns rook-ceph
+# spec:
+#   failureDomain: osd
+#   erasureCoded:
+#     dataChunks: 4
+#     codingChunks: 2 # Requires 6+ OSDs to become active
+#   parameters:
+#     device_class: hdd
+#     pg_num_min: "32"
+#   storageClass:
+#     enabled: false # No StorageClass needed - used internally by RGW

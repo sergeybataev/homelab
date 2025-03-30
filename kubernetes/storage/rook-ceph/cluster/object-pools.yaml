@@ -1,0 +1,35 @@
+---
+apiVersion: ceph.rook.io/v1
+kind: CephObjectStore
+metadata:
+  name: ceph-objectstore-ec21
+  namespace: *ns
+spec:
+  metadataPool:
+   name: rgw-meta-rep3
+  dataPool:
+    name: rgw-main-data-ec21
+  preservePoolsOnDelete: false # Set true if you want pools to remain after deleting CephObjectStore CRD
+  gateway:
+    port: 80 # Or 443 if using SSL
+    instances: 1 # Start with 1, increase later if needed for performance/HA
+    resources: {} # Define if needed
+    priorityClassName: system-cluster-critical
+  healthCheck:
+    bucket: { interval: 60s }
+  storageClass: # Defines OBC StorageClass if using lib-bucket-provisioner
+    enabled: true
+    name: ceph-bucket-ec21
+    reclaimPolicy: Delete
+    volumeBindingMode: Immediate
+    parameters: { region: eu-central-1 } # Customize region
+  ingress: # Keep your ingress settings for RGW
+    enabled: true
+    ingressClassName: external
+    annotations:
+      external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+    host:
+      name: rgw.${SECRET_DOMAIN}
+      path: /

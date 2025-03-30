@@ -8,3 +8,27 @@ spec:
   failureDomain: osd
   replicated:
     size: 3
+    requireSafeReplicaSize: false
+  parameters:
+    pg_num_min: "8" # Give autoscaler a hint
+    # min_size: "2"
+---
+# The built-in Ceph pool ".nfs" is used for storing configuration for all CephNFS clusters. If this
+# shared pool needs to be configured with alternate settings, create this pool (once) with any of
+# the pool properties. Create this pool before creating any CephNFSes, or else some properties may
+# not be applied when the pool is created by default. This pool must be replicated.
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: builtin-nfs
+  namespace: rook-ceph # namespace:cluster
+spec:
+  # The required pool name ".nfs" cannot be specified as a K8s resource name, thus we override
+  # the pool name created in Ceph with this name property
+  name: .nfs
+  failureDomain: osd
+  replicated:
+    size: 3
+    requireSafeReplicaSize: true
+  parameters:
+    pg_num_min: "8" # Give autoscaler a hint
