@@ -102,6 +102,7 @@ spec:
     enabled: false # No StorageClass needed - used internally by RGW
 ---
 # Pool for App Data (Rep 3 on HDD) - Used via CephFS
+apiVersion: ceph.rook.io/v1
 kind: CephBlockPool
 metadata:
   name:  app-data-hdd-rep3
