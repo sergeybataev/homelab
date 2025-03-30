@@ -1,0 +1,63 @@
+#     # image: litmuschaos/fio
+#     # image: openebs/tests-fio
+
+#  fio --name=10GbWriter --rw=write --iodepth=1 --bs=100M --direct=1 --fsync=1 --size=10GB --numjobs=1 --buffered=0 --output=10Gb.txt
+
+#
+# sudo fio --filename=device name --direct=1 --rw=randread --bs=4k --ioengine=libaio --iodepth=256 --runtime=120 --numjobs=4 --time_based --group_reporting --name=iops-test-job --eta-newline=1 --readonly
+
+
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fio
+  namespace: "rook-ceph"
+  labels:
+    app.kubernetes.io/name: fio
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fio
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: fio
+    spec:
+      containers:
+        - name: fio-perftester
+          imagePullPolicy: IfNotPresent
+
+          image: dockerpinata/fio:2.1
+          # image: litmuschaos/fio
+          # image: openebs/tests-fio
+          command: ["/bin/sh"]
+          args: ["-c", "while true; do sleep 50; done"]
+          env:
+            - name: TZ
+              value: "Europe/Helsinki"
+          volumeMounts:
+            - mountPath: /datadir/apps
+              name: fio-ceph-fs-apps
+            - mountPath: /datadir/media-ec21
+              name: fio-ceph-fs-media-ec21
+            - mountPath: /datadir/db-rep3
+              name: fio-ceph-fs-db-rep3
+            - mountPath: /datadir/db-ec21
+              name: fio-ceph-fs-db-ec21
+
+          tty: true
+      volumes:
+        - name: fio-ceph-fs-apps
+          persistentVolumeClaim:
+            claimName: fio-ceph-fs-apps
+        - name: fio-ceph-fs-media-ec21
+          persistentVolumeClaim:
+            claimName: fio-ceph-fs-media-ec21
+        - name: fio-ceph-fs-db-rep3
+          persistentVolumeClaim:
+            claimName: fio-ceph-fs-db-rep3
+        - name: fio-ceph-fs-db-ec21
+          persistentVolumeClaim:
+            claimName: fio-ceph-fs-db-ec21

@@ -1,0 +1,35 @@
+# ---
+# # Pool for Archive Data (EC 4+2 on HDD) - Used by CephFS
+# apiVersion: ceph.rook.io/v1
+# kind: CephBlockPool
+# metadata:
+#   name: archive-data-hdd-ec21
+#   namespace: rook-ceph
+# spec:
+#   enableRBDStats: true # Enable RBD stats for monitoring
+#   failureDomain: osd
+#   erasureCoded:
+#     dataChunks: 2
+#     codingChunks: 1
+#   parameters:
+#     pg_num: "8"
+#     pg_num_min: "8"
+#   deviceClass: hdd
+
+# ---
+# # Pool for Archive Data (EC 4+2 on HDD) - Used by CephFS
+# apiVersion: ceph.rook.io/v1
+# kind: CephBlockPool
+# metadata:
+#   name: archive-data-hdd-ec42
+#   namespace: rook-ceph
+# spec:
+#   enableRBDStats: true # Enable RBD stats for monitoring
+#   failureDomain: osd
+#   erasureCoded:
+#     dataChunks: 4
+#     codingChunks: 2 # Requires 6+ OSDs to become active
+#   parameters:
+#     pg_num: "32"
+#     pg_num_min: "32"
+#   deviceClass: hdd

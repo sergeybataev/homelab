@@ -2,43 +2,42 @@
 apiVersion: ceph.rook.io/v1
 kind: CephObjectStore
 metadata:
-  name: main-ec21
-  namespace: &ns rook-ceph
+  name: observability-ec21
+  namespace: rook-ceph
 spec:
   metadataPool:
-   name: rgw-meta-rep3
+    enableRBDStats: true # Enable RBD stats for monitoring
+    failureDomain: osd
+    replicated:
+      size: 3
+      requireSafeReplicaSize: true # Requires 3 OSDs
+      hybridStorage:
+        primaryDeviceClass: nvme
+        secondaryDeviceClass: hdd
+    parameters:
+      pg_num_min: "8"
   dataPool:
-    name: rgw-main-data-ec21
-  preservePoolsOnDelete: false # Set true if you want pools to remain after deleting CephObjectStore CRD
+    enableRBDStats: true # Enable RBD stats for monitoring
+    failureDomain: osd
+    erasureCoded:
+      dataChunks: 2
+      codingChunks: 1 # Requires 3+ OSDs to become active
+    parameters:
+      pg_num_min: "8"
+    deviceClass: hdd
+
   gateway:
     port: 80 # Or 443 if using SSL
     instances: 1 # Start with 1, increase later if needed for performance/HA
     resources: {} # Define if needed
     priorityClassName: system-cluster-critical
-  healthCheck:
-    bucket: { interval: 60s }
-  storageClass: # Defines OBC StorageClass if using lib-bucket-provisioner
-    enabled: true
-    name: ceph-bucket-ec21
-    reclaimPolicy: Delete
-    volumeBindingMode: Immediate
-    parameters: { region: eu-central-1 } # Customize region
-  ingress: # Keep your ingress settings for RGW
-    enabled: true
-    ingressClassName: external
-    annotations:
-      external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-      nginx.ingress.kubernetes.io/proxy-body-size: "0"
-      nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-    host:
-      name: rgw.${SECRET_DOMAIN}
-      path: /
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ceph-objectstore-main-ec21
-  namespace: &ns rook-ceph # namespace:cluster
+  name: ceph-objectstore-observability-ec21
+  namespace: rook-ceph # namespace:cluster
   annotations:
     external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
@@ -51,20 +50,21 @@ spec:
           - path: /
             backend:
               service:
-                name: rook-ceph-rgw-main-ec21
+                name: rook-ceph-rgw-observability-ec21
                 port:
                   number: 80
             pathType: "Prefix"
   ingressClassName: internal
+
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: ceph-bucket-main-ec21
+  name: ceph-bucket-observability-ec21
 provisioner: rook-ceph.ceph.rook.io/bucket
 reclaimPolicy: "Delete"
 volumeBindingMode: "Immediate"
 parameters:
-  objectStoreName: main-ec21
+  objectStoreName: observability-ec21
   objectStoreNamespace: rook-ceph
   region: eu-central-1

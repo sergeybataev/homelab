@@ -10,6 +10,7 @@ spec:
     size: 3
     requireSafeReplicaSize: false
   parameters:
+    # pg_num: "8"
     pg_num_min: "8" # Give autoscaler a hint
     # min_size: "2"
 ---
@@ -31,4 +32,20 @@ spec:
     size: 3
     requireSafeReplicaSize: true
   parameters:
+    # pg_num: "8"
     pg_num_min: "8" # Give autoscaler a hint
+---
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: rgw-root
+  namespace: rook-ceph # namespace:cluster
+spec:
+  name: .rgw.root
+  failureDomain: osd
+  replicated:
+    size: 3
+    requireSafeReplicaSize: true
+  parameters:
+    pg_num: "8"
+  application: rgw

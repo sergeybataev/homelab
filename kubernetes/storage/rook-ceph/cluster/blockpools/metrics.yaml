@@ -1,0 +1,35 @@
+---
+# Pool for Prometheus Metrics (Rep 2 on HDD)
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: metrics-rbd-hdd-rep2 # For Prometheus PVs
+  namespace: rook-ceph
+spec:
+  enableRBDStats: true # Enable RBD stats for monitoring
+  failureDomain: osd # Only OSD failure domain in Phase 1
+  replicated:
+    size: 2
+    requireSafeReplicaSize: false # Allows pool to be created with < 3 OSDs initially if needed, size=2 is risky anyway
+  parameters:
+    # pg_num: "8"
+    pg_num_min: "8" # Give autoscaler a hint
+    # Consider setting min_size=1 if high availability is critical for Prometheus even with risk
+    min_size: "1"
+  deviceClass: hdd
+---
+# Pool for Prometheus Metrics (Rep 2 on HDD)
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: metrics-rbd-hdd-ec21 # For Prometheus PVs
+  namespace: rook-ceph
+spec:
+  enableRBDStats: true # Enable RBD stats for monitoring
+  failureDomain: osd # Only OSD failure domain in Phase 1
+  erasureCoded:
+    dataChunks: 2
+    codingChunks: 1 # Requires 3+ OSDs to become active
+  parameters:
+    # pg_num: "8"
+    pg_num_min: "8" # Give autoscaler a hint

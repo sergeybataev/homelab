@@ -1,0 +1,16 @@
+# #  --- NFS EXPORT --- Example
+# apiVersion: ceph.rook.io/v1
+# kind: CephNFS
+# metadata:
+#   name: my-nfs-export
+#   namespace: rook-ceph
+# spec:
+#   rados:
+#     namespace: rook-ceph # Namespace within the Ceph pool
+#   server:
+#     active: 1 # Number of NFS Ganesha server pods
+#     placement: {} # Optional placement rules for Ganesha pods
+#     resources: {} # Optional resource limits for Ganesha pods
+#   security:
+#     sssd: # Optional SSSD sidecar for Kerberos/LDAP
+#       sidecar: {}

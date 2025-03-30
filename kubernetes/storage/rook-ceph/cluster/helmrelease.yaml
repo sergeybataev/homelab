@@ -45,7 +45,7 @@ spec:
 
   values:
     operatorNamespace: *ns
-    clusterName: *name
+    clusterName: rook-ceph
     toolbox:
       enabled: true
 
@@ -93,7 +93,6 @@ spec:
         # The network provider to use for the Ceph daemons. The default is "host" which uses the host network.
         # also support "multus" for multus CNI plugin.
         provider: "host"
-        hostNetwork: true # Use host networking for all Ceph daemons
 
       mon:
         # Set the number of mons to be started. Generally recommended to be 3.
@@ -177,9 +176,9 @@ spec:
                     - key: ceph.rook.io/cluster
                       operator: In
                       values:
-                        - "enabled" # Example label you'd put on RPis and Main Server
+                        - "enabled"
           # Add specific placements for mon, mgr, osd if needed to separate onto nodes
-          # e.g., Place OSDs only on nodes with the 'storage.io/ebs=true' label (as you had before)
+          # e.g., Place OSDs only on nodes with the 'role=storage-node' label (as you had before)
           osd:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -199,11 +198,11 @@ spec:
         nodes:
           - name: "main.storage" # Name matching your main server node
             # Use /dev/disk/by-id for stable names
-            devices: []
-          #     - name: "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNG0M218299R"
-          #     - name: "/dev/disk/by-id/ata-ST12000NM001G-2MV103_ZS802E0G"
-          #     - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1DGDA3"
-          #     - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1FHDYF"
+            devices:
+              - name: "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNG0M218299R"
+              - name: "/dev/disk/by-id/ata-ST12000NM001G-2MV103_ZS802E0G"
+              - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1DGDA3"
+              - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1FHDYF"
         config:
           osdsPerDevice: "1" # Standard config
 

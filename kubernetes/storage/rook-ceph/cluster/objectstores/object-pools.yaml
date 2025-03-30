@@ -1,0 +1,70 @@
+---
+apiVersion: ceph.rook.io/v1
+kind: CephObjectStore
+metadata:
+  name: data-ec21
+  namespace: rook-ceph
+spec:
+  metadataPool:
+    enableRBDStats: true # Enable RBD stats for monitoring
+    failureDomain: osd
+    replicated:
+      size: 3
+      requireSafeReplicaSize: true # Requires 3 OSDs
+      hybridStorage:
+        primaryDeviceClass: nvme
+        secondaryDeviceClass: hdd
+    parameters:
+      pg_num_min: "8"
+  dataPool:
+    enableRBDStats: true # Enable RBD stats for monitoring
+    failureDomain: osd
+    erasureCoded:
+      dataChunks: 2
+      codingChunks: 1 # Requires 3+ OSDs to become active
+    parameters:
+      pg_num_min: "8"
+    deviceClass: hdd
+
+  gateway:
+    port: 80 # Or 443 if using SSL
+    instances: 1 # Start with 1, increase later if needed for performance/HA
+    resources: {} # Define if needed
+    priorityClassName: system-cluster-critical
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ceph-objectstore-data-ec21
+  namespace: rook-ceph # namespace:cluster
+  annotations:
+    external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+spec:
+  rules:
+    - host: rgw-main.${SECRET_DOMAIN}
+      http:
+        paths:
+          - path: /
+            backend:
+              service:
+                name: rook-ceph-rgw-data-ec21
+                port:
+                  number: 80
+            pathType: "Prefix"
+  ingressClassName: internal
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ceph-bucket-data-ec21
+provisioner: rook-ceph.ceph.rook.io/bucket
+reclaimPolicy: "Delete"
+volumeBindingMode: "Immediate"
+parameters:
+  objectStoreName: data-ec21
+  objectStoreNamespace: rook-ceph
+  region: eu-central-1

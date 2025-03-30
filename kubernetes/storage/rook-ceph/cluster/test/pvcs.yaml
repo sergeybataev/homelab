@@ -1,0 +1,49 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "fio-ceph-fs-apps"
+  namespace: "rook-ceph"
+spec:
+  accessModes: ["ReadWriteMany"]
+  resources:
+    requests:
+      storage: "1Ti"
+  storageClassName: ceph-fs-app-rep3
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "fio-ceph-fs-media-ec21"
+  namespace: "rook-ceph"
+spec:
+  accessModes: ["ReadWriteMany"]
+  resources:
+    requests:
+      storage: "1Ti"
+  storageClassName: ceph-fs-media-ec21
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "fio-ceph-fs-db-rep3"
+  namespace: "rook-ceph"
+spec:
+  accessModes: ["ReadWriteMany"]
+  resources:
+    requests:
+      storage: "1Ti"
+  storageClassName: ceph-fs-db-rep3
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "fio-ceph-fs-db-ec21"
+  namespace: "rook-ceph"
+spec:
+  accessModes: ["ReadWriteMany"]
+  resources:
+    requests:
+      storage: "1Ti"
+  storageClassName: ceph-fs-db-ec21
+
