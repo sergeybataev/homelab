@@ -3,7 +3,7 @@ apiVersion: ceph.rook.io/v1
 kind: CephObjectStore
 metadata:
   name: ceph-objectstore-ec21
-  namespace: *ns
+  namespace: &ns rook-ceph
 spec:
   metadataPool:
    name: rgw-meta-rep3
