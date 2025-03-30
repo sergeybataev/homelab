@@ -6,6 +6,7 @@ metadata:
   name: metrics-rbd-hdd-rep2 # For Prometheus PVs
   namespace: &ns rook-ceph
 spec:
+  enableRBDStats: true # Enable RBD stats for monitoring
   failureDomain: osd # Only OSD failure domain in Phase 1
   replicated:
     size: 2
@@ -17,22 +18,49 @@ spec:
     pg_num_min: "8" # Give autoscaler a hint
     # Consider setting min_size=1 if high availability is critical for Prometheus even with risk
     min_size: "1"
-  storageClass:
-    enabled: true
-    name: ceph-metrics-rep2
-    isDefault: false
-    reclaimPolicy: Delete
+---
+# StorageClass for Prometheus Metrics (Rep 2 on HDD)
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+   name: ceph-metrics-rep2
+   namespace: &ns rook-ceph
+provisioner: rook-ceph.rbd.csi.ceph.com
+parameters:
+    # clusterID is the namespace where the rook cluster is running
+    # If you change this namespace, also change the namespace below where the secret namespaces are defined
+    clusterID: rook-ceph # namespace:cluster
+
+    # If you want to use erasure coded pool with RBD, you need to create
+    # two pools. one erasure coded and one replicated.
+    # You need to specify the replicated pool here in the `pool` parameter, it is
+    # used for the metadata of the images.
+    # The erasure coded pool must be set as the `dataPool` parameter below.
+    #dataPool: ec-data-pool
+    pool: metrics-rbd-hdd-rep2
+
+    # RBD image format. Defaults to "2".
+    imageFormat: "2"
+
+    # RBD image features. Available for imageFormat: "2". CSI RBD currently supports only `layering` feature.
+    # imageFeatures: layering
+    imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
+
+    # The secrets contain Ceph admin credentials. These are generated automatically by the operator
+    # in the same namespace as the cluster.
+    csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+    csi.storage.k8s.io/provisioner-secret-namespace: *ns # namespace:cluster
+    csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+    csi.storage.k8s.io/controller-expand-secret-namespace: *ns # namespace:cluster
+    csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+    csi.storage.k8s.io/node-stage-secret-namespace: *ns # namespace:cluster
+    # Specify the filesystem type of the volume. If not specified, csi-provisioner
+    # will set default as `ext4`.
+    csi.storage.k8s.io/fstype: ext4
+    # uncomment the following to use rbd-nbd as mounter on supported nodes
+    #mounter: rbd-nbd
     allowVolumeExpansion: true
-    parameters:
-      imageFormat: "2"
-      imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
-      csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
-      csi.storage.k8s.io/provisioner-secret-namespace: *ns
-      csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
-      csi.storage.k8s.io/controller-expand-secret-namespace: *ns
-      csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
-      csi.storage.k8s.io/node-stage-secret-namespace: *ns
-      csi.storage.k8s.io/fstype: ext4
+    reclaimPolicy: Delete
 ---
 # Pool for Databases - CloudNativePG, YugabyteDB (Rep 3 on HDD)
 apiVersion: ceph.rook.io/v1
@@ -41,6 +69,7 @@ metadata:
   name: db-rbd-rep3 # For Databases
   namespace: &ns rook-ceph
 spec:
+  enableRBDStats: true # Enable RBD stats for monitoring
   failureDomain: osd
   replicated:
     size: 3
@@ -49,23 +78,49 @@ spec:
     # device_class: hdd
     pg_num_min: "16" # Higher PG count likely needed for DBs eventually
     min_size: "2" # Minimum number of replicas required for writes
-  storageClass:
-    enabled: true
-    name: ceph-db-rep3
-    isDefault: false
-    reclaimPolicy: Delete
+---
+# StorageClass for Databases - CloudNativePG, YugabyteDB (Rep 3 on HDD)
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+   name: ceph-db-rep3
+   namespace: &ns rook-ceph
+provisioner: rook-ceph.rbd.csi.ceph.com
+parameters:
+    # clusterID is the namespace where the rook cluster is running
+    # If you change this namespace, also change the namespace below where the secret namespaces are defined
+    clusterID: rook-ceph # namespace:cluster
+
+    # If you want to use erasure coded pool with RBD, you need to create
+    # two pools. one erasure coded and one replicated.
+    # You need to specify the replicated pool here in the `pool` parameter, it is
+    # used for the metadata of the images.
+    # The erasure coded pool must be set as the `dataPool` parameter below.
+    #dataPool: ec-data-pool
+    pool: db-rbd-rep3
+
+    # RBD image format. Defaults to "2".
+    imageFormat: "2"
+
+    # RBD image features. Available for imageFormat: "2". CSI RBD currently supports only `layering` feature.
+    # imageFeatures: layering
+    imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
+
+    # The secrets contain Ceph admin credentials. These are generated automatically by the operator
+    # in the same namespace as the cluster.
+    csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+    csi.storage.k8s.io/provisioner-secret-namespace: *ns # namespace:cluster
+    csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+    csi.storage.k8s.io/controller-expand-secret-namespace: *ns # namespace:cluster
+    csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+    csi.storage.k8s.io/node-stage-secret-namespace: *ns # namespace:cluster
+    # Specify the filesystem type of the volume. If not specified, csi-provisioner
+    # will set default as `ext4`.
+    csi.storage.k8s.io/fstype: ext4
+    # uncomment the following to use rbd-nbd as mounter on supported nodes
+    #mounter: rbd-nbd
     allowVolumeExpansion: true
-    parameters:
-      imageFormat: "2"
-      imageFeatures: layering,exclusive-lock,object-map,fast-diff,deep-flatten # More features often useful for VMs/DBs
-      pool: db-rbd-rep3 # Explicitly state pool name
-      csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
-      csi.storage.k8s.io/provisioner-secret-namespace: *ns
-      csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
-      csi.storage.k8s.io/controller-expand-secret-namespace: *ns
-      csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
-      csi.storage.k8s.io/node-stage-secret-namespace: *ns
-      csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
+    reclaimPolicy: Delete
 ---
 # Pool for CephFS Metadata (Rep 3)
 apiVersion: ceph.rook.io/v1
@@ -74,6 +129,7 @@ metadata:
   name: cephfs-meta-rep3
   namespace: &ns rook-ceph
 spec:
+  enableRBDStats: true # Enable RBD stats for monitoring
   failureDomain: osd
   replicated:
     size: 3
@@ -81,8 +137,6 @@ spec:
   parameters:
     # device_class: hdd
     pg_num_min: "16"
-  storageClass:
-    enabled: false # No StorageClass needed - used internally by CephFS
 ---
 # Pool for RGW Metadata (Rep 3)
 apiVersion: ceph.rook.io/v1
@@ -91,6 +145,7 @@ metadata:
   name: rgw-meta-rep3
   namespace: &ns rook-ceph
 spec:
+  enableRBDStats: true # Enable RBD stats for monitoring
   failureDomain: osd
   replicated:
     size: 3
@@ -98,8 +153,6 @@ spec:
   parameters:
     # device_class: hdd
     pg_num_min: "8"
-  storageClass:
-    enabled: false # No StorageClass needed - used internally by RGW
 ---
 # Pool for App Data (Rep 3 on HDD) - Used via CephFS
 apiVersion: ceph.rook.io/v1
@@ -108,6 +161,7 @@ metadata:
   name:  app-data-hdd-rep3
   namespace: &ns rook-ceph
 spec:
+  enableRBDStats: true # Enable RBD stats for monitoring
   failureDomain: osd
   replicated:
     size: 3
@@ -115,8 +169,6 @@ spec:
   parameters:
     device_class: hdd
     pg_num_min: "8"
-  storageClass:
-    enabled: false # No StorageClass needed - used internally by CephFS
 ---
 # Pool for RGW Main Data (EC 2+1 on HDD) - General Buckets
 apiVersion: ceph.rook.io/v1
@@ -125,6 +177,7 @@ metadata:
   name: rgw-main-data-ec21
   namespace: &ns rook-ceph
 spec:
+  enableRBDStats: true # Enable RBD stats for monitoring
   failureDomain: osd
   erasureCoded:
     dataChunks: 2
@@ -132,8 +185,6 @@ spec:
   parameters:
     # device_class: hdd
     pg_num_min: "16"
-  storageClass:
-    enabled: false # No StorageClass needed - used internally by RGW
 ---
 # Pool for Media Data (EC 2+1 on HDD) - Used by CephFS
 apiVersion: ceph.rook.io/v1
@@ -142,6 +193,7 @@ metadata:
   name: media-data-hdd-ec21
   namespace: &ns rook-ceph
 spec:
+  enableRBDStats: true # Enable RBD stats for monitoring
   failureDomain: osd
   erasureCoded:
     dataChunks: 2
@@ -149,8 +201,6 @@ spec:
   parameters:
     device_class: hdd
     pg_num_min: "16"
-  storageClass:
-    enabled: false # No StorageClass needed - used internally by CephFS
 # ---
 # # Pool for Media Data (EC 4+2 on HDD) - Used by CephFS
 # apiVersion: ceph.rook.io/v1
@@ -159,6 +209,7 @@ spec:
 #   name: media-data-hdd-ec42
 #   namespace: &ns rook-ceph
 # spec:
+#   enableRBDStats: true # Enable RBD stats for monitoring
 #   failureDomain: osd
 #   erasureCoded:
 #     dataChunks: 4
@@ -166,8 +217,6 @@ spec:
 #   parameters:
 #     device_class: hdd
 #     pg_num_min: "32"
-#   storageClass:
-#     enabled: false # No StorageClass needed - used internally by CephFS
 # ---
 # # Pool for Archive Data (EC 4+2 on HDD) - Used by CephFS
 # apiVersion: ceph.rook.io/v1
@@ -176,6 +225,7 @@ spec:
 #   name: archive-data-hdd-ec42
 #   namespace: &ns rook-ceph
 # spec:
+#   enableRBDStats: true # Enable RBD stats for monitoring
 #   failureDomain: osd
 #   erasureCoded:
 #     dataChunks: 4
@@ -183,8 +233,6 @@ spec:
 #   parameters:
 #     device_class: hdd
 #     pg_num_min: "32"
-#   storageClass:
-#     enabled: false # No StorageClass needed - used internally by CephFS
 # ---
 # # Pool for RGW Main Data (EC 4+2 on HDD) - For Thanos / General Buckets
 # apiVersion: ceph.rook.io/v1
@@ -193,6 +241,7 @@ spec:
 #   name: rgw-main-data-hdd-ec42
 #   namespace: &ns rook-ceph
 # spec:
+#   enableRBDStats: true # Enable RBD stats for monitoring
 #   failureDomain: osd
 #   erasureCoded:
 #     dataChunks: 4
@@ -200,5 +249,3 @@ spec:
 #   parameters:
 #     device_class: hdd
 #     pg_num_min: "32"
-#   storageClass:
-#     enabled: false # No StorageClass needed - used internally by RGW

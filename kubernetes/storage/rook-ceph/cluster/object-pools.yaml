@@ -2,7 +2,7 @@
 apiVersion: ceph.rook.io/v1
 kind: CephObjectStore
 metadata:
-  name: ceph-objectstore-ec21
+  name: main-ec21
   namespace: &ns rook-ceph
 spec:
   metadataPool:
@@ -33,3 +33,38 @@ spec:
     host:
       name: rgw.${SECRET_DOMAIN}
       path: /
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ceph-objectstore-main-ec21
+  namespace: &ns rook-ceph # namespace:cluster
+  annotations:
+    external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+spec:
+  rules:
+    - host: rgw-main.${SECRET_DOMAIN}
+      http:
+        paths:
+          - path: /
+            backend:
+              service:
+                name: rook-ceph-rgw-main-ec21
+                port:
+                  number: 80
+            pathType: "Prefix"
+  ingressClassName: internal
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ceph-bucket-main-ec21
+provisioner: rook-ceph.ceph.rook.io/bucket
+reclaimPolicy: "Delete"
+volumeBindingMode: "Immediate"
+parameters:
+  objectStoreName: main-ec21
+  objectStoreNamespace: rook-ceph
+  region: eu-central-1
