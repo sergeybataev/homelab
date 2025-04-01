@@ -4,6 +4,5 @@ resources:
   - ./archive.yaml
   - ./fs.yaml
   - ./metrics.yaml
-  - ./objects.yaml
   - ./scs.yaml
 

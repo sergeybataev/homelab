@@ -24,6 +24,6 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CLAIM: grafana-config
-      VOLSYNC_CAPACITY: 10Gi
-      VOLSYNC_STORAGECLASS: ceph-block
-      VOLSYNC_ACCESSMODES: ReadWriteOnce
+      VOLSYNC_CAPACITY: 1Gi
+      VOLSYNC_STORAGECLASS: ceph-fs-app-rep3
+      VOLSYNC_ACCESSMODES: ReadWriteMany

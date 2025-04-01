@@ -185,7 +185,7 @@ spec:
           - auto-gomemlimit
           - memory-snapshot-on-shutdown
           - new-service-discovery-manager
-        retention: 14d
+        retention: 7d
         retentionSize: 45GB
         externalLabels:
           cluster: storage
@@ -197,7 +197,7 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: ceph-block
+              storageClassName: ceph-block-metrics-ec21
               resources:
                 requests:
                   storage: 50Gi

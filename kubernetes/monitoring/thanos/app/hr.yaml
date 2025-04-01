@@ -79,7 +79,7 @@ spec:
         - --retention.resolution-1h=60d
       persistence: &persistence
         enabled: true
-        storageClass: ceph-block
+        storageClass: ceph-block-metrics-ec21
         size: 100Gi
 
     query:
