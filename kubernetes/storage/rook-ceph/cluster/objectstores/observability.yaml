@@ -30,6 +30,7 @@ spec:
     port: 80 # Or 443 if using SSL
     instances: 1 # Start with 1, increase later if needed for performance/HA
     resources: {} # Define if needed
+    hostNetwork: false
     priorityClassName: system-cluster-critical
 
 ---
