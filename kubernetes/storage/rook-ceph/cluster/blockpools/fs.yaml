@@ -1,88 +1,104 @@
-# Pools should be created after FS creation
-# Pools could be used also as block devices
+
 ---
-# Pool for App Data (Rep 3 on HDD) - Used via CephFS
+# Pool for Backup metadata (Rep 3 on HDD)
 apiVersion: ceph.rook.io/v1
 kind: CephBlockPool
 metadata:
-  name:  app-data-hdd-rep3
+  name: backup-meta
   namespace: rook-ceph
 spec:
   enableRBDStats: true # Enable RBD stats for monitoring
   failureDomain: osd
   replicated:
     size: 3
-    requireSafeReplicaSize: true
+    requireSafeReplicaSize: true # Requires 3 OSDs
+    hybridStorage:
+      primaryDeviceClass: nvme
+      secondaryDeviceClass: hdd
   parameters:
-    # pg_num: "16"
-    pg_num_min: "16"
-  deviceClass: hdd
----
-# Pool for Databases - CloudNativePG, YugabyteDB (Rep 3 on HDD)
-apiVersion: ceph.rook.io/v1
-kind: CephBlockPool
-metadata:
-  name: db-data-hdd-rep3 # For Databases
-  namespace: rook-ceph
-spec:
-  enableRBDStats: true # Enable RBD stats for monitoring
-  failureDomain: osd
-  replicated:
-    size: 3
-    requireSafeReplicaSize: true # Default, ensures 3 OSDs exist
-  parameters:
-    # pg_num: "16"
-    pg_num_min: "16" # Higher PG count likely needed for DBs eventually
-    min_size: "2" # Minimum number of replicas required for writes
-  deviceClass: hdd
----
-# Pool for Databases (EC 2+1 on HDD)
-apiVersion: ceph.rook.io/v1
-kind: CephBlockPool
-metadata:
-  name: db-data-hdd-ec21 # For Databases
-  namespace: rook-ceph
-spec:
-  enableRBDStats: true # Enable RBD stats for monitoring
-  failureDomain: osd
-  erasureCoded:
-    dataChunks: 2
-    codingChunks: 1 # Requires 3+ OSDs to become active
-  parameters:
-    # pg_num: "16"
-    pg_num_min: "16" # Higher PG count likely needed for DBs eventually
-    min_size: "2" # Minimum number of replicas required for writes
-  deviceClass: hdd
+    pg_autoscale_mode: "on"
+
 ---
 # Pool for Media Data (EC 2+1 on HDD) - Used by CephFS
 apiVersion: ceph.rook.io/v1
 kind: CephBlockPool
 metadata:
-  name: media-data-hdd-ec21
+  name: backup-rbd-ec31-data
   namespace: rook-ceph
 spec:
   enableRBDStats: true # Enable RBD stats for monitoring
   failureDomain: osd
   erasureCoded:
-    dataChunks: 2
-    codingChunks: 1 # Requires 3+ OSDs to become active
+    dataChunks: 3
+    codingChunks: 1 # Requires 4+ OSDs to become active
   parameters:
-    #pg_num: "16"
-    pg_num_min: "16"
-  deviceClass: hdd
+    pg_autoscale_mode: "on"
+    # pg_num: "8"
+    # pg_num_min: "8" # Give autoscaler a hint
+
+# Pools should be created after FS creation
+# Pools could be used also as block devices
 # ---
-# # Pool for Media Data (EC 4+2 on HDD) - Used by CephFS
+# # Pool for App Data (Rep 3 on HDD) - Used via CephFS
 # apiVersion: ceph.rook.io/v1
 # kind: CephBlockPool
 # metadata:
-#   name: media-data-hdd-ec42
+#   name: apps-rep3-data
+#   namespace: rook-ceph
+# spec:
+#   enableRBDStats: true # Enable RBD stats for monitoring
+#   failureDomain: osd
+#   replicated:
+#     size: 3
+#     requireSafeReplicaSize: true
+#   deviceClass: hdd
+
+# ---
+# # Pool for Databases - CloudNativePG, YugabyteDB (Rep 3 on HDD)
+# apiVersion: ceph.rook.io/v1
+# kind: CephBlockPool
+# metadata:
+#   name: db-rep3-data # For Databases
+#   namespace: rook-ceph
+# spec:
+#   enableRBDStats: true # Enable RBD stats for monitoring
+#   failureDomain: osd
+#   replicated:
+#     size: 3
+#     requireSafeReplicaSize: true # Default, ensures 3 OSDs exist
+#   parameters:
+#     min_size: "2" # Minimum number of replicas required for writes
+#   deviceClass: hdd
+
+# ---
+# # Pool for Databases (EC 3+1 on HDD)
+# apiVersion: ceph.rook.io/v1
+# kind: CephBlockPool
+# metadata:
+#   name: db-ec31-data # For Databases
 #   namespace: rook-ceph
 # spec:
 #   enableRBDStats: true # Enable RBD stats for monitoring
 #   failureDomain: osd
 #   erasureCoded:
-#     dataChunks: 4
-#     codingChunks: 2 # Requires 6+ OSDs to become active
+#     dataChunks: 3
+#     codingChunks: 1 # Requires 4+ OSDs to become active
+#   # deviceClass: hdd
+
+# ---
+# # Pool for Media Data (EC 3+1 on HDD)
+# apiVersion: ceph.rook.io/v1
+# kind: CephBlockPool
+# metadata:
+#   name: media-ec31-data
+#   namespace: rook-ceph
+# spec:
+#   enableRBDStats: true # Enable RBD stats for monitoring
+#   failureDomain: osd
+#   erasureCoded:
+#     dataChunks: 3
+#     codingChunks: 1 # Requires 4+ OSDs to become active
 #   parameters:
-#     pg_num_min: "32"
-#  deviceClass: hdd
+#     #pg_num: "16"
+#     pg_num_min: "16"
+#   # deviceClass: hdd

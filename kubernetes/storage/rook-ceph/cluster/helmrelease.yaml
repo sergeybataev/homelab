@@ -89,10 +89,10 @@ spec:
       # In Minikube, the '/data' directory is configured to persist across reboots. Use "/data/rook" in Minikube environment.
       dataDirHostPath: /var/lib/rook
 
-      network:
-        # The network provider to use for the Ceph daemons. The default is "host" which uses the host network.
-        # also support "multus" for multus CNI plugin.
-        provider: "host"
+      # network:
+      #   # The network provider to use for the Ceph daemons. The default is "host" which uses the host network.
+      #   # also support "multus" for multus CNI plugin.
+      #   provider: "host"
 
       mon:
         # Set the number of mons to be started. Generally recommended to be 3.
@@ -101,14 +101,14 @@ spec:
 
         # The mons should be on unique nodes. For production, at least 3 nodes are recommended for this reason.
         # Mons should only be allowed on the same node for test environments where data loss is acceptable.
-        # allowMultiplePerNode: true
+        allowMultiplePerNode: false
 
       mgr:
         # When higher availability of the mgr is needed, increase the count to 2.
         # In that case, one mgr will be active and one in standby. When Ceph updates which
         # mgr is active, Rook will update the mgr services to match the active mgr.
         count: 2
-        # allowMultiplePerNode: true
+        allowMultiplePerNode: false
         modules:
           # Several modules should not need to be included in this list. The "dashboard" and "monitoring" modules
           # are already enabled by other settings in the cluster CR.
@@ -160,7 +160,7 @@ spec:
           dataSource: zero
           # iteration overwrite N times instead of the default (1)
           # takes an integer value
-          iteration: 1
+          iteration: 2
         # allowUninstallWithVolumes defines how the uninstall should be performed
         # If set to true, cephCluster deletion does not wait for the PVs to be deleted.
         allowUninstallWithVolumes: false
@@ -200,6 +200,7 @@ spec:
             # Use /dev/disk/by-id for stable names
             devices:
               - name: "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNG0M218299R"
+              - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_2TB_S7GDNS0X203177N"
               - name: "/dev/disk/by-id/ata-ST12000NM001G-2MV103_ZS802E0G"
               - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1DGDA3"
               - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1FHDYF"

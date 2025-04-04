@@ -1,0 +1,38 @@
+
+---
+# Pool for Backup metadata (Rep 3 on HDD)
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: observability-meta
+  namespace: rook-ceph
+spec:
+  enableRBDStats: true # Enable RBD stats for monitoring
+  failureDomain: osd
+  replicated:
+    size: 3
+    requireSafeReplicaSize: true # Requires 3 OSDs
+    hybridStorage:
+      primaryDeviceClass: nvme
+      secondaryDeviceClass: hdd
+  parameters:
+    pg_autoscale_mode: "on"
+
+---
+# Pool for Media Data (EC 2+1 on HDD) - Used by CephFS
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: observability-rbd-ec31-data
+  namespace: rook-ceph
+spec:
+  enableRBDStats: true # Enable RBD stats for monitoring
+  failureDomain: osd
+  erasureCoded:
+    dataChunks: 3
+    codingChunks: 1 # Requires 4+ OSDs to become active
+  # deviceClass: hdd
+  parameters:
+    pg_autoscale_mode: "on"
+    # pg_num: "16"
+    # pg_num_min: "16"
