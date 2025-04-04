@@ -44,7 +44,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
 spec:
   rules:
-    - host: rgw-main.${SECRET_DOMAIN}
+    - host: rgw-observability.${SECRET_DOMAIN}
       http:
         paths:
           - path: /
