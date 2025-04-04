@@ -3,6 +3,8 @@ kind: Kustomization
 resources:
   # - ./apps.yaml
   # - ./apps-sc.yaml
+  - ./backup.yaml
+  - ./backup-sc.yaml
   - ./main.yaml
   - ./main-sc.yaml
 

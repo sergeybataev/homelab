@@ -1,0 +1,40 @@
+---
+# CephFS for applications
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystem
+metadata:
+  name: backup-fs
+  namespace: rook-ceph
+spec:
+  preservePoolNames: true # Preserve pool names
+  metadataPool:
+    name: backup-meta
+    enableRBDStats: true # Enable RBD stats for monitoring
+    failureDomain: osd
+    replicated:
+      size: 3
+      requireSafeReplicaSize: true # Requires 3 OSDs
+      hybridStorage:
+        primaryDeviceClass: nvme
+        secondaryDeviceClass: hdd
+  dataPools:
+    # For support EC creation
+    - name: backup-rep1-data
+      enableRBDStats: true # Enable RBD stats for monitoring
+      failureDomain: osd
+      replicated:
+        size: 1
+        requireSafeReplicaSize: false
+      parameters:
+        pg_num: "1"
+    - name: backup-ec31-data
+      enableRBDStats: true # Enable RBD stats for monitoring
+      failureDomain: osd
+      erasureCoded:
+        dataChunks: 3
+        codingChunks: 1 # Requires 4+ OSDs to become active
+  metadataServer:
+    activeCount: 1
+    activeStandby: true
+    resources: # Keep your MDS resources
+      requests: { cpu: "35m", memory: "64M" }

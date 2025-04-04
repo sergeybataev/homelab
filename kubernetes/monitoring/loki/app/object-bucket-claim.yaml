@@ -6,4 +6,4 @@ metadata:
   namespace: monitoring
 spec:
   bucketName: loki-chunks-v1
-  storageClassName: ceph-bucket-observability-ec21
+  storageClassName: ceph-bucket-observability-ec31

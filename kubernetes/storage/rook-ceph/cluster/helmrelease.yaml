@@ -221,8 +221,74 @@ spec:
     cephBlockPools: []
     cephECBlockPools: []
     cephFileSystems: []
-    cephObjectStores: []
+    # cephObjectStores: []
 
     # Snapshot Classes (keep if needed, defaults seem okay)
     cephFileSystemVolumeSnapshotClass: { enabled: false }
     cephBlockPoolsVolumeSnapshotClass: { enabled: true, name: csi-ceph-blockpool, isDefault: true, deletionPolicy: Delete }
+
+    # -- A list of CephObjectStore configurations to deploy
+    # @default -- See [below](#ceph-object-stores)
+    cephObjectStores:
+      - name: test-ceph-objectstore-ec21
+        # see https://github.com/rook/rook/blob/master/Documentation/CRDs/Object-Storage/ceph-object-store-crd.md#object-store-settings for available configuration
+        spec:
+          metadataPool:
+            failureDomain: host
+            replicated:
+              size: 3
+              hybridStorage:
+                primaryDeviceClass: nvme
+                secondaryDeviceClass: hdd
+          dataPool:
+            failureDomain: host
+            erasureCoded:
+              dataChunks: 2
+              codingChunks: 1
+            parameters:
+              bulk: "true"
+            deviceClass: hdd
+          preservePoolsOnDelete: true
+          gateway:
+            port: 80
+            resources:
+              limits:
+                memory: "2Gi"
+              requests:
+                cpu: "1000m"
+                memory: "1Gi"
+            # securePort: 443
+            # sslCertificateRef:
+            instances: 1
+            priorityClassName: system-cluster-critical
+            # opsLogSidecar:
+            #   resources:
+            #     limits:
+            #       memory: "100Mi"
+            #     requests:
+            #       cpu: "100m"
+            #       memory: "40Mi"
+        storageClass:
+          enabled: true
+          name: test-ceph-bucket
+          reclaimPolicy: Delete
+          volumeBindingMode: "Immediate"
+          annotations: {}
+          labels: {}
+          # see https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/Object-Storage-RGW/ceph-object-bucket-claim.md#storageclass for available configuration
+          parameters:
+            # note: objectStoreNamespace and objectStoreName are configured by the chart
+            region: eu-central-1
+        ingress:
+          # Enable an ingress for the ceph-objectstore
+          enabled: false
+          # annotations: {}
+          # host:
+          #   name: objectstore.example.com
+          #   path: /
+          #   pathType: Prefix
+          # tls:
+          # - hosts:
+          #     - objectstore.example.com
+          #   secretName: ceph-objectstore-tls
+          # ingressClassName: nginx

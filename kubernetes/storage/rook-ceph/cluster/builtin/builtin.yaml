@@ -9,9 +9,9 @@ spec:
   replicated:
     size: 3
     requireSafeReplicaSize: false
-  parameters:
+  # parameters:
     # pg_num: "8"
-    pg_num_min: "8" # Give autoscaler a hint
+    # pg_num_min: "8" # Give autoscaler a hint
     # min_size: "2"
 ---
 # The built-in Ceph pool ".nfs" is used for storing configuration for all CephNFS clusters. If this
@@ -31,9 +31,9 @@ spec:
   replicated:
     size: 3
     requireSafeReplicaSize: true
-  parameters:
+  # parameters:
     # pg_num: "8"
-    pg_num_min: "8" # Give autoscaler a hint
+    # pg_num_min: "8" # Give autoscaler a hint
 ---
 apiVersion: ceph.rook.io/v1
 kind: CephBlockPool
@@ -46,6 +46,7 @@ spec:
   replicated:
     size: 3
     requireSafeReplicaSize: true
-  parameters:
-    pg_num: "8"
+  # parameters:
+    # pg_num: "8"
+    # pg_num_min: "8" # Give autoscaler a hint
   application: rgw

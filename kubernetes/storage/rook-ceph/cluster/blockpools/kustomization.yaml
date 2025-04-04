@@ -3,6 +3,6 @@ kind: Kustomization
 resources:
   - ./archive.yaml
   - ./fs.yaml
-  - ./metrics.yaml
+  - ./observability.yaml
   - ./scs.yaml
 
