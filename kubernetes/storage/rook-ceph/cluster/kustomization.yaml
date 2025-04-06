@@ -5,6 +5,6 @@ kind: Kustomization
 resources:
   - helmrelease.yaml
   - ./builtin/
-  # - ./blockpools/
-  # - ./filesystems/
-  # - ./objectstores
+  - ./blockpools/
+  - ./filesystems/
+  - ./objectstores

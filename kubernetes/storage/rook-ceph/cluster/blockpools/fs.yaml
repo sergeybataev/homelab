@@ -18,6 +18,7 @@ spec:
   parameters:
     pg_autoscale_mode: "on"
 
+
 ---
 # Pool for Media Data (EC 2+1 on HDD) - Used by CephFS
 apiVersion: ceph.rook.io/v1
