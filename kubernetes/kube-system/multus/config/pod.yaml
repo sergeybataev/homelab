@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multicast-test-pod
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name":"macvlan-static-pod",
+        "namespace": "network"
+      }]
+  namespace: network
+spec:
+  containers:
+  - name: debug
+    image: byrnedo/alpine-curl
+    command: ["/bin/sh", "-c", "sleep infinity"]
+
+  - name: multicast-test-container
+    image: byrnedo/alpine-curl
+    command: ["/bin/sh", "-c", "sleep infinity"]
+    securityContext:
+      capabilities:
+        add:
+        - NET_RAW
+  - name: tcpdump
+    image: dockersec/tcpdump
+    command: ["tcpdump", "-i", "eth0", "udp port 5353"]
+    securityContext:
+      capabilities:
+        add:
+        - NET_RAW
+        - NET_ADMIN
+# ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: multicast-test-pod-1
+#   annotations:
+#     k8s.v1.cni.cncf.io/networks: |
+#       [{
+#         "name":"macvlan-net",
+#         "namespace": "network",
+#         "ips": ["192.168.100.201"]
+#       }]
+#   namespace: network
+# spec:
+#   containers:
+#   - name: multicast-test-container
+#     image: byrnedo/alpine-curl
+#     command: ["/bin/sh", "-c", "sleep infinity"]
+#     securityContext:
+#       capabilities:
+#         add:
+#         - NET_RAW
+#   - name: tcpdump
+#     image: dockersec/tcpdump
+#     command: ["tcpdump", "-i", "eth0", "udp port 5353"]
+#     securityContext:
+#       capabilities:
+#         add:
+#         - NET_RAW
+#         - NET_ADMIN
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multicast-test-pod-static
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name":"macvlan-static-net",
+        "namespace": "network"
+      }]
+  namespace: network
+spec:
+  containers:
+  - name: multicast-test-container
+    image: byrnedo/alpine-curl
+    command: ["/bin/sh", "-c", "sleep infinity"]
+    securityContext:
+      capabilities:
+        add:
+        - NET_RAW
+  - name: tcpdump
+    image: dockersec/tcpdump
+    command: ["tcpdump", "-i", "eth0", "udp port 5353"]
+    securityContext:
+      capabilities:
+        add:
+        - NET_RAW
+        - NET_ADMIN
+
