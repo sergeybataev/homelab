@@ -67,7 +67,7 @@ kind: StorageClass
 metadata:
   name: ceph-bucket-observability-ec31
 provisioner: rook-ceph.ceph.rook.io/bucket
-reclaimPolicy: "Delete"
+reclaimPolicy: Retain
 volumeBindingMode: "Immediate"
 parameters:
   objectStoreName: observability-ec31

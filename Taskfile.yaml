@@ -36,6 +36,7 @@ includes:
   talos: .taskfiles/Talos/Taskfile.yaml
   rook: .taskfiles/Rook/Taskfile.yaml
   sops: .taskfiles/Sops/Taskfile.yaml
+  volsync: .taskfiles/volsync
   workstation: .taskfiles/Workstation/Taskfile.yaml
   user:
     taskfile: .taskfiles/User

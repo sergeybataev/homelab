@@ -13,17 +13,26 @@ metadata:
     wait.flux.home.arpa/disabled: "false"
     storage.flux.home.arpa/required: "true"
 spec:
-  targetNamespace: monitoring
-  dependsOn:
-    - name: monitoring-prometheus-stack
+  interval: 1h
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  dependsOn: []
+  components:
+    - ../../../components/volsync
+    - ../../../components/ns
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  targetNamespace: &ns monitoring-grafana
   path: ./kubernetes/monitoring/grafana/app
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CLAIM: grafana-config
+      NS: *ns
       VOLSYNC_CAPACITY: 1Gi
       VOLSYNC_STORAGECLASS: ceph-fs-app-rep3
       VOLSYNC_ACCESSMODES: ReadWriteMany

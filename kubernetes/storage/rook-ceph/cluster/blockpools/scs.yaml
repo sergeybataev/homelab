@@ -39,7 +39,7 @@ parameters:
     # uncomment the following to use rbd-nbd as mounter on supported nodes
     #mounter: rbd-nbd
     allowVolumeExpansion: "true"
-    reclaimPolicy: Delete
+reclaimPolicy: Retain
 
 ---
 apiVersion: storage.k8s.io/v1
@@ -82,7 +82,7 @@ parameters:
     # uncomment the following to use rbd-nbd as mounter on supported nodes
     #mounter: rbd-nbd
     allowVolumeExpansion: "true"
-    reclaimPolicy: Delete
+reclaimPolicy: Retain
 
 # ---
 # # StorageClass for Databases - CloudNativePG, YugabyteDB (Rep 3 on HDD)
