@@ -55,6 +55,7 @@ spec:
             - replicas:
                 - templates:
                     podTemplate: clickhouse-main-storage
+
   templates:
     serviceTemplates:
       - name: chi-service-template
@@ -246,6 +247,61 @@ spec:
                         operator: In
                         values:
                           - "main.storage"
+          volumes:
+            # Specify volume as path on local filesystem as a directory which will be created, if need be
+            - name: local-path
+              hostPath:
+                path: /var/lib/clickhouse
+                type: DirectoryOrCreate
+          containers:
+            - name: clickhouse
+              image: clickhouse/clickhouse-server:23.8
+              volumeMounts:
+                - name: local-path
+                  mountPath: /var/lib/clickhouse
+              # resources:
+              #   requests:
+              #     memory: "64Mi"
+              #     cpu: "100m"
+              #   limits:
+              #     memory: "64Mi"
+              #     cpu: "100m"
+            # - name: clickhouse-log
+            #   # image: clickhouse/clickhouse-server:23.8
+            #   command:
+            #     - "/bin/sh"
+            #     - "-c"
+            #     - "--"
+            #   args:
+            #     - "while true; do sleep 30; done;"
+
+      - name: clickhouse-rpi5-nvme
+        podDistribution:
+          - type: ClickHouseAntiAffinity
+        spec:
+          affinity:
+            # Specify Pod affinity to nodes in specified availability zone
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: "homelab.bataev.dev/node-type"
+                        operator: In
+                        values:
+                          - "raspberry-pi"
+                      - key: "homelab.bataev.dev/hardware-model"
+                        operator: In
+                        values:
+                          - "rpi5"
+                      - key: "homelab.bataev.dev/storage-class"
+                        operator: In
+                        values:
+                          - "nvme"
+                      - key: "homelab.bataev.dev/purpose"
+                        operator: In
+                        values:
+                          - "cluster-support"
+
           volumes:
             # Specify volume as path on local filesystem as a directory which will be created, if need be
             - name: local-path
