@@ -20,7 +20,7 @@ spec:
 
 
 ---
-# Pool for Media Data (EC 2+1 on HDD) - Used by CephFS
+# Pool for Media Data (EC 3+1 on HDD) - Used by CephFS
 apiVersion: ceph.rook.io/v1
 kind: CephBlockPool
 metadata:
@@ -34,8 +34,28 @@ spec:
     codingChunks: 1 # Requires 4+ OSDs to become active
   parameters:
     pg_autoscale_mode: "on"
-    # pg_num: "8"
-    # pg_num_min: "8" # Give autoscaler a hint
+  #   pg_num: "8"
+  #   pg_num_min: "8" # Give autoscaler a hint
+  # deviceClass: hdd
+
+---
+# Pool for Media Data (EC 1+1 on HDD) - Used by CephFS
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: media-rbd-ec21-data
+  namespace: rook-ceph
+spec:
+  enableRBDStats: true # Enable RBD stats for monitoring
+  failureDomain: osd
+  erasureCoded:
+    dataChunks: 2
+    codingChunks: 1 # Requires 4+ OSDs to become active
+  parameters:
+    pg_autoscale_mode: "on"
+    pg_num: "8"
+    pg_num_min: "8" # Give autoscaler a hint
+  # deviceClass: hdd
 
 # Pools should be created after FS creation
 # Pools could be used also as block devices
