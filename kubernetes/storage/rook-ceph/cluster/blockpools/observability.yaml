@@ -17,6 +17,7 @@ spec:
       secondaryDeviceClass: hdd
   parameters:
     pg_autoscale_mode: "on"
+    min_size: "2" # Minimum number of replicas required for writes
 
 ---
 # Pool for Media Data (EC 2+1 on HDD) - Used by CephFS
@@ -34,5 +35,4 @@ spec:
   # deviceClass: hdd
   parameters:
     pg_autoscale_mode: "on"
-    # pg_num: "16"
-    # pg_num_min: "16"
+

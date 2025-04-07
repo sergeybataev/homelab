@@ -11,9 +11,8 @@ spec:
     requireSafeReplicaSize: true
   parameters:
     pg_autoscale_mode: "on"
-  #   pg_num: "8"
-  #   pg_num_min: "8" # Give autoscaler a hint
-  #   min_size: "2"
+    min_size: "2" # Minimum number of replicas required for writes
+  deviceClass: nvme
 ---
 # The built-in Ceph pool ".nfs" is used for storing configuration for all CephNFS clusters. If this
 # shared pool needs to be configured with alternate settings, create this pool (once) with any of
@@ -34,8 +33,8 @@ spec:
     requireSafeReplicaSize: true
   parameters:
     pg_autoscale_mode: "on"
-  #   pg_num: "8"
-  #   pg_num_min: "8" # Give autoscaler a hint
+    min_size: "2" # Minimum number of replicas required for writes
+  deviceClass: nvme
 ---
 apiVersion: ceph.rook.io/v1
 kind: CephBlockPool
@@ -47,9 +46,11 @@ spec:
   failureDomain: osd
   replicated:
     size: 3
-    requireSafeReplicaSize: true
+    requireSafeReplicaSize: false
   parameters:
     pg_autoscale_mode: "on"
-  #   pg_num: "8"
-  #   pg_num_min: "8" # Give autoscaler a hint
+    min_size: "2" # Minimum number of replicas required for writes
+    pg_num: "8"
+    pg_num_min: "8" # Give autoscaler a hint
   application: rgw
+  deviceClass: nvme

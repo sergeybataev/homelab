@@ -19,6 +19,7 @@ spec:
         secondaryDeviceClass: hdd
     parameters:
       pg_autoscale_mode: "on"
+      min_size: "2" # Minimum number of replicas required for writes
 
       # target_size_bytes 200 * 1024 * 1024   in bytes
       target_size_bytes: "209715200" # 200M

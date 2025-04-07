@@ -197,7 +197,7 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: ceph-block-observability-ec31
+              storageClassName: ceph-fs-observability-ec31
               resources:
                 requests:
                   storage: 50Gi

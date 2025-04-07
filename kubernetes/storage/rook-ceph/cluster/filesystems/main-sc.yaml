@@ -71,6 +71,36 @@ volumeBindingMode: "Immediate"
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
+  name: ceph-fs-media-ec21
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+provisioner: rook-ceph.cephfs.csi.ceph.com
+parameters:
+  fsName: main-fs
+  pool: media-ec21-data
+  clusterID: rook-ceph # namespace:cluster
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+  csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
+    # RBD image format. Defaults to "2".
+  imageFormat: "2"
+
+  # RBD image features. Available for imageFormat: "2". CSI RBD currently supports only `layering` feature.
+  # imageFeatures: layering
+  imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: "Immediate"
+
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
   name: ceph-fs-media-ec31
   annotations:
     storageclass.kubernetes.io/is-default-class: "false"
@@ -86,6 +116,12 @@ parameters:
   csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
   csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
   csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
+    # RBD image format. Defaults to "2".
+  imageFormat: "2"
+
+  # RBD image features. Available for imageFormat: "2". CSI RBD currently supports only `layering` feature.
+  # imageFeatures: layering
+  imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
 reclaimPolicy: Retain
 allowVolumeExpansion: true
 volumeBindingMode: "Immediate"

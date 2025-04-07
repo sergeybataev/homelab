@@ -177,6 +177,7 @@ spec:
                       operator: In
                       values:
                         - "enabled"
+
           # Add specific placements for mon, mgr, osd if needed to separate onto nodes
           # e.g., Place OSDs only on nodes with the 'role=storage-node' label (as you had before)
           osd:
@@ -184,11 +185,8 @@ spec:
               requiredDuringSchedulingIgnoredDuringExecution:
                 nodeSelectorTerms:
                 - matchExpressions:
-                    - key: role # Label specific to your main storage node(s)
-                      operator: In
-                      values:
-                        - "storage-node"
-
+                  - key: node-role.kubernetes.io/storage-node # Label specific to your main storage node(s)
+                    operator: Exists
       storage:
         onlyApplyOSDPlacement: false # Allows merging general placement + OSD placement
         # --- OSD Definition ---
@@ -199,8 +197,9 @@ spec:
           - name: "main.storage" # Name matching your main server node
             # Use /dev/disk/by-id for stable names
             devices:
-              - name: "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNG0M218299R"
+              - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_Plus_2TB_S7U7NJ0XC36967R"
               - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_2TB_S7GDNS0X203177N"
+              - name: "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNG0M218299R"
               - name: "/dev/disk/by-id/ata-ST12000NM001G-2MV103_ZS802E0G"
               - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1DGDA3"
               - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1FHDYF"

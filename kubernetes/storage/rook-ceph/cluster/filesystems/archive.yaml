@@ -1,43 +1,56 @@
-# ---
-# # CephFS for applications
-# apiVersion: ceph.rook.io/v1
-# kind: CephFilesystem
-# metadata:
-#   name: ceph-fs-archive
-#   namespace: rook-ceph
-# spec:
-#   preservePoolNames: true # Preserve pool names
-#   metadataPool:
-#     name: cephfs-meta-rep3
-#     enableRBDStats: true # Enable RBD stats for monitoring
-#     failureDomain: osd
-#     replicated:
-#       size: 3
-#       requireSafeReplicaSize: true # Requires 3 OSDs
-#       hybridStorage:
-#         primaryDeviceClass: nvme
-#         secondaryDeviceClass: hdd
-#     parameters:
-#       pg_num: "16"
-#       pg_num_min: "16"
-#   dataPools:
-#     - name: app-data-hdd-rep3
-#       enableRBDStats: true # Enable RBD stats for monitoring
-#       failureDomain: osd
-#       replicated:
-#         size: 3
-#         requireSafeReplicaSize: true
-#       parameters:
-#         pg_num: "16"
-#         pg_num_min: "16"
-#       deviceClass: hdd
-#   metadataServer:
-#     activeCount: 1
-#     activeStandby: true
-#     resources: # Keep your MDS resources
-#       requests: { cpu: "35m", memory: "64M" }
-#     # placement: # Keep your MDS placement constraints
-#     #   podAntiAffinity:
-#     #     requiredDuringSchedulingIgnoredDuringExecution:
-#     #       - labelSelector: { matchExpressions: [{ key: app, operator: In, values: [rook-ceph-mds] }] }
-#     #         topologyKey: kubernetes.io/hostname
+---
+# CephFS for applications
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystem
+metadata:
+  name: archive-fs
+  namespace: rook-ceph
+spec:
+  preservePoolNames: false # Preserve pool names
+  metadataPool:
+    name: meta-rep3
+    enableRBDStats: true # Enable RBD stats for monitoring
+    failureDomain: osd
+    replicated:
+      size: 3
+      # requireSafeReplicaSize: true # Requires 3 OSDs
+    parameters:
+      pg_autoscale_mode: "on"
+      pg_num: "8"
+      pg_num_min: "8"
+      min_size: "2" # Minimum number of replicas required for writes
+    deviceClass: nvme
+  dataPools:
+    - name: rep3-data
+      enableRBDStats: true # Enable RBD stats for monitoring
+      failureDomain: osd
+      replicated:
+        size: 3
+        # requireSafeReplicaSize: false
+      parameters:
+        pg_autoscale_mode: "on"
+        pg_num: "8"
+        pg_num_min: "8"
+        min_size: "2" # Minimum number of replicas required for writes
+      deviceClass: hdd
+    - name: ec21-data
+      enableRBDStats: true # Enable RBD stats for monitoring
+      failureDomain: osd
+      erasureCoded:
+        dataChunks: 2
+        codingChunks: 1 # Requires 3+ OSDs to become active
+      parameters:
+        pg_autoscale_mode: "on"
+        pg_num: "16"
+        pg_num_min: "16"
+  metadataServer:
+    activeCount: 1
+    activeStandby: true
+    resources: # Keep your MDS resources
+      requests: { cpu: "35m", memory: "64M" }
+    # placement: # Keep your MDS placement constraints
+    #   podAntiAffinity:
+    #     requiredDuringSchedulingIgnoredDuringExecution:
+    #       - labelSelector: { matchExpressions: [{ key: app, operator: In, values: [rook-ceph-mds] }] }
+    #         topologyKey: kubernetes.io/hostname
+

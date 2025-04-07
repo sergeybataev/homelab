@@ -30,6 +30,7 @@ spec:
         requireSafeReplicaSize: true
       parameters:
         pg_autoscale_mode: "on"
+        min_size: "2" # Minimum number of replicas required for writes
 
     # For Databases - CloudNativePG, YugabyteDB (Rep 3 on HDD)
     - name: db-rep3-data
@@ -40,6 +41,7 @@ spec:
         requireSafeReplicaSize: true # Default, ensures 3 OSDs exist
       parameters:
         pg_autoscale_mode: "on"
+        min_size: "2" # Minimum number of replicas required for writes
         # min_size: "2" # Minimum number of replicas required for writes
 
      # For Databases (EC 3+1 on HDD)

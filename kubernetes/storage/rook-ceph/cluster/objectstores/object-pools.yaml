@@ -9,13 +9,14 @@
 #     enableRBDStats: true # Enable RBD stats for monitoring
 #     failureDomain: osd
 #     replicated:
-#       size: 3
+#       size: 2
 #       requireSafeReplicaSize: true # Requires 3 OSDs
 #       hybridStorage:
 #         primaryDeviceClass: nvme
 #         secondaryDeviceClass: hdd
 #     parameters:
-#       pg_num_min: "8"
+#       pg_autoscale_mode: "on"
+
 #   dataPool:
 #     enableRBDStats: true # Enable RBD stats for monitoring
 #     failureDomain: osd
@@ -23,7 +24,10 @@
 #       dataChunks: 2
 #       codingChunks: 1 # Requires 3+ OSDs to become active
 #     parameters:
-#       pg_num_min: "8"
+#       pg_autoscale_mode: "on"
+#       bulk: "true"
+#       fast_read: "true"
+#       # pg_num_min: "8"
 #     # deviceClass: hdd
 
 #   gateway:
@@ -40,12 +44,12 @@
 #   name: data-ec21
 #   namespace: rook-ceph # namespace:cluster
 #   annotations:
-#     external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
+#     external-dns.alpha.kubernetes.io/target: internal.bataev.live
 #     nginx.ingress.kubernetes.io/proxy-body-size: "0"
 #     nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
 # spec:
 #   rules:
-#     - host: rgw-main.${SECRET_DOMAIN}
+#     - host: rgw-main.bataev.live
 #       http:
 #         paths:
 #           - path: /
