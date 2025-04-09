@@ -22,7 +22,7 @@ spec:
 
   dataPools:
     # For Applications (Rep 3)
-    - name: apps-rep3-data
+    - name: main-fs-rep3-data
       enableRBDStats: true # Enable RBD stats for monitoring
       failureDomain: osd
       replicated:
@@ -32,42 +32,19 @@ spec:
         pg_autoscale_mode: "on"
         min_size: "2" # Minimum number of replicas required for writes
 
-    # For Databases - CloudNativePG, YugabyteDB (Rep 3 on HDD)
-    - name: db-rep3-data
-      enableRBDStats: true # Enable RBD stats for monitoring
-      failureDomain: osd
-      replicated:
-        size: 3
-        requireSafeReplicaSize: true # Default, ensures 3 OSDs exist
-      parameters:
-        pg_autoscale_mode: "on"
-        min_size: "2" # Minimum number of replicas required for writes
-        # min_size: "2" # Minimum number of replicas required for writes
-
-     # For Databases (EC 3+1 on HDD)
-    - name: db-ec31-data # For Databases
-      enableRBDStats: true # Enable RBD stats for monitoring
-      failureDomain: osd
-      erasureCoded:
-        dataChunks: 3
-        codingChunks: 1 # Requires 4+ OSDs to become active
-      parameters:
-        pg_autoscale_mode: "on"
-        fast_read: "true"
-
-    # For Media Data (EC 2+1 on HDD) - Used by CephFS
-    - name: media-ec21-data
-      enableRBDStats: true # Enable RBD stats for monitoring
-      failureDomain: osd
-      erasureCoded:
-        dataChunks: 2
-        codingChunks: 1 # Requires 4+ OSDs to become active
-      parameters:
-        pg_autoscale_mode: "on"
-        fast_read: "true"
+    # # For Media Data (EC 2+1 on HDD) - Used by CephFS
+    # - name: ec21-data
+    #   enableRBDStats: true # Enable RBD stats for monitoring
+    #   failureDomain: osd
+    #   erasureCoded:
+    #     dataChunks: 2
+    #     codingChunks: 1 # Requires 4+ OSDs to become active
+    #   parameters:
+    #     pg_autoscale_mode: "on"
+    #     fast_read: "true"
 
     # For Media Data (EC 3+1 on HDD) - Used by CephFS
-    - name: media-ec31-data
+    - name: main-fs-ec31-data
       enableRBDStats: true # Enable RBD stats for monitoring
       failureDomain: osd
       erasureCoded:

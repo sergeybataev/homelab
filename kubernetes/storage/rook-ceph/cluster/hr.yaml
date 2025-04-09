@@ -203,6 +203,12 @@ spec:
               - name: "/dev/disk/by-id/ata-ST12000NM001G-2MV103_ZS802E0G"
               - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1DGDA3"
               - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1FHDYF"
+              - name: "Seagate 16Tb Exos X18 ZR5D8ZBA"
+                fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR5D8ZBA" # Use full path for devices
+                config:
+                  deviceClass: hybrid
+                  metadataDevice: "/dev/disk/by-id/ata-OCZ-VERTEX4_A19D3011308003529" # Use a separate device for metadata
+
         config:
           osdsPerDevice: "1" # Standard config
 
@@ -211,7 +217,9 @@ spec:
       resources: # Keep your resource requests/limits, adjust as needed
         mgr: { requests: { cpu: "125m", memory: "512Mi" }, limits: { memory: "1Gi" } }
         mon: { requests: { cpu: "50m", memory: "512Mi" }, limits: { memory: "1Gi" } }
-        osd: { requests: { cpu: "300m", memory: "512Mi" }, limits: { memory: "2Gi" } } # Monitor OSD RAM, might need more w/o NVMe db cache
+        osd: { requests: { cpu: "300m", memory: "512Mi" },
+            # limits: { memory: "4Gi" }
+          } # Monitor OSD RAM, might need more w/o NVMe db cache
         mgr-sidecar: { requests: { cpu: "50m", memory: "100Mi" }, limits: { memory: "200Mi" } }
         logcollector: { requests: { cpu: "100m", memory: "100Mi" }, limits: { memory: "1Gi" } }
         prepareosd: { requests: { cpu: "250m", memory: "50Mi" } } # No limits recommended
