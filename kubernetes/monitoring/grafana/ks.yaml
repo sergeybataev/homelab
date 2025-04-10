@@ -34,5 +34,5 @@ spec:
       APP: *app
       NS: *ns
       VOLSYNC_CAPACITY: 1Gi
-      VOLSYNC_STORAGECLASS: ceph-fs-app-rep3
+      VOLSYNC_STORAGECLASS: main-fs-app-ec31
       VOLSYNC_ACCESSMODES: ReadWriteMany

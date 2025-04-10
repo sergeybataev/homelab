@@ -55,7 +55,10 @@ spec:
             - replicas:
                 - templates:
                     podTemplate: clickhouse-main-storage
-
+                # - templates:
+                #     podTemplate: clickhouse-rpi5-nvme
+                # - templates:
+                #     podTemplate: clickhouse-rpi5-nvme
   templates:
     serviceTemplates:
       - name: chi-service-template

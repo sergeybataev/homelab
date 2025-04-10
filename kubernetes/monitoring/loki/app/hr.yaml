@@ -141,7 +141,7 @@ spec:
           memory: 64Mi
 
     write:
-      replicas: 3
+      replicas: 1
       persistence:
         storageClass: ceph-fs-observability-ec31
         size: 20Gi

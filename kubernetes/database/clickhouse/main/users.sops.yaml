@@ -6,7 +6,7 @@ metadata:
     annotations:
         reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
         reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
-        reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: monitoring
+        reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: monitoring, monitoring-grafana
 stringData:
     clickhouse_user_password_plain: ENC[AES256_GCM,data:MhKrvs35J0m8jQ==,iv:X6rQTyC9cs5b/soG+y6ruLkbat+ztZPceOOpmy4nsHc=,tag:LYF4P+iY6f4Z3TGwNgFEEQ==,type:str]
     clickhouse_monitoring_user: ENC[AES256_GCM,data:YZG/1LxwlD3Ybm8u2gBm,iv:mGS1DUO2PmuWvb136ABPt7zPv3k5sWlU9WvGvJSIVX0=,tag:F7Sy17QCQIjgNMLDg3SIkA==,type:str]
@@ -26,8 +26,8 @@ sops:
             R3crOERmVTV6VW14SmhGemowVytqRGsKpCWigOp3Bbe5LByXZcqjiWVyXpn/FJM4
             VR3H1PbeKY5slOE2QNQWolgBXdERg2Bu2oJGzIbWrccPDck9eS6AeQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-03-20T15:11:54Z"
-    mac: ENC[AES256_GCM,data:+NgHkixZKfjqitlKOit+gsTyP1b7fjeq2VMEO1ouz3JojpjXhIc1yKzYKfoRUpZ+ivXHT/OndgR3zF6pUgR6XtHq+w3O7O0zzhB9T9IRnrlRk7nzh7rWjNEuorAOlPtyXLtw87cyFrslpptmep+k+qEo73+l+/A4+JMyZLp5MF8=,iv:xb2d4/cC3lAeqRMuAd5boxU2WBKQZKC9rNsQ/Qc01D4=,tag:T6jcbUd9gMq4s9EQ15fMkg==,type:str]
+    lastmodified: "2025-04-10T22:39:58Z"
+    mac: ENC[AES256_GCM,data:JjY7r7fHfl3wBCz+84uNyO1nMAWKJ/ISWXUNQJzM5BipwzkrIvDRhZneDQq4M07GjQI9Qsi0uo3tFjJ/3jb+7abzTKz5AQzzrqrqNTgsX6xGOa2p1xeI0dCc+Q6798EnOOa/6SykITZeYUHOlUwrRPGBVz24ME9oGKaDKzdls3k=,iv:flRCX6UK14bGz8m+fIlZIkObBIG4FA5DK6B3Bwaj7RE=,tag:0Ii0d3rxz7PU4GGNcs3pWw==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData)$
     version: 3.9.3
