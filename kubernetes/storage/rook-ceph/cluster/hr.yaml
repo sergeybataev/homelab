@@ -232,5 +232,5 @@ spec:
     cephObjectStores: []
 
     # Snapshot Classes (keep if needed, defaults seem okay)
-    cephFileSystemVolumeSnapshotClass: { enabled: false }
+    cephFileSystemVolumeSnapshotClass: { enabled: true, name: csi-ceph-filesystem, isDefault: false, deletionPolicy: Delete }
     cephBlockPoolsVolumeSnapshotClass: { enabled: true, name: csi-ceph-blockpool, isDefault: true, deletionPolicy: Delete }
