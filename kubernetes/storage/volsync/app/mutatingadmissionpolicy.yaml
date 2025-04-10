@@ -100,48 +100,59 @@ spec:
               op: "add", path: "/spec/template/spec/volumes/-",
               value: Object.spec.template.spec.volumes{
                 name: "repository",
-                hostPath: Object.spec.template.spec.volumes.hostPath{
-                  type: "Directory",
-                  path: "/mnt/mainV1P2/.k8s/VolSync"
+                nfs: Object.spec.template.spec.volumes.nfs{
+                  server: "${BACKUP_NFS_IP}",
+                  path: "/repository",
                 }
-              }
-            },
-            JSONPatch{
-              op: "add", path: "/spec/template/spec/nodeSelector",
-              value: {
-                "kubernetes.io/hostname": 'main.storage'
               }
             }
           ]
-
-  # mutations:
-  #   - patchType: JSONPatch
-  #     jsonPatch:
-  #       expression: >
-  #         [
-  #           JSONPatch{
-  #             op: "add", path: "/spec/template/spec/containers/0/volumeMounts/-",
-  #             value: Object.spec.template.spec.containers.volumeMounts{
-  #               name: "repository",
-  #               mountPath: "/repository"
-  #             }
-  #           },
-  #           JSONPatch{
-  #             op: "add", path: "/spec/template/spec/volumes/-",
-  #             value: Object.spec.template.spec.volumes{
-  #               name: "repository",
-  #               hostPath: Object.spec.template.spec.volumes.hostPath{
-  #                 persistentVolumeClaim: Object.spec.template.spec.volumes.hostPath.persistentVolumeClaim{
-  #                   claimName: "ceph-fs-backup-volsync"
-  #                 }
-  #               }
-  #             }
-  #           }
-  #         ]
-
-# JSONPatch{
-#   op: "add", path: '/spec/template/spec/nodeSelector/',
-#   value: Object.spec.template.spec.nodeSelector{
-#     kubernetes.io/hostname: 'main.storage'
-#   }
-# }
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.32.0/mutatingadmissionpolicybinding-admissionregistration-v1alpha1.json
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: MutatingAdmissionPolicyBinding
+metadata:
+  name: ceph-nfs-loadbalancer
+  namespace: rook-ceph
+spec:
+  policyName: ceph-nfs-loadbalancer
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.32.0/mutatingadmissionpolicy-admissionregistration-v1alpha1.json
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: MutatingAdmissionPolicy
+metadata:
+  name: ceph-nfs-loadbalancer
+  namespace: rook-ceph
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["*"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["services"]
+  matchConditions:
+    - name: has-rook-ceph-nfs-backup-service-name-prefix
+      expression: >
+        object.metadata.name.startsWith("rook-ceph-nfs-backup-")
+  failurePolicy: Fail
+  reinvocationPolicy: IfNeeded
+  mutations:
+    - patchType: JSONPatch
+      jsonPatch:
+        expression: >
+          [
+            JSONPatch{
+              op: "add", path: "/metadata/annotations",
+              value: {}
+            },
+            JSONPatch{
+              op: "add",
+              path: "/metadata/annotations/" + jsonpatch.escapeKey("io.cilium/lb-ipam-ips"),
+              value: "${BACKUP_NFS_IP}"
+            },
+            JSONPatch{
+              op: "replace",
+              path: "/spec/type",
+              value: "LoadBalancer"
+            }
+          ]
