@@ -14,9 +14,6 @@ spec:
     replicated:
       size: 3
       requireSafeReplicaSize: true # Requires 3 OSDs
-      hybridStorage:
-        primaryDeviceClass: nvme
-        secondaryDeviceClass: hdd
     parameters:
       pg_autoscale_mode: "on"
       min_size: "2" # Minimum number of replicas required for writes
