@@ -220,7 +220,7 @@ spec:
         mgr: { requests: { cpu: "125m", memory: "512Mi" }, limits: { memory: "1Gi" } }
         mon: { requests: { cpu: "50m", memory: "512Mi" }, limits: { memory: "1Gi" } }
         osd: { requests: { cpu: "300m", memory: "512Mi" },
-            # limits: { memory: "4Gi" }
+            limits: { memory: "4Gi" }
           } # Monitor OSD RAM, might need more w/o NVMe db cache
         mgr-sidecar: { requests: { cpu: "50m", memory: "100Mi" }, limits: { memory: "200Mi" } }
         logcollector: { requests: { cpu: "100m", memory: "100Mi" }, limits: { memory: "1Gi" } }
