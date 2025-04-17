@@ -94,6 +94,10 @@ spec:
       #   # also support "multus" for multus CNI plugin.
       #   provider: "host"
 
+      mds:
+        config:
+          mds_cache_memory_limit: "268435456"   # 256 MiB
+
       mon:
         # Set the number of mons to be started. Generally recommended to be 3.
         # For highest availability, an odd number of mons should be specified.
