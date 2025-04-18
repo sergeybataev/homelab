@@ -206,6 +206,7 @@ spec:
           - name: "main.storage" # Name matching your main server node
             devices:
               - name: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR5D8Z2B"
+                fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR5D8Z2B"
                 config:
                   metadataDevice: "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_480GB_250207802457"
                   deviceClass: hybrid
