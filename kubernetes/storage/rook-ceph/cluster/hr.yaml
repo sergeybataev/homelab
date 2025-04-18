@@ -205,12 +205,12 @@ spec:
         nodes:
           - name: "main.storage" # Name matching your main server node
             devices:
-              - name: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR5D8Z2B"
-                fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR5D8Z2B"
-                config:
-                  metadataDevice: "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_480GB_250207802457"
-                  deviceClass: hybrid
-                  osd_memory_target: "3221225472" # 3GiB
+              # - name: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR5D8Z2B"
+              #   fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR5D8Z2B"
+              #   config:
+              #     metadataDevice: "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_480GB_250207802457"
+              #     deviceClass: hybrid
+              #     osd_memory_target: "3221225472" # 3GiB
 
               - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_Plus_2TB_S7U7NJ0XC36967R"
               - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_2TB_S7GDNS0X203177N"
