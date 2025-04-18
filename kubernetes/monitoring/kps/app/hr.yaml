@@ -171,7 +171,7 @@ spec:
           - &host "prometheus.${SECRET_DOMAIN}"
 
       prometheusSpec:
-        replicas: 2
+        replicas: 3
         replicaExternalLabelName: __replica__
         scrapeInterval: 1m # Must match interval in Grafana Helm chart
         ruleSelectorNilUsesHelmValues: false
@@ -192,8 +192,9 @@ spec:
         resources:
           requests:
             cpu: 100m
-          # limits:
-          #   memory: 1Gi
+          limits:
+            cpu: 800m
+            memory: 1Gi
         storageSpec:
           volumeClaimTemplate:
             spec:
