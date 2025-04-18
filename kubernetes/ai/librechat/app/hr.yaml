@@ -63,7 +63,7 @@ spec:
           app:
             image:
               repository: ghcr.io/danny-avila/librechat-dev
-              tag: latest@sha256:f39eca6a09e326235c3acc1283c114764bf0f3c8235e9fb4033d9e8f583a69ed
+              tag: latest@sha256:a283dc00e48c7bf693652cf9219010a0aaf259acf7754469d318ef32ea6c65d6
             envFrom: &envFrom
               - secretRef:
                   name: librechat-secrets
