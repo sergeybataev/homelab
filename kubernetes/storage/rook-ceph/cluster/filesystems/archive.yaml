@@ -16,8 +16,8 @@ spec:
       # requireSafeReplicaSize: true # Requires 3 OSDs
     parameters:
       pg_autoscale_mode: "on"
-      pg_num: "8"
-      pg_num_min: "8"
+      # pg_num: "8"
+      # pg_num_min: "8"
       min_size: "2" # Minimum number of replicas required for writes
     deviceClass: nvme
   dataPools:
@@ -29,8 +29,8 @@ spec:
         # requireSafeReplicaSize: false
       parameters:
         pg_autoscale_mode: "on"
-        pg_num: "8"
-        pg_num_min: "8"
+        # pg_num: "8"
+        # pg_num_min: "8"
         min_size: "2" # Minimum number of replicas required for writes
       deviceClass: hdd
     - name: ec21-data
@@ -41,8 +41,8 @@ spec:
         codingChunks: 1 # Requires 3+ OSDs to become active
       parameters:
         pg_autoscale_mode: "on"
-        pg_num: "16"
-        pg_num_min: "16"
+        # pg_num: "16"
+        # pg_num_min: "16"
   metadataServer:
     activeCount: 1
     activeStandby: true
