@@ -45,6 +45,10 @@ spec:
               name: libmodules
             - name: mon-endpoint-volume
               mountPath: /etc/rook
+            - mountPath: /etc/ceph/admin-keyring-store/
+              name: rook-ceph-admin-keyring
+              readOnly: true
+              recursiveReadOnly: Disabled
       hostNetwork: true
       volumes:
         - name: dev
@@ -62,6 +66,10 @@ spec:
             items:
               - key: data
                 path: mon-endpoints
+        - name: rook-ceph-admin-keyring
+          secret:
+            defaultMode: 420
+            secretName: rook-ceph-admin-keyring
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
