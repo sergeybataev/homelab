@@ -34,23 +34,23 @@ spec:
             operator: Exists
     podAntiAffinityType: required # Use required to ensure pods are spread across nodes
 
-  bootstrap:
-    initdb:
-      owner: postgres
-      database:  cnpg
-      secret:
-        name: cloudnative-pg-secret
-      encoding: 'UTF8'
-      postInitApplicationSQL:
-        - CREATE EXTENSION IF NOT EXISTS vector;
-      import:
-        type: monolith
-        databases:
-          - "*"
-        roles:
-          - "*"
-        source:
-          externalCluster: main-postgres17
+  # bootstrap:
+  #   initdb:
+  #     owner: postgres
+  #     database:  cnpg
+  #     secret:
+  #       name: cloudnative-pg-secret
+  #     encoding: 'UTF8'
+  #     postInitApplicationSQL:
+  #       - CREATE EXTENSION IF NOT EXISTS vector;
+  #     import:
+  #       type: monolith
+  #       databases:
+  #         - "*"
+  #       roles:
+  #         - "*"
+  #       source:
+  #         externalCluster: main-postgres17
 
   resources:
     requests:
@@ -65,13 +65,13 @@ spec:
       - { sourceLabels: ["cluster"], targetLabel: cnpg_cluster, action: replace }
       - { regex: cluster, action: labeldrop }
 
-  externalClusters:
-    - name: main-postgres17
-      connectionParameters:
-        # Use the correct IP or host name for the source database
-        host: main-postgres17-rw.database.svc.cluster.local
-        user: postgres
-        dbname: postgres
-      password:
-        name: cloudnative-pg-secret
-        key: password
+  # externalClusters:
+  #   - name: main-postgres17
+  #     connectionParameters:
+  #       # Use the correct IP or host name for the source database
+  #       host: main-postgres17-rw.database.svc.cluster.local
+  #       user: postgres
+  #       dbname: postgres
+  #     password:
+  #       name: cloudnative-pg-secret
+  #       key: password

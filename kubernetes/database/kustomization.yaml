@@ -9,5 +9,5 @@ resources:
   - ./cloudnative-pg/ks.yaml
   - ./dragonfly/ks.yaml
   - ./clickhouse/ks.yaml
-  - ./mongodb/
+  - ./mongodb/ks.yaml
   - ./vaultwarden/ks.yaml

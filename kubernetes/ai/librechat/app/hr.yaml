@@ -60,6 +60,7 @@ spec:
             env:
               PORT: "3080"
               NODE_ENV: "development"
+              # ALLOW_EMAIL_LOGIN: "false"
               ALLOW_SOCIAL_LOGIN: "true"
             resources:
               requests:

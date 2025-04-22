@@ -23,7 +23,7 @@ registration:
   socialLogins: ["google", "github", "openid"]
   allowedDomains:
     - "gmail.com"
-    - "$${SECRET_DOMAIN}"
+    - ${SECRET_DOMAIN}
 
 # Example Registration Object Structure (optional)
 # registration:

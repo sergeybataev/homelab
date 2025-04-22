@@ -56,7 +56,7 @@ spec:
             resources:
               requests:
                 storage: 30Gi
-            storageClassName: hl-zfs-pv
+            storageClassName: main-fs-db-ec31
         - metadata:
             name: logs-volume
           spec:
@@ -64,7 +64,7 @@ spec:
             resources:
               requests:
                 storage: 10Gi
-            storageClassName: hl-zfs-pv
+            storageClassName: main-fs-db-ec31
 ---
 kind: Service
 apiVersion: v1
