@@ -22,7 +22,6 @@ reclaimPolicy: Retain
 allowVolumeExpansion: true
 volumeBindingMode: "Immediate"
 
-
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -47,18 +46,18 @@ reclaimPolicy: Retain
 allowVolumeExpansion: true
 volumeBindingMode: "Immediate"
 
-
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: ceph-fs-app-rep3
+  name: main-fs-db-ec31
   annotations:
     storageclass.kubernetes.io/is-default-class: "false"
 provisioner: rook-ceph.cephfs.csi.ceph.com
 parameters:
   fsName: main-fs
-  pool: apps-rep3-data
+  pool: main-fs-db-ec31-data
+  # subvolumeGroup: apps
   clusterID: rook-ceph # namespace:cluster
   csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
   csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
@@ -66,112 +65,134 @@ parameters:
   csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
   csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
   csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
-  csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
+
 reclaimPolicy: Retain
 allowVolumeExpansion: true
 volumeBindingMode: "Immediate"
 
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: ceph-fs-db-rep3
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "false"
-provisioner: rook-ceph.cephfs.csi.ceph.com
-parameters:
-  fsName: main-fs
-  pool: db-rep3-data
-  clusterID: rook-ceph # namespace:cluster
-  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
-  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
-  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
-  csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
-reclaimPolicy: Retain
-allowVolumeExpansion: true
-volumeBindingMode: "Immediate"
+# ---
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: ceph-fs-app-rep3
+#   annotations:
+#     storageclass.kubernetes.io/is-default-class: "false"
+# provisioner: rook-ceph.cephfs.csi.ceph.com
+# parameters:
+#   fsName: main-fs
+#   pool: apps-rep3-data
+#   clusterID: rook-ceph # namespace:cluster
+#   csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+#   csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+#   csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+#   csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
+# reclaimPolicy: Retain
+# allowVolumeExpansion: true
+# volumeBindingMode: "Immediate"
 
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: ceph-fs-db-ec31
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "false"
-provisioner: rook-ceph.cephfs.csi.ceph.com
-parameters:
-  fsName: main-fs
-  pool: db-ec31-data
-  clusterID: rook-ceph # namespace:cluster
-  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
-  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
-  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
-  csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
-reclaimPolicy: Retain
-allowVolumeExpansion: true
-volumeBindingMode: "Immediate"
+# ---
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: ceph-fs-db-rep3
+#   annotations:
+#     storageclass.kubernetes.io/is-default-class: "false"
+# provisioner: rook-ceph.cephfs.csi.ceph.com
+# parameters:
+#   fsName: main-fs
+#   pool: db-rep3-data
+#   clusterID: rook-ceph # namespace:cluster
+#   csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+#   csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+#   csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+#   csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
+# reclaimPolicy: Retain
+# allowVolumeExpansion: true
+# volumeBindingMode: "Immediate"
 
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: ceph-fs-media-ec21
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "false"
-provisioner: rook-ceph.cephfs.csi.ceph.com
-parameters:
-  fsName: main-fs
-  pool: media-ec21-data
-  clusterID: rook-ceph # namespace:cluster
-  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
-  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
-  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
-  csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
-    # RBD image format. Defaults to "2".
-  imageFormat: "2"
+# ---
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: ceph-fs-db-ec31
+#   annotations:
+#     storageclass.kubernetes.io/is-default-class: "false"
+# provisioner: rook-ceph.cephfs.csi.ceph.com
+# parameters:
+#   fsName: main-fs
+#   pool: db-ec31-data
+#   clusterID: rook-ceph # namespace:cluster
+#   csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+#   csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+#   csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+#   csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
+# reclaimPolicy: Retain
+# allowVolumeExpansion: true
+# volumeBindingMode: "Immediate"
 
-  # RBD image features. Available for imageFormat: "2". CSI RBD currently supports only `layering` feature.
-  # imageFeatures: layering
-  imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
-reclaimPolicy: Retain
-allowVolumeExpansion: true
-volumeBindingMode: "Immediate"
+# ---
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: ceph-fs-media-ec21
+#   annotations:
+#     storageclass.kubernetes.io/is-default-class: "false"
+# provisioner: rook-ceph.cephfs.csi.ceph.com
+# parameters:
+#   fsName: main-fs
+#   pool: media-ec21-data
+#   clusterID: rook-ceph # namespace:cluster
+#   csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+#   csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+#   csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+#   csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
+#     # RBD image format. Defaults to "2".
+#   imageFormat: "2"
 
+#   # RBD image features. Available for imageFormat: "2". CSI RBD currently supports only `layering` feature.
+#   # imageFeatures: layering
+#   imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
+# reclaimPolicy: Retain
+# allowVolumeExpansion: true
+# volumeBindingMode: "Immediate"
 
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: ceph-fs-media-ec31
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "false"
-provisioner: rook-ceph.cephfs.csi.ceph.com
-parameters:
-  fsName: main-fs
-  pool: media-ec31-data
-  clusterID: rook-ceph # namespace:cluster
-  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
-  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
-  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
-  csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
-    # RBD image format. Defaults to "2".
-  imageFormat: "2"
+# ---
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: ceph-fs-media-ec31
+#   annotations:
+#     storageclass.kubernetes.io/is-default-class: "false"
+# provisioner: rook-ceph.cephfs.csi.ceph.com
+# parameters:
+#   fsName: main-fs
+#   pool: media-ec31-data
+#   clusterID: rook-ceph # namespace:cluster
+#   csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+#   csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+#   csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+#   csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+#   csi.storage.k8s.io/fstype: ext4 # Filesystem for the PV
+#     # RBD image format. Defaults to "2".
+#   imageFormat: "2"
 
-  # RBD image features. Available for imageFormat: "2". CSI RBD currently supports only `layering` feature.
-  # imageFeatures: layering
-  imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
-reclaimPolicy: Retain
-allowVolumeExpansion: true
-volumeBindingMode: "Immediate"
+#   # RBD image features. Available for imageFormat: "2". CSI RBD currently supports only `layering` feature.
+#   # imageFeatures: layering
+#   imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
+# reclaimPolicy: Retain
+# allowVolumeExpansion: true
+# volumeBindingMode: "Immediate"
