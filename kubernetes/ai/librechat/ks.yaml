@@ -3,24 +3,33 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app librechat
+  name: ai-librechat
   namespace: flux-system
   labels:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   path: ./kubernetes/ai/librechat/app
   targetNamespace: &ns ai-librechat
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-  interval: 30m
-  retryInterval: 1m
-  timeout: 3m
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: &app librechat
+      app.kubernetes.io/group: ai
+
   postBuild:
     substitute:
       APP: *app
       NS: *ns
-      VOLSYNC_CLAIM: librechat
-      VOLSYNC_CAPACITY: 10Gi
-      VOLSYNC_STORAGECLASS: hl-zfs-pv
+
+  components:
+    - ../../../components/volsync
+    - ../../../components/ns
+
+  interval: 1h
+  prune: true
+  retryInterval: 2m
+  timeout: 3m
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  dependsOn: []
+

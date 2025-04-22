@@ -32,7 +32,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
 
     controllers:
-      librechat:
+      *app :
         type: deployment
         strategy: RollingUpdate
         annotations:
@@ -45,19 +45,9 @@ spec:
               tag: 16
             envFrom:
               - secretRef:
-                  name: cloudnative-pg-secret
+                  name: &db postgres-critical-secret
               - secretRef:
-                  name: cnpg-main17-secret
-            env:
-              - name: INIT_POSTGRES_DBNAME
-                value: *app
-              - name: INIT_POSTGRES_USER
-                value: *app
-              - name: INIT_POSTGRES_PASS
-                valueFrom:
-                  secretKeyRef:
-                    name: librechat-secrets
-                    key: POSTGRES_PASSWORD
+                  name: &secrets librechat-secrets
 
         containers:
           app:
@@ -66,9 +56,9 @@ spec:
               tag: latest@sha256:a283dc00e48c7bf693652cf9219010a0aaf259acf7754469d318ef32ea6c65d6
             envFrom: &envFrom
               - secretRef:
-                  name: librechat-secrets
+                  name: *secrets
               - secretRef:
-                  name: mongodb-librechat-secrets
+                  name: &mongo_db mongodb-librechat-secrets
             env:
               PORT: "3080"
               NODE_ENV: "development"
@@ -107,23 +97,23 @@ spec:
               RAG_OPENAI_API_KEY:
                 valueFrom:
                   secretKeyRef:
-                    name: librechat-secrets
+                    name: *secrets
                     key: LITELLM_API_KEY
               RAG_OPENAI_PROXY:
                 valueFrom:
                   secretKeyRef:
-                    name: librechat-secrets
+                    name: *secrets
                     key: LITELLM_URL
               RAG_USE_FULL_CONTEXT: "true"
-              DB_HOST: 
+              DB_HOST:
                 valueFrom:
                   secretKeyRef:
-                    name: cnpg-main17-secret
+                    name: *db
                     key: INIT_POSTGRES_HOST
-              DB_PORT: 
+              DB_PORT:
                 valueFrom:
                   secretKeyRef:
-                    name: cnpg-main17-secret
+                    name: *db
                     key: INIT_POSTGRES_PORT
               RAG_PORT: &rag_port "8001"
 
@@ -142,12 +132,12 @@ spec:
               MONGODB_URI:
                 valueFrom:
                   secretKeyRef:
-                    name: mongodb-librechat-secrets
+                    name: *mongo_db
                     key: MONGO_URI
               MONGODB_DATABASE:
                 valueFrom:
                   secretKeyRef:
-                    name: mongodb-librechat-secrets
+                    name: *mongo_db
                     key: MONGO_USER
 
     service:
