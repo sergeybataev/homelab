@@ -1,0 +1,8 @@
+# storageclass-local-hostpath.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-hostpath-postgres # Choose a descriptive name
+provisioner: kubernetes.io/no-provisioner # We are creating PVs manually
+volumeBindingMode: Immediate # Bind PVs immediately
+reclaimPolicy: Retain # Important: Prevents data loss if PV is released

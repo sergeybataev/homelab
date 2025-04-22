@@ -1,0 +1,136 @@
+# cnpg-cluster-hostpath.yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-critical-cluster
+  namespace: default # Or your target namespace
+spec:
+  instances: 3 # Request 3 replicas
+  imageName: ghcr.io/cloudnative-pg/postgresql:17
+
+  # PostgreSQL Configuration (adjust as needed)
+  postgresql:
+    parameters:
+      max_connections: '400' # 200
+      shared_buffers: '256MB' # 512MB
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: cloudnative-pg-secret
+
+  # Storage Configuration
+  storage:
+    size: 50Gi # This requests a PVC of this size
+    storageClass: local-hostpath-postgres # Use the SC created earlier
+
+  # Scheduling constraints
+  affinity:
+    # Ensure pods ONLY run on nodes with our label
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/postgres-node # Label specific to your main storage node(s)
+            operator: Exists
+    podAntiAffinityType: required # Use required to ensure pods are spread across nodes
+
+  bootstrap:
+    initdb:
+      owner: postgres
+      database:  cnpg
+      secret:
+        name: cloudnative-pg-secret
+      encoding: 'UTF8'
+      postInitApplicationSQL:
+        - CREATE EXTENSION IF NOT EXISTS vector;
+      import:
+        type: monolith
+        databases:
+          - "*"
+        roles:
+          - "*"
+        source:
+          externalCluster: test-main
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 2Gi
+
+  monitoring:
+    enablePodMonitor: true
+    # Ref: https://github.com/cloudnative-pg/cloudnative-pg/issues/2501
+    podMonitorMetricRelabelings:
+      - { sourceLabels: ["cluster"], targetLabel: cnpg_cluster, action: replace }
+      - { regex: cluster, action: labeldrop }
+
+  externalClusters:
+    - name: test-main
+      connectionParameters:
+        # Use the correct IP or host name for the source database
+        host: test-main-rw.database.svc.cluster.local
+        user: postgres
+        dbname: postgres
+      password:
+        name: cloudnative-pg-secret
+        key: password
+
+  # --- Optional, but Recommended ---
+  # Define Superuser and Application User Secrets
+  # Create these secrets beforehand, e.g.:
+  # kubectl create secret generic postgres-superuser-secret --from-literal=username=postgres --from-literal=password=<SUPERUSER_PASSWORD>
+  # kubectl create secret generic postgres-app-secret --from-literal=username=app --from-literal=password=<APP_PASSWORD> --from-literal=dbname=appdb
+  #
+  # bootstrap:
+  #   initdb:
+  #     database: appdb # Default database to create
+  #     owner: app     # Grant ownership to the app user
+  #     secret:
+  #       name: postgres-app-secret # Credentials for the app user/db owner
+
+  # superuserSecret:
+  #   name: postgres-superuser-secret # Credentials for the 'postgres' superuser
+
+# ---
+# # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/postgresql.cnpg.io/cluster_v1.json
+# apiVersion: postgresql.cnpg.io/v1
+# kind: Cluster
+# metadata:
+#   name: hosts
+# spec:
+#   instances: 1
+#   imageName: ghcr.io/cloudnative-pg/postgresql:16.3
+#   primaryUpdateStrategy: unsupervised
+#   storage:
+#     size: 200Gi
+#     storageClass: ceph-block
+#   superuserSecret:
+#     name: cloudnative-pg-secret
+#   enableSuperuserAccess: true
+#   bootstrap:
+#     initdb:
+#       owner: main16
+#       database:  main16
+#       secret:
+#         name: main16-secret
+#       encoding: 'UTF8'
+#   postgresql:
+#     parameters:
+#       max_connections: "400"
+#       shared_buffers: 256MB
+#   nodeMaintenanceWindow:
+#     inProgress: false
+#     reusePVC: true
+#   resources:
+#     requests:
+#       cpu: 500m
+#     limits:
+#       memory: 4Gi
+#   monitoring:
+#     enablePodMonitor: true
+#     # Ref: https://github.com/cloudnative-pg/cloudnative-pg/issues/2501
+#     podMonitorMetricRelabelings:
+#       - { sourceLabels: ["cluster"], targetLabel: cnpg_cluster, action: replace }
+#       - { regex: cluster, action: labeldrop }
