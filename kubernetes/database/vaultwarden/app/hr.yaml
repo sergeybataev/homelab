@@ -1,0 +1,113 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app ${APP}
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      *app :
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 17.4
+            envFrom: &envFrom
+              - secretRef:
+                  name: ${APP}
+              - secretRef:
+                  name: postgres-critical-secret
+        containers:
+          app:
+            image:
+              repository: vaultwarden/server
+              tag: 1.33.2@sha256:87edb99945da91bd7504ac1435495595af2e89ad2c7adc151ae5bf091ec8baf2
+            env:
+              DATA_FOLDER: data
+              ICON_CACHE_FOLDER: data/icon_cache
+              ATTACHMENTS_FOLDER: data/attachments
+              DOMAIN: "https://vaultwarden.${SECRET_DOMAIN}"
+              TZ: "${TIMEZONE}"
+              SIGNUPS_ALLOWED: "false"
+              WEBSOCKET_ENABLED: "true"
+              WEBSOCKET_ADDRESS: 0.0.0.0
+              WEBSOCKET_PORT: 3012
+              # SMTP_HOST: smtp-relay.default.svc.cluster.local.
+              # SMTP_FROM: vaultwarden@${SECRET_DOMAIN}
+              # SMTP_FROM_NAME: vaultwarden
+              # SMTP_PORT: 2525
+              # SMTP_SECURITY: "off"
+            envFrom: *envFrom
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+              limits:
+                memory: 2Gi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: &port 80
+    ingress:
+      app:
+        className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: &ext_host external.${SECRET_DOMAIN}
+          # disabled for 40x because it is used for the API
+          nginx.ingress.kubernetes.io/custom-http-errors: 500,501,502,503,504,505,506,510
+          hajimari.io/icon: mdi:lock
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Security
+          gethomepage.dev/name: Vaultwarden
+          gethomepage.dev/icon: vaultwarden.svg
+        hosts:
+          - host: &host vaultwarden.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+      admin:
+        className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: *ext_host
+          # disabled for 40x because it is used for the authentication
+          nginx.ingress.kubernetes.io/custom-http-errors: 500,501,502,503,504,505,506,510
+          nginx.ingress.kubernetes.io/whitelist-source-range: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
+          hajimari.io/icon: mdi:lock
+        hosts:
+          - host: *host
+            paths:
+              - path: /admin
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /data

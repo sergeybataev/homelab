@@ -10,3 +10,4 @@ resources:
   - ./dragonfly/ks.yaml
   - ./clickhouse/ks.yaml
   - ./mongodb/
+  - ./vaultwarden/ks.yaml
