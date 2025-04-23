@@ -1,6 +1,5 @@
 ---
 groups:
-
   - name: home-assistant
     rules:
       - alert: HomeAssistantPostgresUnreachable

@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: otel-operator
-  namespace: monitoring
 spec:
   interval: 5m
   chart:
@@ -48,7 +47,7 @@ spec:
       #   enabled: true
       collectorImage:
         # https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/distributions/otelcol-contrib/manifest.yaml
-        
+
         repository: otel/opentelemetry-collector-contrib
         tag: 0.123.0
         # https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/distributions/otelcol-k8s/manifest.yaml

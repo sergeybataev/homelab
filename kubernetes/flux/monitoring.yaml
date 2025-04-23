@@ -6,7 +6,6 @@ metadata:
   name: &name cluster-monitoring
   namespace: flux-system
 spec:
-  namePrefix: "monitoring-"
   dependsOn:
     - name: cluster-config
     - name: cluster-storage

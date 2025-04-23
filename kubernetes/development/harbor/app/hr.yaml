@@ -123,7 +123,7 @@ spec:
             - secretRef:
                 name: &db_secrets ${PG_MAIN_CREDS}
             - secretRef:
-                name: &harbor_db_secrets ${PG_SECRET}
+                name: &harbor_db_secret ${PG_SECRET}
 
       image:
         repository: ghcr.io/octohelm/harbor/harbor-core

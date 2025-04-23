@@ -1,20 +1,35 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app kubernetes-dashboard
+  name: monitoring-kube-dashboard
   namespace: flux-system
-  labels: &ll
-    substitution.flux.home.arpa/disabled: "false"
-    kustomization.flux.home.arpa/default: "true"
-    kustomization.flux.home.arpa/helmpatches: "true"
+  labels:
+    substitution.flux.home.arpa/enabled: "true"
 spec:
-  targetNamespace: monitoring
+  path: ./kubernetes/monitoring/kubernetes-dashboard/app
+  targetNamespace: &ns monitoring-kube-dashboard
   commonMetadata:
     labels:
-      app.kubernetes.io/name: *app
+      app.kubernetes.io/name: &app kubernetes-dashboard
+      app.kubernetes.io/group: monitoring
+
+  postBuild:
+    substitute:
+      APP: *app
+      NS: *ns
+
+  components:
+    - ../../../components/ns
+
+  interval: 1h
+  prune: true
+  retryInterval: 2m
+  timeout: 3m
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
   dependsOn:
     - name: network-cert-manager
     - name: system-metrics-server
-  path: ./kubernetes/monitoring/kubernetes-dashboard/app

@@ -3,19 +3,29 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app smartctl-exporter
+  name: monitoring-smartctl-exporter
   namespace: flux-system
+  labels:
+    substitution.flux.home.arpa/enabled: "true"
 spec:
-  targetNamespace: monitoring
+  path: ./kubernetes/monitoring/exporters/smartctl/app
+  targetNamespace: &ns monitoring-exporters
   commonMetadata:
     labels:
-      app.kubernetes.io/name: *app
-  path: ./kubernetes/monitoring/exporters/smartctl/app
+      app.kubernetes.io/name: &app smartctl-exporter
+      app.kubernetes.io/group: monitoring
+
+  postBuild:
+    substitute:
+      APP: *app
+      NS: *ns
+
+  interval: 1h
   prune: true
+  retryInterval: 2m
+  timeout: 3m
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
+    
+  dependsOn: []

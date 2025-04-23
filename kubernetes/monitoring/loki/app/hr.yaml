@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: loki
+  name: &app ${APP}
 spec:
   interval: 15m
   timeout: 5m
@@ -143,7 +143,7 @@ spec:
     write:
       replicas: 1
       persistence:
-        storageClass: ceph-fs-observability-ec31
+        storageClass: ${StorageClass}
         size: 20Gi
       topologySpreadConstraints:
         - maxSkew: 1
@@ -167,7 +167,7 @@ spec:
     backend:
       replicas: 3
       persistence:
-        storageClass: ceph-fs-observability-ec31
+        storageClass: ${StorageClass}
         size: 20Gi
       topologySpreadConstraints:
         - maxSkew: 1

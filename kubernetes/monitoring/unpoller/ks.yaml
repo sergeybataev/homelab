@@ -1,21 +1,35 @@
 ---
-#
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-unpoller
+  name: monitoring-unpoller
   namespace: flux-system
+  labels:
+    substitution.flux.home.arpa/enabled: "true"
 spec:
   path: ./kubernetes/monitoring/unpoller/app
+  targetNamespace: &ns monitoring-unpoller
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: &app unpoller
+      app.kubernetes.io/group: monitoring
+
+  postBuild:
+    substitute:
+      APP: *app
+      NS: *ns
+      StorageClass: ceph-fs-observability-ec31
+
+  components:
+    - ../../../components/ns
+
+  interval: 1h
   prune: true
+  retryInterval: 2m
+  timeout: 3m
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: true
-  postBuild:
-    substituteFrom: []
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
   dependsOn:
     - name: monitoring-prometheus-stack
