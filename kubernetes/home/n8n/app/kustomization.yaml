@@ -4,5 +4,4 @@ kind: Kustomization
 resources:
 - ./secrets.sops.yaml
 - ./hr.yaml
-- ../../../templates/volsync
 

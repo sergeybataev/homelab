@@ -115,13 +115,16 @@ spec:
       revisionHistoryLimit: 3
     core:
       initContainers:
-        - name: init-db
-          image: ghcr.io/onedr0p/postgres-init:17.4
-          envFrom:
+        init-db:
+          image:
+            repository: ghcr.io/home-operations/postgres-init
+            tag: 17.4
+          envFrom: &envFrom
             - secretRef:
-                name: &db_secret postgres-critical-secret
+                name: &db_secrets ${PG_MAIN_CREDS}
             - secretRef:
-                name: &harbor_db_secret harbor-db-secrets
+                name: &harbor_db_secrets ${PG_SECRET}
+
       image:
         repository: ghcr.io/octohelm/harbor/harbor-core
         tag: v2.13.0
@@ -166,8 +169,9 @@ spec:
       type: external
       external:
         # port: "5432"
-        # username: "harbor"
-        # coreDatabase: "harbor"
+        # host: "postgres-critical.postgres.svc.cluster.local"
+        username: ${PG_USER}
+        coreDatabase: ${PG_NAME}
         # if using existing secret, the key must be "password"
         existingSecret: *harbor_db_secret
       maxIdleConns: 50
@@ -243,18 +247,10 @@ spec:
       valuesKey: harborAdminPassword
     - targetPath: database.external.host
       kind: Secret
-      name: *db_secret
+      name: *db_secrets
       valuesKey: INIT_POSTGRES_HOST
     - targetPath: database.external.port
       kind: Secret
-      name: *db_secret
+      name: *db_secrets
       valuesKey: INIT_POSTGRES_PORT
-    - targetPath: database.external.username
-      kind: Secret
-      name: *harbor_db_secret
-      valuesKey: INIT_POSTGRES_USER
-    - targetPath: database.external.coreDatabase
-      kind: Secret
-      name: *harbor_db_secret
-      valuesKey: INIT_POSTGRES_DBNAME
 

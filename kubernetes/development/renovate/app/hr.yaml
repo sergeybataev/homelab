@@ -31,7 +31,7 @@ spec:
         initContainers:
           init-db:
             image:
-              repository: ghcr.io/onedr0p/postgres-init
+              repository: ghcr.io/home-operations/postgres-init
               tag: 17.4
             envFrom: &envFrom
               - secretRef:
@@ -54,30 +54,22 @@ spec:
 
               MEND_RNV_ACCEPT_TOS: 'y'
               MEND_RNV_PLATFORM: 'github'
-              MEND_RNV_CRON_JOB_SCHEDULER_ALL: '0 */2 * * *'
-              MEND_RNV_CRON_APP_SYNC: "0 */2 * * *"
+              MEND_RNV_CRON_JOB_SCHEDULER_ALL: '* 16-23/1 * * 5'
+              MEND_RNV_CRON_APP_SYNC: "* 16-23/1 * * 5"
 
               RENOVATE_PAGINATE_ALL: "true"
 
               MEND_RNV_ADMIN_API_ENABLED: 'true'
               MEND_RNV_REPORTING_ENABLED: "true"
 
-              MEND_RNV_WORKER_CLEANUP: '30 0 * * 0'
+              MEND_RNV_WORKER_CLEANUP: '* 00-03/1 * * 6'
               MEND_RNV_WORKER_CLEANUP_DIRS: '/opt/containerbase,/tmp/renovate/cache,/tmp/renovate/repos'
 
               MEND_RNV_DATA_HANDLER_TYPE: postgresql
               # MEND_RNV_LOG_HISTORY_S3: 's3://renovate/log'
 
-              PGHOST: &db_host
-                valueFrom:
-                  secretKeyRef:
-                    name: *db
-                    key: INIT_POSTGRES_HOST
-              PGPORT: &db_port
-                valueFrom:
-                  secretKeyRef:
-                    name: *db
-                    key: INIT_POSTGRES_PORT
+              PGHOST: &db_host ${INIT_POSTGRES_HOST}
+              PGPORT: &db_port ${INIT_POSTGRES_PORT}
 
               # MEND_RNV_S3_FORCE_PATH_STYLE: 'true'
 

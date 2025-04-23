@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app ${APP}
-  namespace: ${NS}
 spec:
   interval: 5m
   chartRef:
@@ -42,38 +41,14 @@ spec:
         initContainers:
           init-db:
             image:
-              repository: ghcr.io/onedr0p/postgres-init
+              repository: ghcr.io/home-operations/postgres-init
               tag: 17.4
-              pullPolicy: IfNotPresent
-            env:
-              - name: INIT_POSTGRES_HOST
-                valueFrom: &db_host
-                  secretKeyRef:
-                    name: cnpg-main17-secret
-                    key: host
-              - name: INIT_POSTGRES_SUPER_PASS
-                valueFrom:
-                  secretKeyRef:
-                    name: cloudnative-pg-secret
-                    key: password
-              - name: INIT_POSTGRES_DBNAME
-                valueFrom:
-                  secretKeyRef:
-                    name: n8n-secrets
-                    key: DB_POSTGRESDB_DATABASE
-              - name: INIT_POSTGRES_USER
-                valueFrom:
-                  secretKeyRef:
-                    name: n8n-secrets
-                    key: DB_POSTGRESDB_USER
-              - name: INIT_POSTGRES_PASS
-                valueFrom:
-                  secretKeyRef:
-                    name: n8n-secrets
-                    key: DB_POSTGRESDB_PASSWORD
             envFrom: &envFrom
               - secretRef:
-                  name: n8n-secrets
+                  name: &db_creds ${PG_MAIN_CREDS}
+              - secretRef:
+                  name: &db_secrets ${PG_SECRET}
+
         containers:
           n8n:
             image:
@@ -109,7 +84,8 @@ spec:
 
               N8N_METRICS: true
               N8N_USER_FOLDER: /home/n8n
-              DB_POSTGRESDB_HOST: *db_host
+              DB_POSTGRESDB_HOST: ${INIT_POSTGRES_HOST}
+
             envFrom: *envFrom
 
     service:
@@ -139,7 +115,7 @@ spec:
 
     persistence:
       config:
-        existingClaim: ${VOLSYNC_CLAIM}
+        existingClaim: "${VOLSYNC_CLAIM:-${APP}}"
         advancedMounts:
           n8n:
             n8n:

@@ -20,6 +20,10 @@ spec:
     substitute:
       APP: *app
       NS: *ns
+      PG_MAIN_CREDS: postgres-critical-secret
+      PG_SECRET: harbor-db-secrets
+      PG_NAME: vaultwarden
+      PG_USER: k8s_vaultwarden
 
   components:
     - ../../../components/ns

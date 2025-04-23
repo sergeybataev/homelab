@@ -38,42 +38,27 @@ spec:
                 "mac": "f2:12:dc:25:ff:46",
                 "ips": ["192.168.5.123/16"]
               }]
+
         initContainers:
           init-db:
             image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            env:
-              INIT_POSTGRES_DBNAME:
-                valueFrom:
-                  secretKeyRef:
-                    name: home-assistant-db-secret
-                    key: name
-              INIT_POSTGRES_USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: home-assistant-db-secret
-                    key: user
-              INIT_POSTGRES_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    name: home-assistant-db-secret
-                    key: password
-              INIT_POSTGRES_HOST: ${CLOUDNATIVE_PG_IP}
-              INIT_POSTGRES_SUPER_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    key: password
-                    name: cloudnative-pg-secret
+              repository: ghcr.io/home-operations/postgres-init
+              tag: 17.4
+            envFrom: &envFrom
+              - secretRef:
+                  name: &db_creds ${PG_MAIN_CREDS}
+              - secretRef:
+                  name: &db_secrets ${PG_SECRET}
+
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/home-assistant
-              tag: 2025.3.3
+              repository: ghcr.io/home-operations/home-assistant
+              tag: 2025.4.3
             env:
               TZ: &TZ ${TIMEZONE}
               HASS_EXTERNAL_URL: https://hass.${SECRET_DOMAIN}
-              HASS_INTERNAL_URL: https://hass.${SECRET_DOMAIN}
+              HASS_INTERNAL_URL: "192.168.5.123"
               HASS_TRUSTED_PROXIES: ${NODE_CIDR}
               HASS_HTTP_TRUSTED_PROXY_1: ${NODE_CIDR}
               HASS_HTTP_TRUSTED_PROXY_2: ${CLUSTER_CIDR}
@@ -82,11 +67,13 @@ spec:
                 valueFrom:
                   fieldRef:
                     fieldPath: status.podIP
-              HASS_RECORDER_DB_URL: "postgresql://$(DB_user):$(DB_password)@${CLOUDNATIVE_PG_IP}/home_assistant"
+              HASS_RECORDER_DB_URL: "postgresql://{$PG_USER}:$(DB_password)@${INIT_POSTGRES_HOST}/{$PG_NAME}"
             envFrom: &envFrom
             - prefix: "DB_"
               secretRef:
-                name: home-assistant-db-secret
+                name: *db_secrets
+            - secretRef:
+                name: *db_creds
             securityContext: &securityContext
               readOnlyRootFilesystem: true
             resources:
@@ -188,7 +175,7 @@ spec:
 
     persistence:
       config:
-        existingClaim: home-assistant
+        existingClaim: "${VOLSYNC_CLAIM:-${APP}}"
       # secrets.yaml:
       #   items:
       #   - key: secrets.yaml

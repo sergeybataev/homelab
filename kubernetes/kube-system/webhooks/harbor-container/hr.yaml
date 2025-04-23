@@ -51,7 +51,7 @@ spec:
       matches:
         - '^ghcr.io'
       excludes:
-        - ^ghcr.io/onedr0p/postgres-init.*$'
+        - ^ghcr.io/home-operations/postgres-init.*$'
       replace: 'registry.${SECRET_DOMAIN}/proxy-github-public'
       checkUpstream: false
     tolerations:

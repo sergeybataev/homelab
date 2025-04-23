@@ -5,4 +5,4 @@ resources:
 - ./secret-home-assistant.sops.yaml
 - ./secret-home-assistant-db.sops.yaml
 - ./helmrelease.yaml
-- ../../../templates/volsync
+
