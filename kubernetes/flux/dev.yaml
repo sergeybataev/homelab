@@ -6,7 +6,6 @@ metadata:
   name: cluster-development
   namespace: flux-system
 spec:
-  namePrefix: "dev-"
   dependsOn:
     - name: cluster
     - name: cluster-storage
@@ -91,7 +90,7 @@ spec:
               - kind: Secret
                 name: cluster-secrets
               - kind: ConfigMap
-                name: cluster-config-versions
+                name: config-versions
                 optional: false
               - kind: ConfigMap
                 name: cluster-config-node
@@ -225,7 +224,7 @@ spec:
                     - kind: Secret
                       name: cluster-secrets
                     - kind: ConfigMap
-                      name: cluster-config-versions
+                      name: config-versions
                       optional: false
                     - kind: ConfigMap
                       name: cluster-config-node

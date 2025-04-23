@@ -105,7 +105,7 @@ spec:
               - kind: Secret
                 name: cluster-secrets
               - kind: ConfigMap
-                name: cluster-config-versions
+                name: config-versions
                 optional: false
               - kind: ConfigMap
                 name: cluster-config-node
@@ -239,7 +239,7 @@ spec:
                     - kind: Secret
                       name: cluster-secrets
                     - kind: ConfigMap
-                      name: cluster-config-versions
+                      name: config-versions
                       optional: false
                     - kind: ConfigMap
                       name: cluster-config-node

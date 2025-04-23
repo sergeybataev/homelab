@@ -4,14 +4,13 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ${APP}
-  namespace: ${NS}
 spec:
   interval: 30m
   chartRef:
     kind: OCIRepository
     name: app-template
     namespace: flux-system
-    
+
   driftDetection:
     mode: enabled
   maxHistory: 3
@@ -33,41 +32,13 @@ spec:
           init-db:
             image:
               repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
-            envFrom: &renovate_secret
+              tag: 17.4
+            envFrom: &envFrom
               - secretRef:
-                  name: &secret renovate-secret
-            env:
-              INIT_POSTGRES_SUPER_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    name: cloudnative-pg-secret
-                    key: password
-              INIT_POSTGRES_HOST:
-                valueFrom: &db_host
-                  secretKeyRef:
-                    name: cnpg-main17-secret
-                    key: host
-              INIT_POSTGRES_PORT:
-                valueFrom: &db_port
-                  secretKeyRef:
-                    name: cnpg-main17-secret
-                    key: port
-              INIT_POSTGRES_USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PGUSER
-              INIT_POSTGRES_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PGPASSWORD
-              INIT_POSTGRES_DBNAME:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PGDATABASE
+                  name: &db cnpg-pg-main-secret
+              - secretRef:
+                  name: &secrets librechat-secrets
+
         containers:
           app:
             nameOverride: renovate
@@ -75,7 +46,7 @@ spec:
               repository: ghcr.io/mend/renovate-ce
               tag: '9.8.0-full@sha256:71f0c077d3cf80c16014b43be5c1b08dc8a952fab7e9e3eb2b0a301dabe135f0'
 
-            envFrom: *renovate_secret
+            envFrom: *envFrom
 
             env:
               TZ: '${TIMEZONE}'
@@ -97,8 +68,16 @@ spec:
               MEND_RNV_DATA_HANDLER_TYPE: postgresql
               # MEND_RNV_LOG_HISTORY_S3: 's3://renovate/log'
 
-              PGHOST: *db_host
-              PGPORT: *db_port
+              PGHOST: &db_host
+                valueFrom:
+                  secretKeyRef:
+                    name: *db
+                    key: INIT_POSTGRES_HOST
+              PGPORT: &db_port
+                valueFrom:
+                  secretKeyRef:
+                    name: *db
+                    key: INIT_POSTGRES_PORT
 
               # MEND_RNV_S3_FORCE_PATH_STYLE: 'true'
 

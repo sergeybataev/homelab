@@ -1,10 +1,9 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/_definitions.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: harbor
-  namespace: dev
+  name: ${APP}
 spec:
   interval: 15m
   chart:
@@ -118,35 +117,17 @@ spec:
       initContainers:
         - name: init-db
           image: ghcr.io/onedr0p/postgres-init:17.4
-          env:
-            - name: INIT_POSTGRES_HOST
-              value: ${CLOUDNATIVE_PG_IP}
-            - name: INIT_POSTGRES_SUPER_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: cloudnative-pg-secret
-                  key: password
-            - name: INIT_POSTGRES_DBNAME
-              valueFrom:
-                secretKeyRef:
-                  name: harbor-db-secrets
-                  key: name
-            - name: INIT_POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: harbor-db-secrets
-                  key: user
-            - name: INIT_POSTGRES_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: harbor-db-secrets
-                  key: password
+          envFrom:
+            - secretRef:
+                name: &db_secret postgres-critical-secret
+            - secretRef:
+                name: &harbor_db_secret harbor-db-secrets
       image:
         repository: ghcr.io/octohelm/harbor/harbor-core
         tag: v2.13.0
       revisionHistoryLimit: 3
       podAnnotations:
-        secret.reloader.stakater.com/reload: "harbor-secrets"
+        secret.reloader.stakater.com/reload: &secret harbor-secrets
     jobservice:
       image:
         repository: ghcr.io/octohelm/harbor/harbor-jobservice
@@ -184,12 +165,11 @@ spec:
       # and fill the connection information in "external" section
       type: external
       external:
-        host: ${CLOUDNATIVE_PG_IP}
         # port: "5432"
         # username: "harbor"
         # coreDatabase: "harbor"
         # if using existing secret, the key must be "password"
-        existingSecret: "harbor-db-secrets"
+        existingSecret: *harbor_db_secret
       maxIdleConns: 50
       maxOpenConns: 100
       podAnnotations: {}
@@ -259,17 +239,22 @@ spec:
   valuesFrom:
     - targetPath: harborAdminPassword
       kind: Secret
-      name: harbor-secrets
+      name: *secret
       valuesKey: harborAdminPassword
+    - targetPath: database.external.host
+      kind: Secret
+      name: *db_secret
+      valuesKey: INIT_POSTGRES_HOST
     - targetPath: database.external.port
       kind: Secret
-      name: main16-secret
-      valuesKey: port
+      name: *db_secret
+      valuesKey: INIT_POSTGRES_PORT
     - targetPath: database.external.username
       kind: Secret
-      name: harbor-db-secrets
-      valuesKey: user
+      name: *harbor_db_secret
+      valuesKey: INIT_POSTGRES_USER
     - targetPath: database.external.coreDatabase
       kind: Secret
-      name: harbor-db-secrets
-      valuesKey: name
+      name: *harbor_db_secret
+      valuesKey: INIT_POSTGRES_DBNAME
+

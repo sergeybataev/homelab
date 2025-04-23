@@ -9,14 +9,23 @@ metadata:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   path: ./kubernetes/development/renovate/app
+  targetNamespace: &ns dev
+
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: &app renovate
+      app.kubernetes.io/group: dev
+
+  postBuild:
+    substitute:
+      APP: *app
+      NS: *ns
+
+  interval: 1h
   prune: true
+  retryInterval: 2m
+  timeout: 3m
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  interval: 30m
-  retryInterval: 1m
-  timeout: 3m
-  postBuild:
-    substitute:
-      APP: renovate
-      NS: dev-renovate
+  dependsOn: []

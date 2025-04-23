@@ -6,7 +6,6 @@ metadata:
   name: cluster-apps
   namespace: flux-system
 spec:
-  namePrefix: "apps-"
   dependsOn:
     - name: cluster-config
     - name: cluster-network

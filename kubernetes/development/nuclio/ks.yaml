@@ -3,19 +3,29 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app nuclio
+  name: dev-nuclio
   namespace: flux-system
   labels:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   path: ./kubernetes/development/nuclio/app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-  interval: 30m
-  retryInterval: 1m
-  timeout: 3m
+  targetNamespace: &ns dev
+
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: &app nuclio
+      app.kubernetes.io/group: dev
+
   postBuild:
     substitute:
       APP: *app
+      NS: *ns
+
+  interval: 1h
+  prune: true
+  retryInterval: 2m
+  timeout: 3m
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  dependsOn: []
