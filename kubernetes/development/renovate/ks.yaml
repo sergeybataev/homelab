@@ -9,7 +9,7 @@ metadata:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   path: ./kubernetes/development/renovate/app
-  targetNamespace: &ns dev
+  targetNamespace: &ns dev-renovate
 
   commonMetadata:
     labels:

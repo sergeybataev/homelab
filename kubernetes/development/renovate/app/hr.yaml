@@ -37,7 +37,7 @@ spec:
               - secretRef:
                   name: &db cnpg-pg-main-secret
               - secretRef:
-                  name: &secrets librechat-secrets
+                  name: &secrets renovate-secret
 
         containers:
           app:
