@@ -33,6 +33,7 @@ spec:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
+
         initContainers:
           init-db:
             image:
@@ -40,9 +41,9 @@ spec:
               tag: 17.4
             envFrom: &envFrom
               - secretRef:
-                  name: &db postgres-critical-secret
+                  name: &db ${DB_MAIN_SECRET}
               - secretRef:
-                  name: &secrets litellm-secrets
+                  name: &secrets ${DB_SECRET}
 
         containers:
           app:

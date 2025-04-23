@@ -19,6 +19,10 @@ spec:
     substitute:
       APP: *app
       NS: *ns
+      DB_MAIN_SECRET: cnpg-pg-main-secret
+      DB_SECRET: litellm-secrets
+      DB_NAME: ai-litellm
+      DB_USER: ai-litellm
 
   components:
     - ../../../components/ns

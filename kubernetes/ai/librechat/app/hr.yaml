@@ -43,7 +43,7 @@ spec:
               tag: 17.4
             envFrom: &envFrom
               - secretRef:
-                  name: &db ${MAIN_DB_SECRET}
+                  name: &db ${DB_MAIN_SECRET}
               - secretRef:
                   name: &secrets ${DB_SECRET}
               - secretRef:
@@ -186,15 +186,15 @@ spec:
               - *host
 
     persistence:
-      # init-db:
-      #   enabled: true
-      #   type: configMap
-      #   name: librechat-initdb
-      #   advancedMounts:
-      #     librechat:
-      #       init-db:
-      #         - subPath: librechat.sql
-      #           path: /initdb/librechat.sql
+      init-db:
+        enabled: true
+        type: configMap
+        name: librechat-initdb
+        advancedMounts:
+          librechat:
+            init-db:
+              - subPath: librechat.sql
+                path: /initdb/ai-librechat.sql
 
       config:
         enabled: true
