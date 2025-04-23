@@ -41,22 +41,22 @@ spec:
             image:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 17.4
-            envFrom:
+            envFrom: &envFrom
               - secretRef:
-                  name: &db postgres-critical-secret
+                  name: &db ${MAIN_DB_SECRET}
               - secretRef:
-                  name: &secrets librechat-secrets
+                  name: &secrets ${DB_SECRET}
+              - secretRef:
+                  name: &mongo_db mongodb-librechat-secrets
 
         containers:
           app:
             image:
               repository: ghcr.io/danny-avila/librechat-dev
               tag: latest@sha256:a283dc00e48c7bf693652cf9219010a0aaf259acf7754469d318ef32ea6c65d6
-            envFrom: &envFrom
-              - secretRef:
-                  name: *secrets
-              - secretRef:
-                  name: &mongo_db mongodb-librechat-secrets
+
+            envFrom: *envFrom
+
             env:
               PORT: "3080"
               NODE_ENV: "development"
@@ -186,15 +186,15 @@ spec:
               - *host
 
     persistence:
-      init-db:
-        enabled: true
-        type: configMap
-        name: librechat-initdb
-        advancedMounts:
-          librechat:
-            init-db:
-              - subPath: librechat.sql
-                path: /initdb/librechat.sql
+      # init-db:
+      #   enabled: true
+      #   type: configMap
+      #   name: librechat-initdb
+      #   advancedMounts:
+      #     librechat:
+      #       init-db:
+      #         - subPath: librechat.sql
+      #           path: /initdb/librechat.sql
 
       config:
         enabled: true

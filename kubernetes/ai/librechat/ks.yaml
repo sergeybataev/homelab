@@ -19,6 +19,10 @@ spec:
     substitute:
       APP: *app
       NS: *ns
+      DB_MAIN_SECRET: cnpg-pg-main-secret
+      DB_SECRET: librechat-secrets
+      DB_NAME: ai-librechat
+      DB_USER: ai-librechat
 
   components:
     - ../../../components/volsync
