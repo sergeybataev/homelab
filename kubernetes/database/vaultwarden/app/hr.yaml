@@ -27,6 +27,7 @@ spec:
       *app :
         annotations:
           reloader.stakater.com/auto: "true"
+
         initContainers:
           init-db:
             image:
@@ -34,9 +35,10 @@ spec:
               tag: 17.4
             envFrom: &envFrom
               - secretRef:
-                  name: ${APP}
+                  name: &db ${PG_MAIN_CREDS}
               - secretRef:
-                  name: postgres-critical-secret
+                  name: &secrets ${PG_SECRET}
+
         containers:
           app:
             image:

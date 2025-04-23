@@ -25,6 +25,10 @@ spec:
       APP: *app
       NS: *ns
       VOLSYNC_CAPACITY: 2Gi
+      PG_MAIN_CREDS: postgres-critical-secret
+      PG_SECRET: *app
+      PG_NAME: vaultwarden
+      PG_USER: k8s_vaultwarden
 
   components:
     - ../../../components/volsync
