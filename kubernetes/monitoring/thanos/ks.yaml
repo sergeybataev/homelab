@@ -9,7 +9,7 @@ metadata:
     substitution.flux.home.arpa/enabled: "true"
 spec:
   path: ./kubernetes/monitoring/thanos/app
-  targetNamespace: &ns monitoring-thanos
+  targetNamespace: &ns monitoring-prometheus-stack
   commonMetadata:
     labels:
       app.kubernetes.io/name: &app thanos
@@ -21,9 +21,6 @@ spec:
       NS: *ns
       StorageClass: ceph-fs-observability-ec31
 
-  components:
-    - ../../../components/ns
-
   interval: 1h
   prune: true
   retryInterval: 2m
@@ -33,3 +30,4 @@ spec:
     name: home-kubernetes
   dependsOn:
     - name: storage-rook-ceph-cluster
+    - name: monitoring-prometheus-rules

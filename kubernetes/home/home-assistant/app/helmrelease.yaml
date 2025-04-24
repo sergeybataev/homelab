@@ -58,7 +58,7 @@ spec:
             env:
               TZ: &TZ ${TIMEZONE}
               HASS_EXTERNAL_URL: https://hass.${SECRET_DOMAIN}
-              HASS_INTERNAL_URL: "192.168.5.123"
+              HASS_INTERNAL_URL: "https://192.168.5.123"
               HASS_TRUSTED_PROXIES: ${NODE_CIDR}
               HASS_HTTP_TRUSTED_PROXY_1: ${NODE_CIDR}
               HASS_HTTP_TRUSTED_PROXY_2: ${CLUSTER_CIDR}
@@ -118,9 +118,11 @@ spec:
       # hostNetwork: true
       # dnsPolicy: ClusterFirstWithHostNet
       securityContext:
-        runAsNonRoot: false
-        runAsGroup: 0
-        runAsUser: 0
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         annotations:
@@ -191,12 +193,6 @@ spec:
         - path: /config/tts
       tmp:
         type: emptyDir
-      tun-device:
-        type: hostPath
-        hostPath: /dev/net/tun
-        hostPathType: CharDevice
-        globalMounts:
-          - path: /dev/net/tun
 
     serviceMonitor:
       app:

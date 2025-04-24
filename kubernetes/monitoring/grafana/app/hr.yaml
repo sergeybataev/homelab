@@ -50,12 +50,12 @@ spec:
     extraSecretMounts:
       - name: cnpg
         mountPath: /etc/secrets/db
-        secretName: ${PG_MAIN_CREDS}
+        secretName: &db_creds ${PG_MAIN_CREDS}
         defaultMode: 0444
         readOnly: true
       - name: cnpg-grafana-secret
         mountPath: /etc/secrets/db_grafana
-        secretName: ${PG_SECRET}
+        secretName: &db_secrets ${PG_SECRET}
         defaultMode: 0444
         readOnly: true
       - name: clickhouse-secrets
@@ -90,9 +90,9 @@ spec:
       image: ghcr.io/home-operations/postgres-init:17.4
       envFrom:
         - secretRef:
-            name: &db_creds ${PG_MAIN_CREDS}
+            name: *db_creds
         - secretRef:
-            name: &db_secrets ${PG_SECRET}
+            name: *db_secrets
 
     grafana.ini:
       auth.basic:
@@ -128,7 +128,7 @@ spec:
         host: $__file{/etc/secrets/db/INIT_POSTGRES_HOST}
         name: *app
         user: *app
-        password: $__file{/etc/secrets/db_grafana/GRAFANA_PASS}
+        password: $__file{/etc/secrets/db_grafana/INIT_POSTGRES_PASS}
       server:
         root_url: https://grafana.${SECRET_DOMAIN}
 
