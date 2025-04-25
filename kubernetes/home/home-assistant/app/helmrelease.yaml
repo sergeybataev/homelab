@@ -67,7 +67,7 @@ spec:
                 valueFrom:
                   fieldRef:
                     fieldPath: status.podIP
-              HASS_RECORDER_DB_URL: "postgresql://{$PG_USER}:$(DB_password)@${INIT_POSTGRES_HOST}/{$PG_NAME}"
+              HASS_RECORDER_DB_URL: "postgresql://${PG_USER}:$(DB_password)@${INIT_POSTGRES_HOST}/${PG_NAME}"
             envFrom: &envFrom
             - prefix: "DB_"
               secretRef:

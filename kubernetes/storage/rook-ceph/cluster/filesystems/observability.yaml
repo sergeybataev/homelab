@@ -3,23 +3,27 @@
 apiVersion: ceph.rook.io/v1
 kind: CephFilesystem
 metadata:
-  name: backup-fs
+  name: observability-fs
   namespace: rook-ceph
 spec:
   preservePoolNames: true # Preserve pool names
   metadataPool:
-    name: backup-meta
+    name: observability-meta
     enableRBDStats: true # Enable RBD stats for monitoring
     failureDomain: osd
     replicated:
       size: 3
       requireSafeReplicaSize: true # Requires 3 OSDs
+      hybridStorage:
+        primaryDeviceClass: nvme
+        secondaryDeviceClass: hybrid
     parameters:
       pg_autoscale_mode: "on"
       min_size: "2" # Minimum number of replicas required for writes
+
   dataPools:
     # For support EC creation
-    - name: backup-rep3-data
+    - name: observability-rep3-data
       enableRBDStats: true # Enable RBD stats for monitoring
       failureDomain: osd
       replicated:
@@ -28,7 +32,7 @@ spec:
       parameters:
         pg_autoscale_mode: "on"
         min_size: "2" # Minimum number of replicas required for writes
-    - name: backup-ec31-data
+    - name: observability-ec31-data
       enableRBDStats: true # Enable RBD stats for monitoring
       failureDomain: osd
       erasureCoded:
@@ -37,6 +41,9 @@ spec:
       parameters:
         pg_autoscale_mode: "on"
         fast_read: "true"
+
+        # # target_size_bytes 500 * 1024 * 1024 * 1024   in bytes
+        # target_size_bytes: "536870912000" # 500G
   metadataServer:
     activeCount: 1
     activeStandby: true
