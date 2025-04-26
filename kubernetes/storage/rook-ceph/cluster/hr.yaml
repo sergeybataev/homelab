@@ -205,27 +205,45 @@ spec:
         nodes:
           - name: "main.storage" # Name matching your main server node
             devices:
-              - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_Plus_2TB_S7U7NJ0XC36967R"
-              - name: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_2TB_S7GDNS0X203177N"
-              - name: "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNG0M218299R"
+              # Fast pool
+              - name: "Samsung NVME 990 EVO Plus 2Tb"
+                fullpath: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_Plus_2TB_S7U7NJ0XC36967R"
+              - name: "Samsung NVME 990 EVO 2Tb"
+                fullpath: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_2TB_S7GDNS0X203177N"
+              - name: "Samsung NVME 970 EVO Plus 1Tb"
+                fullpath: "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNG0M218299R"
 
-              - name: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR5D8Z2B"
+              # Hybrid pool
+              - name: "Seagate 16Tb Exos X18 ZR5D8ZBA"
+                fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR5D8ZBA"
+                config:
+                  deviceClass: hybrid
+                  osd_memory_target: "3221225472" # 3GiB
+                  metadataDevice: "/dev/disk/by-id/ata-OCZ-VERTEX4_A19D3011308003529" # OCZ-VERTEX4 256Gb SSD
+              - name: "Seagate 16Tb Exos X18 ZR5D8Z2B"
                 fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR5D8Z2B"
                 config:
-                  metadataDevice: "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_480GB_250207802457"
+                  metadataDevice: "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_480GB_250207802457" # SanDisk SSD 480Gb
                   deviceClass: hybrid
                   osd_memory_target: "3221225472" # 3GiB
-              - name: "/dev/disk/by-id/ata-ST12000NM001G-2MV103_ZS802E0G"
-              - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1DGDA3"
-              - name: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1FHDYF"
+
+              # Slow HDD pool
               - name: "Seagate 16Tb Exos X18 ZR700EEZ"
                 fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR700EEZ"
-              - name: "Seagate 16Tb Exos X18 ZR5D8ZBA"
-                fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR5D8ZBA" # Use full path for devices
-                config:
-                  deviceClass: hybrid
-                  osd_memory_target: "3221225472" # 3GiB
-                  metadataDevice: "/dev/disk/by-id/ata-OCZ-VERTEX4_A19D3011308003529" # Use a separate device for metadata
+              - name: "Seagate 16Tb Exos X18 ZR52P15B"
+                fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR52P15B"
+              - name: "Seagate 16Tb Exos X18 ZRS0NJK9"
+                fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZRS0NJK9"
+              - name: "Seagate 16Tb Exos X16 WL20KC6T"
+                fullpath: "/dev/disk/by-id/ata-ST16000NM001G-2KK103_WL20KC6T"
+
+              - name: "Seagate 12Tb Exos X16 ZS802E0G"
+                fullpath: "/dev/disk/by-id/ata-ST12000NM001G-2MV103_ZS802E0G"
+
+              - name: "Seagate 8Tb Exos 7E8 ZA1DGDA3"
+                fullpath: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1DGDA3"
+              - name: "Seagate 8Tb Exos X16 ZA1FHDYF"
+                fullpath: "/dev/disk/by-id/ata-ST8000NM0055-1RM112_ZA1FHDYF"
 
         config:
           osdsPerDevice: "1" # Standard config
