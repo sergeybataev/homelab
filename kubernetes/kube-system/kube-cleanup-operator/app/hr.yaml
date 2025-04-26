@@ -33,3 +33,5 @@ spec:
       - --delete-evicted-pods-after=7m
       - --delete-orphaned-pods-after=7m
       - --legacy-mode=false
+    nodeSelector:
+      kubernetes.io/arch: amd64
