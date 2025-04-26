@@ -233,7 +233,7 @@ spec:
         # storageClassDeviceSets: [] # Keep commented/removed if using raw devices
 
       resources: # Keep your resource requests/limits, adjust as needed
-        mgr: { requests: { cpu: "125m", memory: "512Mi" }, limits: { memory: "1Gi" } }
+        mgr: { requests: { cpu: "125m", memory: "512Mi" }, limits: { memory: "2Gi" } }
         mon: { requests: { cpu: "50m", memory: "512Mi" }, limits: { memory: "1Gi" } }
         osd: { requests: { cpu: "300m", memory: "512Mi" },
             limits: { memory: "3Gi" }
