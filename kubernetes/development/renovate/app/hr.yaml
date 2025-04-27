@@ -44,7 +44,7 @@ spec:
             nameOverride: renovate
             image:
               repository: ghcr.io/mend/renovate-ce
-              tag: '9.8.0-full@sha256:71f0c077d3cf80c16014b43be5c1b08dc8a952fab7e9e3eb2b0a301dabe135f0'
+              tag: '9.9.2'
 
             envFrom: *envFrom
 
@@ -68,8 +68,16 @@ spec:
               MEND_RNV_DATA_HANDLER_TYPE: postgresql
               # MEND_RNV_LOG_HISTORY_S3: 's3://renovate/log'
 
-              PGHOST: &db_host ${INIT_POSTGRES_HOST}
-              PGPORT: &db_port ${INIT_POSTGRES_PORT}
+              PGHOST: &db_host
+                valueFrom:
+                  secretKeyRef:
+                    name: *db
+                    key: INIT_POSTGRES_HOST
+              PGPORT: &db_port
+                valueFrom:
+                  secretKeyRef:
+                    name: *db
+                    key: INIT_POSTGRES_PORT
 
               # MEND_RNV_S3_FORCE_PATH_STYLE: 'true'
 
@@ -94,7 +102,6 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 1Gi
               limits:
                 cpu: 1000m
 
