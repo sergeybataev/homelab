@@ -36,10 +36,31 @@ spec:
                 "name": "macvlan-static-net",
                 "namespace": "network",
                 "mac": "f2:12:dc:25:ff:46",
-                "ips": ["192.168.5.123/16"]
+                "ips": ["${HASS_IP}/16"]
               }]
 
         initContainers:
+          init-chown-data:
+            command:
+              - chown
+              - '-R'
+              - '1000:1000'
+              - /config
+            image:
+              repository: docker.io/library/busybox
+              tag: 1.31.1
+            resources: {}
+            securityContext:
+              capabilities:
+                add:
+                  - CHOWN
+              runAsNonRoot: false
+              runAsUser: 0
+              seccompProfile:
+                type: RuntimeDefault
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+
           init-db:
             image:
               repository: ghcr.io/home-operations/postgres-init
@@ -58,7 +79,7 @@ spec:
             env:
               TZ: &TZ ${TIMEZONE}
               HASS_EXTERNAL_URL: https://hass.${SECRET_DOMAIN}
-              HASS_INTERNAL_URL: "https://192.168.5.123"
+              HASS_INTERNAL_URL: "https://${HASS_IP}"
               HASS_TRUSTED_PROXIES: ${NODE_CIDR}
               HASS_HTTP_TRUSTED_PROXY_1: ${NODE_CIDR}
               HASS_HTTP_TRUSTED_PROXY_2: ${CLUSTER_CIDR}
@@ -126,7 +147,7 @@ spec:
     service:
       app:
         annotations:
-          io.cilium/lb-ipam-ips: "192.168.5.5"
+          io.cilium/lb-ipam-ips: ${HASS_IP}
         type: LoadBalancer
         controller: *app
         ports:
