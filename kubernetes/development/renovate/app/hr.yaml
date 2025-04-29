@@ -54,8 +54,8 @@ spec:
 
               MEND_RNV_ACCEPT_TOS: 'y'
               MEND_RNV_PLATFORM: 'github'
-              MEND_RNV_CRON_JOB_SCHEDULER_ALL: '* 16-23/1 * * 5'
-              MEND_RNV_CRON_APP_SYNC: "* 16-23/1 * * 5"
+              MEND_RNV_CRON_JOB_SCHEDULER_ALL: '* 16-23/1 * * *'
+              MEND_RNV_CRON_APP_SYNC: "* 16-23/1 * * *"
 
               RENOVATE_PAGINATE_ALL: "true"
 
