@@ -39,7 +39,7 @@ metadata:
   labels:
     substitution.flux.home.arpa/enabled: "true"
 spec:
-  path: ./kubernetes/monitoring/kps/app
+  path: ./kubernetes/monitoring/kps/prometheus
   targetNamespace: &ns monitoring-prometheus-stack
   commonMetadata:
     labels:
@@ -48,9 +48,8 @@ spec:
 
   dependsOn:
     - name: cluster-storage
-    - name: network-cert-manager
-    - name: system-crds-prometheus-stack
-    - name: system-metrics-server
+    - name: cluster-network
+    - name: cluster-system
     - name: monitoring-prometheus-rules
     - name: monitoring-thanos
 
@@ -68,3 +67,70 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: monitoring-loki
+  namespace: flux-system
+  labels:
+    substitution.flux.home.arpa/enabled: "true"
+spec:
+  path: ./kubernetes/monitoring/kps/loki
+  targetNamespace: &ns monitoring-prometheus-stack
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: &app loki
+      app.kubernetes.io/group: monitoring
+
+  postBuild:
+    substitute:
+      APP: *app
+      NS: *ns
+      StorageClass: ceph-fs-observability-ec31
+
+  interval: 1h
+  prune: true
+  retryInterval: 2m
+  timeout: 3m
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  dependsOn:
+    - name: cluster-storage
+
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: monitoring-thanos
+  namespace: flux-system
+  labels:
+    substitution.flux.home.arpa/enabled: "true"
+spec:
+  path: ./kubernetes/monitoring/kps/thanos
+  targetNamespace: &ns monitoring-prometheus-stack
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: &app thanos
+      app.kubernetes.io/group: monitoring
+
+  postBuild:
+    substitute:
+      APP: *app
+      NS: *ns
+      StorageClass: ceph-fs-observability-ec31
+
+  interval: 1h
+  prune: true
+  retryInterval: 2m
+  timeout: 3m
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  dependsOn:
+    - name: cluster-storage
+    - name: monitoring-prometheus-rules

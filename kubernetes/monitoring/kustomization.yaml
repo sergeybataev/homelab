@@ -6,9 +6,9 @@ resources:
   - ./namespace.yaml
   - ./kubernetes-dashboard/ks.yaml
   - ./kps/ks.yaml
-  - ./thanos/ks.yaml
+  # - ./thanos/ks.yaml
+  # - ./loki/ks.yaml
   - ./grafana/ks.yaml
-  - ./loki/ks.yaml
   - ./otel/ks.yaml
   - ./unpoller/ks.yaml
 # Exporters
