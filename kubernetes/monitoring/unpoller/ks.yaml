@@ -19,7 +19,6 @@ spec:
     substitute:
       APP: *app
       NS: *ns
-      StorageClass: ceph-fs-observability-ec31
 
   components:
     - ../../../components/ns

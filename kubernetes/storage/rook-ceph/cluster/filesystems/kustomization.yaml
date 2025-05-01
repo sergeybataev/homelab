@@ -7,4 +7,5 @@ resources:
   - ./backup-sc.yaml
   - ./main.yaml
   - ./main-sc.yaml
+  - ./observability.yaml
 
