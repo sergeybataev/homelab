@@ -203,16 +203,16 @@ spec:
                 requests:
                   storage: 50Gi
 
-        # podMonitorSelector:
-        #   matchLabels:
-        #     app.kubernetes.io/part-of: kube-prometheus-stack
-        # serviceMonitorSelector:
-        #   matchLabels:
-        #     app.kubernetes.io/part-of: kube-prometheus-stack
+        podMonitorSelector:
+          matchLabels:
+            app.kubernetes.io/part-of: kube-prometheus-stack
+        serviceMonitorSelector:
+          matchLabels:
+            app.kubernetes.io/part-of: kube-prometheus-stack
         # without thanos
         # enableRemoteWriteReceiver: true
         # TODO check
-        # podAntiAffinity: hard
+        podAntiAffinity: hard
 
         # Thanos
         # https://thanos.io/ - Open source, highly available Prometheus setup with long term storage capabilities.
