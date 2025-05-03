@@ -181,11 +181,19 @@ spec:
         enableAdminAPI: true
         walCompression: true
         enableFeatures:
-          - auto-gomemlimit
           - memory-snapshot-on-shutdown
-          - new-service-discovery-manager
+          - delayed-compaction
+          - otlp-deltatocumulative
+          - auto-reload-config
         additionalArgs:
-          - --auto-gomemlimit.ratio=0.8
+          - name: auto-gomemlimit.ratio
+            value: "0.5"
+        containers:
+        - name: "prometheus"
+          env:
+          - name: GOMEMLIMIT
+            value: "734003200"
+
         retention: 2d
         retentionSize: 10GB
         externalLabels:
@@ -196,7 +204,7 @@ spec:
             memory: 512Mi
           limits:
             cpu: 800m
-            memory: 1Gi
+            # memory: 3Gi
         storageSpec:
           volumeClaimTemplate:
             spec:
