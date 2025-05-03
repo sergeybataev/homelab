@@ -11,7 +11,7 @@ spec:
     spec:
       # renovate: registryUrl=https://grafana.github.io/helm-charts
       chart: grafana
-      version: 8.12.1
+      version: 8.14.1
       sourceRef:
         kind: HelmRepository
         name: grafana-charts
@@ -313,7 +313,7 @@ spec:
         node-exporter-full:
           # renovate: depName="Node Exporter Full"
           gnetId: 1860
-          revision: 39
+          revision: 40
           datasource: Prometheus
         smartctl-exporter:
           # renovate: depName="Dashboard for smartctl_exporter"
