@@ -184,6 +184,8 @@ spec:
           - auto-gomemlimit
           - memory-snapshot-on-shutdown
           - new-service-discovery-manager
+        additionalArgs:
+          - --auto-gomemlimit.ratio=0.8
         retention: 2d
         retentionSize: 10GB
         externalLabels:
