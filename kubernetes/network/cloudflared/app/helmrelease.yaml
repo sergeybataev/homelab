@@ -6,7 +6,7 @@ metadata:
   labels:
     helm.flux.home.arpa/app-template: "true"
 spec:
-  interval: 30m
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
