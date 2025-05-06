@@ -226,14 +226,24 @@ spec:
                   metadataDevice: "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_480GB_250207802457" # SanDisk SSD 480Gb
                   deviceClass: hybrid
                   osd_memory_target: "3221225472" # 3GiB
-
-              # Slow HDD pool
               - name: "Seagate 16Tb Exos X18 ZR700EEZ"
                 fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR700EEZ"
-              - name: "Seagate 16Tb Exos X18 ZR52P15B"
-                fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR52P15B"
+                config:
+                  metadataDevice: "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_480GB_245209A0025D" # SanDisk SSD 480Gb
+                  deviceClass: hybrid
+                  osd_memory_target: "3221225472" # 3GiB
               - name: "Seagate 16Tb Exos X18 ZRS0NJK9"
                 fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZRS0NJK9"
+                config:
+                  metadataDevice: "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_480GB_250207803492" # SanDisk SSD 480Gb
+                  deviceClass: hybrid
+                  osd_memory_target: "3221225472" # 3GiB
+
+
+
+              # Slow HDD pool
+              - name: "Seagate 16Tb Exos X18 ZR52P15B"
+                fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR52P15B"
               - name: "Seagate 16Tb Exos X16 WL20KC6T"
                 fullpath: "/dev/disk/by-id/ata-ST16000NM001G-2KK103_WL20KC6T"
 
