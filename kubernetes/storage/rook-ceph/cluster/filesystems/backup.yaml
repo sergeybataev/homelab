@@ -41,4 +41,4 @@ spec:
     activeCount: 1
     activeStandby: true
     resources: # Keep your MDS resources
-      requests: { cpu: "35m", memory: "64M" }
+      requests: { cpu: "35m", memory: "256M" }

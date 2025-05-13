@@ -30,6 +30,18 @@ spec:
         pg_autoscale_mode: "on"
         min_size: "2" # Minimum number of replicas required for writes
 
+    # For Applications (Rep 3)
+    - name: main-fs-cache-rep3
+      enableRBDStats: true # Enable RBD stats for monitoring
+      failureDomain: osd
+      replicated:
+        size: 3
+        requireSafeReplicaSize: true
+      parameters:
+        pg_autoscale_mode: "on"
+        min_size: "2" # Minimum number of replicas required for writes
+      deviceClass: nvme
+
     # For Database Data (EC 3+1 on HDD) - Used by CephFS
     - name: main-fs-db-ec31-data
       enableRBDStats: true # Enable RBD stats for monitoring
@@ -69,7 +81,7 @@ spec:
     activeCount: 1
     activeStandby: true
     resources: # Keep your MDS resources
-      requests: { cpu: "35m", memory: "64M" }
+      requests: { cpu: "35m", memory: "256M" }
     # placement: # Keep your MDS placement constraints
     #   podAntiAffinity:
     #     requiredDuringSchedulingIgnoredDuringExecution:
