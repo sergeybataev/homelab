@@ -258,7 +258,7 @@ spec:
                 type: DirectoryOrCreate
           containers:
             - name: clickhouse
-              image: clickhouse/clickhouse-server:25.4
+              image: clickhouse/clickhouse-server:25.5
               volumeMounts:
                 - name: local-path
                   mountPath: /var/lib/clickhouse
@@ -313,7 +313,7 @@ spec:
                 type: DirectoryOrCreate
           containers:
             - name: clickhouse
-              image: clickhouse/clickhouse-server:25.4
+              image: clickhouse/clickhouse-server:25.5
               volumeMounts:
                 - name: local-path
                   mountPath: /var/lib/clickhouse
