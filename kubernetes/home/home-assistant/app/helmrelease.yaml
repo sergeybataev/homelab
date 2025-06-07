@@ -41,7 +41,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/home-operations/postgres-init
-              tag: 17.4
+              tag: 17.5
             envFrom: &envFrom
               - secretRef:
                   name: &db_creds ${PG_MAIN_CREDS}
@@ -52,7 +52,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/home-assistant
-              tag: 2025.4.4
+              tag: 2025.5.3
             env:
               TZ: &TZ ${TIMEZONE}
               HASS_EXTERNAL_URL: https://hass.${SECRET_DOMAIN}
@@ -89,7 +89,7 @@ spec:
           codeserver:
             image:
               repository: ghcr.io/coder/code-server
-              tag: 4.99.4@sha256:316b7f60051b44b81fdf8972293735c2b0fda9a2b1e88fb6b77195df0c9b9b78
+              tag: 4.100.3@sha256:c5b7ec231b24f26ecee243e8d9f9df57af906d03c9c8238efd893217c9f1f725
             env:
               TZ: *TZ
               PORT: &code-port 18888
