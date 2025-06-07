@@ -40,7 +40,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/home-operations/postgres-init
-              tag: 17.4
+              tag: 17.5
             envFrom: &envFrom
               - secretRef:
                   name: &db ${DB_MAIN_SECRET}
@@ -53,7 +53,7 @@ spec:
           app:
             image:
               repository: ghcr.io/danny-avila/librechat-dev
-              tag: latest@sha256:88c6e25e1fd671a79e7225090ae0df6eb9cd58e4a10bbd5748c5e67b6686d304
+              tag: latest@sha256:e01e7401e00ca52bd8c7eec8e007f008ec5e6011ec1094a8033d7546ba9814e4
             envFrom: *envFrom
 
             env:
@@ -89,7 +89,7 @@ spec:
           ragapi:
             image:
               repository: ghcr.io/danny-avila/librechat-rag-api-dev-lite
-              tag: latest@sha256:566585698235431cd7a206ee4f71f899daec94214480ce5e5e1d5d9f41b4f228
+              tag: latest@sha256:fe4f4608cbf841ba4be156fdf8bbd5d9c9ef502e67be0df69275ac142707f6a3
             envFrom: *envFrom
             env:
               RAG_OPENAI_API_KEY:

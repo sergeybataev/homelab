@@ -11,7 +11,7 @@ spec:
     spec:
       # renovate: registryUrl=https://grafana.github.io/helm-charts
       chart: grafana
-      version: 8.14.2
+      version: 9.2.2
       sourceRef:
         kind: HelmRepository
         name: grafana-charts
@@ -87,7 +87,7 @@ spec:
 
     extraInitContainers:
     - name: init-db
-      image: ghcr.io/home-operations/postgres-init:17.4
+      image: ghcr.io/home-operations/postgres-init:17.5
       envFrom:
         - secretRef:
             name: *db_creds
