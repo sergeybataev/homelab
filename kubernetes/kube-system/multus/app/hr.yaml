@@ -62,7 +62,7 @@ spec:
           uninstall:
             image:
               repository: docker.io/library/alpine
-              tag: "3.21"
+              tag: "3.22"
 
             command:
               - /bin/sh
@@ -166,7 +166,7 @@ spec:
           cni-plugins-installer:
             image:
               repository: ghcr.io/skyssolutions/cni-plugins
-              tag: 1.6.2
+              tag: 1.7.1
             resources:
               requests:
                 cpu: "10m"
