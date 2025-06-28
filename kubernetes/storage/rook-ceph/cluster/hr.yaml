@@ -210,8 +210,8 @@ spec:
                 fullpath: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_Plus_2TB_S7U7NJ0XC36967R"
               - name: "Samsung NVME 990 EVO 2Tb"
                 fullpath: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_2TB_S7GDNS0X203177N"
-              - name: "Samsung NVME 970 EVO Plus 1Tb"
-                fullpath: "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNG0M218299R"
+              # - name: "Samsung NVME 970 EVO 2Tb"
+              #   fullpath: "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_2TB_S7GDNS0X118271J"
 
               # Hybrid pool
               - name: "Seagate 16Tb Exos X18 ZR5D8ZBA"
