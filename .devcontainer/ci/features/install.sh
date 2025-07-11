@@ -5,15 +5,11 @@ set -o noglob
 apk add --no-cache \
     bash bind-tools ca-certificates curl gettext python3 \
     py3-pip moreutils jq git iputils openssh-client \
-    starship fzf fish
+    starship fzf fish lsd
 
 apk add --no-cache \
     --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
         age helm kubectl sops
-
-sudo apk add --no-cache \
-    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing \
-        lsd
 
 for app in \
     "budimanjojo/talhelper!" \
