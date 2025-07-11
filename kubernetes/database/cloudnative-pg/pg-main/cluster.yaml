@@ -5,7 +5,7 @@ metadata:
   name: pg-main
   namespace: default # Or your target namespace
 spec:
-  instances: 1 # Request 3 replicas
+  instances: 3 # Request 3 replicas
   imageName: ghcr.io/cloudnative-pg/postgresql:17
 
   # PostgreSQL Configuration (adjust as needed)
