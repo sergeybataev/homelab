@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   devcontainer:
-    if: ${{ github.repository == 'sergeybataev/homelab' }}
+    if: ${{ github.repository == 'sergeybataev/homelab_disabled' }}
     name: publish
     runs-on: ubuntu-latest
     permissions:
