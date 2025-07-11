@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   devcontainer:
-    if: ${{ github.repository == 'onedr0p/cluster-template' }}
+    if: ${{ github.repository == 'sergeybataev/homelab' }}
     name: publish
     runs-on: ubuntu-latest
     permissions:
