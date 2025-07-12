@@ -17,6 +17,7 @@ spec:
     spec:
       containers:
         - name: kube-vip
+          # temporary support insecure, v0.9.2 failed
           image: ghcr.io/kube-vip/kube-vip:v0.9.1
           imagePullPolicy: IfNotPresent
           args: ["manager"]
@@ -49,6 +50,11 @@ spec:
               value: "2"
             - name: prometheus_server
               value: :2112
+            # temporary support insecure
+            - name: lb_class_legacy_handling
+              value: "true"
+            - name: enable_service_security
+              value: "false"
           securityContext:
             capabilities:
               add: ["NET_ADMIN", "NET_RAW", "SYS_TIME"]
