@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: nuclio
-      version: 0.20.9
+      version: 0.21.2
       sourceRef:
         kind: HelmRepository
         name: nuclio
@@ -32,7 +32,7 @@ spec:
       enabled: true
       image:
         repository: quay.io/nuclio/controller
-        tag: 1.14.9-amd64
+        tag: 1.15.2-amd64
         pullPolicy: IfNotPresent
       resources: {}
 
@@ -106,7 +106,7 @@ spec:
       replicas: 1
       image:
         repository: quay.io/nuclio/dashboard
-        tag: 1.14.9-amd64
+        tag: 1.15.2-amd64
         pullPolicy: IfNotPresent
       resources: {}
 
@@ -159,7 +159,7 @@ spec:
       replicas: 1
       image:
         repository: quay.io/nuclio/autoscaler
-        tag: 1.14.9-amd64
+        tag: 1.15.2-amd64
         pullPolicy: IfNotPresent
       resources: {}
 
@@ -194,7 +194,7 @@ spec:
       replicas: 1
       image:
         repository: quay.io/nuclio/dlx
-        tag: 1.14.9-amd64
+        tag: 1.15.2-amd64
         pullPolicy: IfNotPresent
       resources: {}
 
