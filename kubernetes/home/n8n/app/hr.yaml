@@ -53,7 +53,7 @@ spec:
           n8n:
             image:
               repository: docker.io/n8nio/n8n
-              tag: 1.101.1
+              tag: 1.101.3
             env:
               # Isolating N8N
               N8N_DIAGNOSTICS_ENABLED: false
