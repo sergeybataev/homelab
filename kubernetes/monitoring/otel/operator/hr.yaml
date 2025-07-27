@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: opentelemetry-operator
-      version: 0.90.4
+      version: 0.92.1
       sourceRef:
         kind: HelmRepository
         name: opentelemetry-charts
@@ -49,6 +49,6 @@ spec:
         # https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/distributions/otelcol-contrib/manifest.yaml
 
         repository: otel/opentelemetry-collector-contrib
-        tag: 0.129.1
+        tag: 0.130.1
         # https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/distributions/otelcol-k8s/manifest.yaml
         # repository: "otel/opentelemetry-collector-k8s"
