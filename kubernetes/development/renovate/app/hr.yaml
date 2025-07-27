@@ -24,6 +24,9 @@ spec:
       retries: 3
 
   values:
+    defaultPodOptions:
+      nodeSelector:
+        kubernetes.io/arch: amd64
     controllers:
       renovate:
         annotations:
@@ -38,7 +41,6 @@ spec:
                   name: &db cnpg-pg-main-secret
               - secretRef:
                   name: &secrets renovate-secret
-
         containers:
           app:
             nameOverride: renovate
