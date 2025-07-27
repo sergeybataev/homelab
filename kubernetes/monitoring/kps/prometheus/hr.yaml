@@ -184,7 +184,7 @@ spec:
           - memory-snapshot-on-shutdown
           - delayed-compaction
           - otlp-deltatocumulative
-          - auto-reload-config
+          # - auto-reload-config
         additionalArgs:
           - name: auto-gomemlimit.ratio
             value: "0.5"
