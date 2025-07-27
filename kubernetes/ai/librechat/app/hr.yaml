@@ -53,7 +53,7 @@ spec:
           app:
             image:
               repository: ghcr.io/danny-avila/librechat-dev
-              tag: latest@sha256:eb9cfdb5a3861b13905c18e788b9add50200d9f9cb52621fd457735ccd6089d9
+              tag: latest@sha256:d7fc65a29a4730b3ce6683aa029c932cd0db80a821b36dbeef51b0930df0f0aa
             envFrom: *envFrom
 
             env:
@@ -89,7 +89,7 @@ spec:
           ragapi:
             image:
               repository: ghcr.io/danny-avila/librechat-rag-api-dev-lite
-              tag: latest@sha256:c056c042a6ceaf1626140cd8ccc39b872e760badcc0f18357aa09a31f9efd978
+              tag: latest@sha256:42ef0aa9a8fa2437eed73648242e01a1c0dbec772dc0da891908e44adbce626a
             envFrom: *envFrom
             env:
               RAG_OPENAI_API_KEY:
