@@ -20,7 +20,7 @@ spec:
 
   # Storage Configuration
   storage:
-    size: 50Gi # This requests a PVC of this size
+    size: 100Gi # This requests a PVC of this size
     storageClass: main-fs-db-ec31 # Use the SC created earlier
 
   # Scheduling constraints
