@@ -116,7 +116,7 @@ spec:
     core:
       initContainers:
         - name: init-db
-          image: ghcr.io/home-operations/postgres-init:17.5
+          image: ghcr.io/home-operations/postgres-init:17.6
           envFrom: &envFrom
             - secretRef:
                 name: &db_secrets ${PG_MAIN_CREDS}
