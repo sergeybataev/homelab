@@ -53,7 +53,7 @@ spec:
           app:
             image:
               repository: ghcr.io/danny-avila/librechat-dev
-              tag: latest@sha256:8edfedc03a2421cd03c639f873940a5bdaa7b3d35321a1cf0cdd2e45f2557d4d
+              tag: latest@sha256:869a40f083408906c607a52d5a58878fff2d6b17e91d1104831d6e8271544055
             envFrom: *envFrom
 
             env:
