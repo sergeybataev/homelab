@@ -53,7 +53,7 @@ spec:
           app:
             image:
               repository: ghcr.io/danny-avila/librechat-dev
-              tag: latest@sha256:869a40f083408906c607a52d5a58878fff2d6b17e91d1104831d6e8271544055
+              tag: latest@sha256:5019e238e9c875dc99f6982cbbf412542ded14935e0c660bfc03bd68b43d59ef
             envFrom: *envFrom
 
             env:
@@ -77,7 +77,7 @@ spec:
           meilisearch:
             image:
               repository: getmeili/meilisearch
-              tag: v1.18.0
+              tag: v1.19.1
             envFrom: *envFrom
             env:
               MEILI_NO_ANALYTICS: true
@@ -89,7 +89,7 @@ spec:
           ragapi:
             image:
               repository: ghcr.io/danny-avila/librechat-rag-api-dev-lite
-              tag: latest@sha256:f62a736ae997dc45029e93e785d0a306f4fbd685fece305950c1169e38db0dc7
+              tag: latest@sha256:86a9b2202f740c1e737b4587de28faa81a131c4c616f832259bcea77096dd6a0
             envFrom: *envFrom
             env:
               RAG_OPENAI_API_KEY:
