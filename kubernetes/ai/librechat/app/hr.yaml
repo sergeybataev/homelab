@@ -14,9 +14,9 @@ spec:
     createNamespace: true
     remediation:
       retries: 10
-  upgrade:
-    remediation:
-      retries: 10
+  # upgrade:
+  #   remediation:
+  #     retries: 10
   values:
     fullnameOverride: *app
 
@@ -84,7 +84,21 @@ spec:
               MEILI_DB_PATH: "/meili_data"
               MEILI_LOG_LEVEL: "debug"
               MEILI_LOGS_MODE: "json"
-            probes: *probes
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 7700
+                  periodSeconds: 10
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 7700
+                  periodSeconds: 10
 
           ragapi:
             image:
@@ -119,7 +133,21 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-            probes: *probes
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 8001
+                  periodSeconds: 10
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 8001
+                  periodSeconds: 10
 
           exporter:
             dependsOn: app
@@ -228,6 +256,8 @@ spec:
             app:
               - subPath: logs
                 path: /app/api/logs
+              - subPath: logs
+                path: /app/logs
               - subPath: images
                 path: /app/client/public/images
               - subPath: uploads
