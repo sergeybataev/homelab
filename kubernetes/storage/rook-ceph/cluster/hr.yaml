@@ -238,12 +238,25 @@ spec:
                   metadataDevice: "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_480GB_250207803492" # SanDisk SSD 480Gb
                   deviceClass: hybrid
                   osd_memory_target: "3221225472" # 3GiB
+              - name: "Seagate 16Tb Exos X18 ZR52P15B"
+                fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR52P15B"
+                config:
+                  metadataDevice: "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_480GB_25177J4A1T07" # SanDisk SSD 480Gb
+                  deviceClass: hybrid
+                  osd_memory_target: "3221225472" # 3GiB
 
+              # ata-SanDisk_SSD_PLUS_480GB_25177J4A7C04
+              # ata-SanDisk_SSD_PLUS_480GB_25177J4A7C11
 
+              # Fast small
+              - name: "SanDisk SSD 480Gb 25177J4A7E08"
+                fullpath: "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_480GB_25177J4A7E08"
+              - name: "SanDisk SSD 480Gb 252327401292"
+                fullpath: "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_480GB_252327401292"
+              - name: "SanDisk SSD 480Gb 252329405375"
+                fullpath: "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_480GB_252329405375"
 
               # Slow HDD pool
-              # - name: "Seagate 16Tb Exos X18 ZR52P15B"
-              #   fullpath: "/dev/disk/by-id/ata-ST16000NM000J-2TW103_ZR52P15B"
               - name: "Seagate 16Tb Exos X16 WL20KC6T"
                 fullpath: "/dev/disk/by-id/ata-ST16000NM001G-2KK103_WL20KC6T"
 
