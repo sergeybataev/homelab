@@ -81,7 +81,10 @@ spec:
       osd_scrub_begin_hour = "2"
       osd_scrub_end_hour = "6"
       mds_cache_memory_limit = "268435456"
-
+      [osd]
+      osd_crush_update_on_start = false
+    # cephClusterSpec.cephConfig.osd.osd_crush_update_on_start: "false"
+    
     cephClusterSpec:
       # This cluster spec example is for a converged cluster where all the Ceph daemons are running locally,
       # as in the host-based example (cluster.yaml). For a different configuration such as a
