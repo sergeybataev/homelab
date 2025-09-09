@@ -28,13 +28,37 @@ model_list:
       model: openai/text-embedding-3-large
       api_key: os.environ/SECRET_OPENAI_API_KEY
 
+
 general_settings:
-  store_prompts_in_spend_logs: True
+  proxy_batch_write_at: 60 # Batch write spend updates every 60s
+  database_connection_pool_limit: 10 # limit the number of database connections to = MAX Number of DB Connections/Number of instances of litellm proxy (Around 10-20 is good number)
+  use_redis_transaction_buffer: true # HA
+
+  # OPTIONAL Best Practices
+  disable_error_logs: True # turn off writing LLM Exceptions to DB
+  allow_requests_on_db_unavailable: True # Only USE when running LiteLLM on your VPC. Allow requests to still be processed even if the DB is unavailable. We recommend doing this if you're running LiteLLM on VPC that cannot be accessed from the public internet.
+
+  disable_spend_logs: false
+
+  background_health_checks: false
+  health_check_interval: 300
+
+  store_model_in_db: true
 
 litellm_settings:
   # # Networking settings
   # request_timeout: 10 # (int) llm requesttimeout in seconds. Raise Timeout error if call takes longer than 10s. Sets litellm.request_timeout
   # force_ipv4: boolean # If true, litellm will force ipv4 for all LLM requests. Some users have seen httpx ConnectionError when using ipv6 + Anthropic API
 
-  set_verbose: True # sets litellm.set_verbose=True to view verbose debug logs. DO NOT LEAVE THIS ON IN PRODUCTION
-  json_logs: True # if true, logs will be in json format
+  proxy_server: true
+  request_timeout: 600
+  json_logs: true # if true, logs will be in json format
+  # enable_preview_features: true
+  redact_user_api_key_info: true
+  turn_off_message_logging: false
+  set_verbose: true
+  drop_params: true
+  
+  cache: True
+  cache_params:
+    type: redis
