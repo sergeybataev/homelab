@@ -49,11 +49,12 @@ spec:
           app:
             image:
               repository: ghcr.io/berriai/litellm
-              tag: v1.76.1-stable
+              tag: v1.76.3.rc.1
             envFrom: *envFrom
             env:
               TZ: "${TIMEZONE}"
               LITELLM_LOG: "DEBUG"
+              LITELLM_MIGRATION_DIR: /app/db_migrations
             args:
               - "--config"
               - "/app/config.yaml"
@@ -124,3 +125,8 @@ spec:
           - path: /app/config.yaml
             subPath: config.yaml
             readOnly: true
+      app-data:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /app/db_migrations
