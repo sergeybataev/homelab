@@ -74,3 +74,28 @@ spec:
           operator: In
           values:
             - "rpi-5-2-yellow"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv-node-3 # Unique name for the PV
+spec:
+  capacity:
+    storage: 50Gi # Specify the capacity of the path
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce # Standard for block storage/host paths used by one pod
+  persistentVolumeReclaimPolicy: Retain # Keep data on the host if PVC/PV is deleted
+  storageClassName: local-hostpath-postgres # Must match the StorageClass name
+  local:
+    path: /var/lib/postgres # The path on the host node
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/postgres-node # Label specific to your main storage node(s)
+          operator: Exists
+        - key: "kubernetes.io/hostname"
+          operator: In
+          values:
+            - "rpi-5-3-red"
