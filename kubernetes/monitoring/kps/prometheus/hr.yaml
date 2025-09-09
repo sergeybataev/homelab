@@ -203,8 +203,8 @@ spec:
             cpu: 100m
             memory: 512Mi
           limits:
-            cpu: 800m
-            memory: 3Gi
+            cpu: 500m
+            memory: 1Gi
         storageSpec:
           volumeClaimTemplate:
             spec:
@@ -223,7 +223,8 @@ spec:
         # enableRemoteWriteReceiver: true
         # TODO check
         podAntiAffinity: hard
-
+        nodeSelector: 
+          kubernetes.io/arch: arm64
         # Thanos
         # https://thanos.io/ - Open source, highly available Prometheus setup with long term storage capabilities.
         # thanosService:
