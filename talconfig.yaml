@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
+---
+clusterName: kubernetes
+
+talosVersion: "${talosVersion}"
+kubernetesVersion: "${kubernetesVersion}"
+
+endpoint: https://192.168.5.1:6443
+additionalApiServerCertSans: &sans
+  - "127.0.0.1"
+  - "192.168.5.1"
+additionalMachineCertSans: *sans
+
+clusterPodNets: ["172.16.0.0/16"]
+clusterSvcNets: ["172.17.0.0/16"]
+
+# Disable built-in CNI to use Cilium
+cniConfig:
+  name: none
+
+nodes:
+  - hostname: "rpi-5-4-purple"
+    ipAddress: "192.168.1.54"
+    installDiskSelector:
+      serial: "S7HENU0Y564394N"
+    machineSpec:
+      secureboot: false
+    talosImageURL: ghcr.io/talos-rpi5/installer:v1.11.1-pre
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "88:a2:9e:26:f6:9a"
+        dhcp: false
+        addresses:
+          - "192.168.1.54/16"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "192.168.0.1"
+        mtu: 1500
+        vip:
+          ip: "192.168.5.1"
+
+# Global patches
+patches:
+  - "@./patches/global/machine-files.yaml"
+  - "@./patches/global/machine-kubelet.yaml"
+  - "@./patches/global/machine-network.yaml"
+  - "@./patches/global/machine-sysctls.yaml"
+  - "@./patches/global/machine-time.yaml"
+
+# Controller patches
+controlPlane:
+  patches:
+    - "@./patches/controller/admission-controller-patch.yaml"
+    - "@./patches/controller/cluster.yaml"
+
