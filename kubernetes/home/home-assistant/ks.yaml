@@ -20,8 +20,8 @@ spec:
       APP: *app
       NS: *ns
       VOLSYNC_CAPACITY: 5Gi
-      # PG_MAIN_CREDS: postgres-critical-secret
-      PG_MAIN_CREDS: cnpg-pg-main-secret
+      PG_MAIN_CREDS: postgres-critical-secret
+      # PG_MAIN_CREDS: cnpg-pg-main-secret
       #PG_SECRET: *app
       PG_SECRET: home-assistant-db-secret
       PG_NAME: home-assistant
