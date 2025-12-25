@@ -1,0 +1,20 @@
+# This patch limits the size of the EPHEMERAL volume.
+apiVersion: v1alpha1
+kind: VolumeConfig
+name: EPHEMERAL
+provisioning:
+  diskSelector:
+    match: system_disk
+  minSize: 250GB
+  maxSize: 250GB
+  grow: false
+---
+# local-storage.yaml
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: local-storage
+provisioning:
+  diskSelector:
+    match: system_disk
+  minSize: 250GB
+  maxSize: 250GB

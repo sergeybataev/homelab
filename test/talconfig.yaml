@@ -25,7 +25,7 @@ nodes:
       serial: "S7HENU0Y564394N"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/ad6c91c96d5a5ebfa5de715a85162538831f6220cec890d81cf8b22c530f0330
+    talosImageURL: ghcr.io/talos-rpi5/installer:v1.11.5
     controlPlane: true
     patches:
       - "@./patches/rpi-5-4-purple/machine-storage.yaml"
@@ -55,4 +55,3 @@ controlPlane:
   patches:
     - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"
-
